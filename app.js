@@ -15,7 +15,9 @@ app.set("view engine","handlebars")
 app.use(express.json())
 
 //route
-
+app.get('/',(req,res)=>{
+    res.send('Hello World')
+})
 
 
 http.listen(8080,()=>{
