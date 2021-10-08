@@ -1,0 +1,92 @@
+section {
+  background-color: #ff6b62;
+  min-height: 100vh;
+  font-family: "Fredoka One", cursive;
+}
+
+#login-signup {
+  background-color: #ffffff;
+  min-height: 60vh;
+  max-width: 60vw;
+}
+
+#logo {
+  margin-top: -50px;
+}
+
+h1 {
+  font-family: "Bungee", cursive;
+  color: #ffffff;
+  font-size: 80px;
+  /* text-align: center; */
+  letter-spacing: -6px;
+  -webkit-text-stroke: 6px #ff6b62;
+}
+
+h2 {
+  font-family: "Bungee", cursive;
+}
+
+.btn-dark {
+  background-color: #ff6b62;
+  border: 3px solid #ff6b62;
+  height: 60px;
+  font-size: 20px;
+}
+
+.btn-dark:hover {
+  background-color: #ffffff;
+  border-color: #ff6b62;
+  color: #ff6b62;
+}
+
+.btn-primary {
+  background-color: #ff6b62;
+  border: 3px solid #ff6b62;
+  height: 105px;
+  font-size: 20px;
+}
+
+.btn-primary:hover {
+  background-color: #ffffff;
+  border-color: #ff6b62;
+  color: #ff6b62;
+}
+
+.btn-info {
+  background-color: #ffffff;
+  border: 3px solid #ff6b62;
+  height: 105px;
+  font-size: 20px;
+  color: #ff6b62;
+}
+
+.btn-info:hover {
+  background-color: #ff6b62;
+  border-color: #ff6b62;
+  color: #ffffff;
+}
+
+#sign-up {
+  border-color: #cccccc;
+}
+
+p,
+label {
+  font-family: "Fredoka One", cursive;
+  color: #555555;
+  font-size: 20px;
+}
+
+input {
+  width: 100%;
+  color: #555555;
+}
+
+span {
+  color: #555555;
+}
+
+span:hover {
+  color: #ff6b62;
+}
