@@ -22,7 +22,11 @@ app.set("view engine", "handlebars");
 // });
 
 app.get("/login", (req, res) => {
-  res.render("user-login-signup");
+  res.render("user-login");
+});
+
+app.get("/loginbiz", (req, res) => {
+  res.render("rest-login");
 });
 
 http.listen(8080, () => {

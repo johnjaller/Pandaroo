@@ -1,20 +1,21 @@
-section {
+#user-page {
   background-color: #ff6b62;
   min-height: 100vh;
   font-family: "Fredoka One", cursive;
 }
 
-#login-signup {
+#user-login-signup {
   background-color: #ffffff;
   min-height: 60vh;
   max-width: 60vw;
 }
 
-#logo {
+#user-logo,
+#rest-logo {
   margin-top: -50px;
 }
 
-h1 {
+#user-title {
   font-family: "Bungee", cursive;
   color: #ffffff;
   font-size: 80px;
@@ -25,6 +26,7 @@ h1 {
 
 h2 {
   font-family: "Bungee", cursive;
+  color: #333333;
 }
 
 .btn-dark {
@@ -67,10 +69,6 @@ h2 {
   color: #ffffff;
 }
 
-#sign-up {
-  border-color: #cccccc;
-}
-
 p,
 label {
   font-family: "Fredoka One", cursive;
@@ -83,10 +81,68 @@ input {
   color: #555555;
 }
 
-span {
+#to-business-login {
   color: #555555;
 }
 
-span:hover {
+#to-business-login:hover {
   color: #ff6b62;
+}
+
+/*********** Rest-side login ************/
+#rest-page {
+  background-color: #4b8494;
+  min-height: 100vh;
+  font-family: "Fredoka One", cursive;
+}
+
+#rest-login-signup {
+  background-color: #ffffff;
+  min-height: 50vh;
+  max-width: 40vw;
+}
+
+#rest-title {
+  font-family: "Bungee", cursive;
+  color: #ffffff;
+  font-size: 80px;
+  /* text-align: center; */
+  letter-spacing: -6px;
+  -webkit-text-stroke: 6px #4b8494;
+}
+
+/* Rest-page buttons */
+.btn-success {
+  background-color: #4b8494;
+  border: 3px solid #4b8494;
+  height: 105px;
+  font-size: 20px;
+}
+
+.btn-success:hover {
+  background-color: #ffffff;
+  border-color: #4b8494;
+  color: #4b8494;
+}
+
+.btn-danger {
+  background-color: #4b8494;
+  border: 3px solid #4b8494;
+  height: 50px;
+  font-size: 20px;
+  color: #ffffff;
+}
+
+.btn-danger:hover {
+  background-color: #ffffff;
+  border-color: #4b8494;
+  color: #4b8494;
+}
+
+#to-user-login {
+  color: #555555;
+}
+
+#to-user-login:hover {
+  color: #4b8494;
 }
