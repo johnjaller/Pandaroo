@@ -1,6 +1,6 @@
 
 exports.up = function(knex) {
-    return knex.schema.createTable('order',(table)=>{
+    return knex.schema.createTable('delivery',(table)=>{
         table.increments()
         table.integer('rest_id')
         table.foreign('rest_id').references('restaurant.id')
@@ -16,6 +16,6 @@ exports.up = function(knex) {
   };
   
   exports.down = function(knex) {
-    return knex.schema.dropTable('order')
+    return knex.schema.dropTable('delivery')
   };
   
