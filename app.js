@@ -14,6 +14,7 @@ app.use(express.urlencoded({extended:false}))
 app.set("view engine","handlebars")
 app.use(express.json())
 
+//userService route
 //route
 app.get('/',(req,res)=>{
     res.send('Hello World')
