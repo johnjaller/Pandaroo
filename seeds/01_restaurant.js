@@ -6,8 +6,8 @@ exports.seed = function(knex) {
       // Inserts seed entries
       return knex('restaurant').insert([
         {name: 'Happy restaurant',username:'happyRestaurant',password:'123',phone_no:99843206},
-        {id: 2, colName: 'rowValue2'},
-        {id: 3, colName: 'rowValue3'}
+        {name: 'middle sushi',username:'middlesushi',password:'middle',phone_no:94823396},
+        {name:'Problematic steakhouse',username:'problem',password:'trouble',phone_no:99420579}
       ]);
     });
 };

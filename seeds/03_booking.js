@@ -1,13 +1,13 @@
 
 exports.seed = function(knex) {
   // Deletes ALL existing entries
-  return knex('table_name').del()
+  return knex('booking').del()
     .then(function () {
       // Inserts seed entries
-      return knex('table_name').insert([
-        {id: 1, colName: 'rowValue1'},
-        {id: 2, colName: 'rowValue2'},
-        {id: 3, colName: 'rowValue3'}
+      return knex('booking').insert([
+        {rest_id:1,user_id:1,booking_status:'ready',special_request:'My friend birthday'},
+        {rest_id:2,user_id:3,booking_status:'pending',special_request:''},
+        {rest_id:3,user_id:2,booking_status:'denied',special_request:''}
       ]);
     });
 };

@@ -5,7 +5,6 @@ exports.up = function(knex) {
     table.string('username')
     table.string('firstname')
     table.string('surname')
-    table.string('email')
     table.string("gmail_id");
     table.string("facebook_id");
     table.string('password')
