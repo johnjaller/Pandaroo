@@ -1,0 +1,21 @@
+.userSearch {
+  width: 35vw;
+  border: 1px solid #4b8494;
+}
+
+.btn-userSearch {
+  background-color: #4b8494;
+  color: #fff;
+  font-size: 1rem;
+  padding: 5px 20px;
+}
+
+.userRestCard img {
+  width: 300px;
+  height: 200px;
+}
+
+.userRestCardTitle {
+  color: #4b8494;
+  font-size: 1.15rem;
+}

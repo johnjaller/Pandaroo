@@ -1,27 +1,69 @@
-//import package
-const express=require('express')
-const handlebars=require("express-handlebars")
-const cors=require('cors')
-const app=express()
-const http=require('http').Server(app)
-const io=require('socket.io')(http)
+// Import package
+const express = require("express");
+const handlebars = require("express-handlebars");
+const cors = require("cors");
+const app = express();
+const http = require("http").Server(app);
+const io = require("socket.io")(http);
 
-//middleware
-app.use(cors())
-app.use(express.static("public"))
-app.engine("handlebars",handlebars({defaultLayout:"main"}))
-app.use(express.urlencoded({extended:false}))
-app.set("view engine","handlebars")
-app.use(express.json())
+// Middleware
+app.use(cors());
+app.use(express.static("public"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-//route
-app.get('/',(req,res)=>{
-    res.send('Hello World')
-})
+// Set up handlebars
+app.engine("handlebars", handlebars({ defaultLayout: "user" }));
+app.set("view engine", "handlebars");
 
+// Route for users
+app.get("/user", (req, res) => {
+  res.render("userInfo");
+});
 
-http.listen(8080,()=>{
-    console.log('app listeninf to port 8080')
-})
+app.get("/", (req, res) => {
+  res.render("userHome");
+});
 
-module.exports={http,app}
+app.get("/userbooking", (req, res) => {
+  res.render("userBooking");
+});
+
+app.get("/userorder", (req, res) => {
+  res.render("userOrder");
+});
+
+// Route for restaurants
+app.get("/bizsignup", (req, res) => {
+  res.render("restSignUp", { layout: "restaurantSimple" });
+});
+
+app.get("/bizsetupmenu", (req, res) => {
+  res.render("restSetUpMenu", { layout: "restaurant" });
+});
+
+app.get("/info", (req, res) => {
+  res.render("restInfo", { layout: "restaurant" });
+});
+
+app.get("/bookings", (req, res) => {
+  res.render("restBooking", { layout: "restaurant" });
+});
+
+app.get("/orders", (req, res) => {
+  res.render("restOrder", { layout: "restaurant" });
+});
+
+app.get("/bookingshistory", (req, res) => {
+  res.render("restBookingHistory", { layout: "restaurant" });
+});
+
+app.get("/ordershistory", (req, res) => {
+  res.render("restOrderHistory", { layout: "restaurant" });
+});
+
+http.listen(8080, () => {
+  console.log("app listening to port 8080");
+});
+
+module.exports = { http, app };

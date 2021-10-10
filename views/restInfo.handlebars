@@ -1,0 +1,57 @@
+<section>
+  <div class="container">
+    <div class="row">
+      <div class="col-3">
+        <img
+          src="./panna-cotta.png"
+          alt="restaurant profile pic"
+          class="restProfilePic"
+        />
+        <p class="my-4 lh-1">Restaurant name: </p>
+        <p class="my-4 lh-1">Description: </p>
+        <p class="my-4 lh-1">Address: </p>
+        <p class="my-4 lh-1">District: </p>
+        <p class="my-4 lh-1">Tel: </p>
+        <p class="my-4 lh-1">Opening hour: </p>
+        <p class="my-4 lh-1">Closing hour: </p>
+        <p class="my-4 lh-1">No of seat: </p>
+        <p class="my-4 lh-1">Delivery service: </p>
+      </div>
+
+      <div class="restMenu col-9">
+        <h4>Menu</h4>
+        <table class="table table-bordered">
+          <thead>
+            <tr class="text-center">
+              <th><a href="#" class="text-decoration-none">Soup n Salad</a></th>
+              <th><a href="#" class="text-decoration-none">Starter</a></th>
+              <th><a href="#" class="text-decoration-none">Main</a></th>
+              <th><a href="#" class="text-decoration-none">Dessert</a></th>
+              <th><a href="#" class="text-decoration-none">Drinks</a></th>
+              <th><a href="#" class="text-decoration-none">Others</a></th>
+            </tr>
+          </thead>
+        </table>
+
+        <div class="d-flex flex-wrap justify-content-start">
+          {{! #each dishes }}
+          <div class="card me-3 rest-dishes" style="max-width: 20rem;">
+            <img
+              src="./panna-cotta.png"
+              class="card-img-top mx-auto"
+              alt="dishes pic"
+            />
+            <div class="card-body">
+              <p class="card-text">Apple pie</p>
+              <p class="card-text">HKD 12.50</p>
+            </div>
+          </div>
+          {{! /each dishes }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<br />
+<br />

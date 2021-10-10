@@ -1,0 +1,15 @@
+.restBookingTitle {
+  font-family: "Bungee", cursive;
+  color: #ff6b62;
+}
+
+/* Restaurant booking & order table
+---------------------------------------------- */
+.restTable td {
+  max-width: 200px;
+}
+
+.restBooking {
+  background-color: #4b8494;
+  color: #fff;
+}

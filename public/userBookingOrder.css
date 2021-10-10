@@ -1,0 +1,79 @@
+/* user header 
+---------------------------------------------- */
+.userBooking-restName {
+  font-family: "Bungee", cursive;
+  color: #4b8494;
+}
+
+.userBooking-star i.fas {
+  color: #ffc46c;
+}
+
+.userBooking-bookmark i.far {
+  color: #4b8494;
+}
+
+/* User booking form 
+---------------------------------------------- */
+.userBookingForm {
+  background-color: #ff6b62;
+}
+
+.book,
+.order {
+  font-family: "Bungee", cursive;
+  color: #fff;
+}
+
+.userBookingForm-restName {
+  font-family: "Bungee", cursive;
+  color: #555;
+}
+
+.userBookingForm-hr {
+  border: 2px solid #4b8494;
+  opacity: 1;
+  max-width: 320px;
+}
+
+#userBookingForm {
+  color: #fff;
+}
+
+.btn-userSubmit {
+  font-family: "Bungee", cursive;
+  background-color: #fff;
+  color: #ff6b62;
+  padding: 5px 10px;
+}
+
+/* Restaurant menu
+---------------------------------------------- */
+.user-restMenu h4 {
+  font-family: "Bungee", cursive;
+  color: #4b8494;
+}
+
+.user-restMenu table {
+  border: 3px solid #4b8494;
+}
+
+.user-restMenu a {
+  color: #4b8494;
+}
+
+/* Each dishes
+---------------------------------------------- */
+.user-dishes img {
+  width: 180px;
+  height: 180px;
+}
+
+/* For userOrder
+---------------------------------------------- */
+.btn-userAddToCart {
+  font-family: "Bungee", cursive;
+  background-color: #4b8494;
+  color: #fff;
+  padding: 5px 10px;
+}
