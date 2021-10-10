@@ -1,0 +1,148 @@
+#user-page {
+  background-color: #ff6b62;
+  min-height: 100vh;
+  font-family: "Fredoka One", cursive;
+}
+
+#user-login-signup {
+  background-color: #ffffff;
+  min-height: 60vh;
+  max-width: 60vw;
+}
+
+#user-logo,
+#rest-logo {
+  margin-top: -50px;
+}
+
+#user-title {
+  font-family: "Bungee", cursive;
+  color: #ffffff;
+  font-size: 80px;
+  /* text-align: center; */
+  letter-spacing: -6px;
+  -webkit-text-stroke: 6px #ff6b62;
+}
+
+h2 {
+  font-family: "Bungee", cursive;
+  color: #333333;
+}
+
+.btn-dark {
+  background-color: #ff6b62;
+  border: 3px solid #ff6b62;
+  height: 60px;
+  font-size: 20px;
+}
+
+.btn-dark:hover {
+  background-color: #ffffff;
+  border-color: #ff6b62;
+  color: #ff6b62;
+}
+
+.btn-primary {
+  background-color: #ff6b62;
+  border: 3px solid #ff6b62;
+  height: 105px;
+  font-size: 20px;
+}
+
+.btn-primary:hover {
+  background-color: #ffffff;
+  border-color: #ff6b62;
+  color: #ff6b62;
+}
+
+.btn-info {
+  background-color: #ffffff;
+  border: 3px solid #ff6b62;
+  height: 105px;
+  font-size: 20px;
+  color: #ff6b62;
+}
+
+.btn-info:hover {
+  background-color: #ff6b62;
+  border-color: #ff6b62;
+  color: #ffffff;
+}
+
+p,
+label {
+  font-family: "Fredoka One", cursive;
+  color: #555555;
+  font-size: 20px;
+}
+
+input {
+  width: 100%;
+  color: #555555;
+}
+
+#to-business-login {
+  color: #555555;
+}
+
+#to-business-login:hover {
+  color: #ff6b62;
+}
+
+/*********** Rest-side login ************/
+#rest-page {
+  background-color: #4b8494;
+  min-height: 100vh;
+  font-family: "Fredoka One", cursive;
+}
+
+#rest-login-signup {
+  background-color: #ffffff;
+  min-height: 50vh;
+  max-width: 40vw;
+}
+
+#rest-title {
+  font-family: "Bungee", cursive;
+  color: #ffffff;
+  font-size: 80px;
+  /* text-align: center; */
+  letter-spacing: -6px;
+  -webkit-text-stroke: 6px #4b8494;
+}
+
+/* Rest-page buttons */
+.btn-success {
+  background-color: #4b8494;
+  border: 3px solid #4b8494;
+  height: 105px;
+  font-size: 20px;
+}
+
+.btn-success:hover {
+  background-color: #ffffff;
+  border-color: #4b8494;
+  color: #4b8494;
+}
+
+.btn-danger {
+  background-color: #4b8494;
+  border: 3px solid #4b8494;
+  height: 50px;
+  font-size: 20px;
+  color: #ffffff;
+}
+
+.btn-danger:hover {
+  background-color: #ffffff;
+  border-color: #4b8494;
+  color: #4b8494;
+}
+
+#to-user-login {
+  color: #555555;
+}
+
+#to-user-login:hover {
+  color: #4b8494;
+}

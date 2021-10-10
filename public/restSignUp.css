@@ -1,0 +1,16 @@
+.restSignUpTitle {
+  font-family: "Bungee", cursive;
+  color: #ff6b62;
+}
+
+.btn-restTag {
+  background-color: #ff6b62;
+  color: #fff;
+  padding: 5px 30px;
+}
+
+.btn-restGo {
+  background-color: #ff6b62;
+  color: #fff;
+  padding: 5px 80px;
+}

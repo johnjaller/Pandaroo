@@ -1,0 +1,37 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Fredoka One", cursive;
+  color: #555;
+}
+
+/* User header 
+---------------------------------------------- */
+.userLogo {
+  font-family: "Bungee", cursive;
+  font-size: 2.5rem;
+  color: #fff;
+  -webkit-text-stroke: 4px #ff6b62;
+  letter-spacing: -4px;
+}
+
+.userLogo:hover {
+  color: #4b8494;
+  -webkit-text-stroke: 4px #fff;
+}
+
+.userNavbarIcon {
+  color: #ff6b62;
+}
+
+.btn-userlogout {
+  font-family: "Bungee", cursive;
+  font-size: 1rem;
+  background-color: #ff6b62;
+  color: #fff;
+  padding: 8px 15px;
+}

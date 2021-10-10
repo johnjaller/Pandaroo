@@ -1,0 +1,41 @@
+<div class="container">
+  <h2 class="my-4 restBookingTitle">Current Orders</h2>
+  <div class="table-responsive">
+    <table
+      class="table align-middle table-bordered table-hover text-center restTable"
+    >
+      <thead>
+        <tr class="restBooking">
+          <th>Order</th>
+          <th>Order time</th>
+          <th>Dishes</th>
+          <th>Total amount</th>
+          <th>Special request</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{! #each order }}
+        <tr>
+          <td>1</td>
+          <td>10 Oct 2021 12:00pm</td>
+          <td>Salad</td>
+          <td>HKD 10.00</td>
+          <td></td>
+          <td>
+            <select id="orderStatus" class="form-select">
+              <option selected></option>
+              <option value="1">Preparing</option>
+              <option value="2">Ready</option>
+              <option value="3">Delivered</option>
+            </select>
+          </td>
+        </tr>
+        {{! /each order }}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<br />
+<br />

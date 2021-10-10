@@ -1,0 +1,32 @@
+/* Restaurant set menu 
+---------------------------------------------- */
+.restSetMenuTitle {
+  font-family: "Bungee", cursive;
+  color: #ff6b62;
+}
+
+/* Restaurant set menu form 
+---------------------------------------------- */
+.restSetMenuForm {
+  background-color: #4b8494;
+  color: #fff;
+}
+
+.addMenu {
+  font-family: "Bungee", cursive;
+}
+
+.btn-restAdd {
+  font-family: "Bungee", cursive;
+  background-color: #4b8494;
+  color: #fff;
+  border: 3px solid #fff;
+  padding: 5px 10px;
+}
+
+.btn-restSubmit {
+  font-family: "Bungee", cursive;
+  background-color: #ff6b62;
+  color: #fff;
+  padding: 5px 10px;
+}
