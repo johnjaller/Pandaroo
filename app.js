@@ -16,11 +16,12 @@ const handlebars = require("express-handlebars");
 app.engine("handlebars", handlebars({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
-//route
-// app.get("/", (req, res) => {
-//   res.render("Hello World");
-// });
+route;
+app.get("/", (req, res) => {
+  res.render("Hello World");
+});
 
+// Sher: Temporary route set up for testing sign in page
 app.get("/login", (req, res) => {
   res.render("user-login");
 });
