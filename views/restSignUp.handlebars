@@ -1,0 +1,283 @@
+<form class="restSignUpForm" action="/" method="POST">
+  <div class="container">
+    <div class="d-flex justify-content-center">
+      <div class="col-4"></div>
+      {{! Upload restaurant profile pic }}
+      <div class="col-4">
+        <h2 class="restSignUpTitle">Sign Up</h2>
+        <img id="photo" src="#" alt="" />
+        <br />
+        <label for="formFile" class="form-label">Please choose your restaurant
+          profile picture</label>
+        <input
+          class="form-control"
+          type="file"
+          id="formFile"
+          onchange="readURL(this);"
+        />
+      </div>
+
+      {{! Local Credentials }}
+      <div class="col-4 ms-3 mt-5">
+        <h4 class="restSignUpTitle">Local Credentials</h4>
+        <div class="mb-2">
+          <label for="restEmail" class="form-label">Email</label>
+          <input type="email" class="form-control" id="restEmail" />
+        </div>
+        <div class="mb-2">
+          <label for="restPassword" class="form-label">Password</label>
+          <input type="password" class="form-control" id="restPassword" />
+        </div>
+      </div>
+      <div class="col-4"></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="d-flex justify-content-center">
+      <div class="col-4"></div>
+      {{! Restaurant information }}
+      <div class="col-4 mt-4">
+        <h4 class="restSignUpTitle">Information</h4>
+        {{! Restaurant name }}
+        <div class="mb-2">
+          <label for="restName" class="form-label">Restaurant name</label>
+          <input type="text" class="form-control" id="restName" />
+        </div>
+        {{! Restaurant phone and district }}
+        <div class="d-flex">
+          <div class="mb-2 me-1">
+            <label for="restPhone" class="form-label">Phone</label>
+            <input type="number" class="form-control" id="restPhone" />
+          </div>
+          <div class="mb-2">
+            <label for="restDistrict" class="form-label">District</label>
+            <select class="form-select" id="restDistrict">
+              <option selected></option>
+              <option value="1">Central and Western</option>
+              <option value="2">Eastern</option>
+              <option value="3">Southern</option>
+              <option value="4">Wai Chai</option>
+              <option value="5">Kowloon City</option>
+              <option value="6">Kwun Tong</option>
+              <option value="7">Sham Shui Po</option>
+              <option value="8">Wong Tai Sin</option>
+              <option value="9">Yau Tsim Mong</option>
+              <option value="10">Tsuen Wan</option>
+              <option value="11">Kwai Tsing</option>
+              <option value="12">Shatin</option>
+              <option value="13">North</option>
+              <option value="14">Tai Po</option>
+              <option value="15">Tuen Mun</option>
+              <option value="16">Yuen Long</option>
+              <option value="17">Sai Kung</option>
+              <option value="18">Islands</option>
+            </select>
+          </div>
+        </div>
+
+        {{! Restaurant address }}
+        <div class="mb-2 me-1">
+          <label for="restAddress" class="form-label">Address</label>
+          <input type="text" class="form-control" id="restAddress" />
+        </div>
+
+        {{! Restaurant opening and closing time }}
+        <div class="d-flex">
+          <div class="mb-2 me-1">
+            <label for="restOpening" class="form-label">Opening time</label>
+            <input
+              type="time"
+              class="form-control"
+              id="restOpening"
+              style="width: 212px;"
+            />
+          </div>
+          <div class="mb-2">
+            <label for="restClosing" class="form-label">Closing time</label>
+            <input
+              type="time"
+              class="form-control"
+              id="restClosing"
+              style="width: 212px;"
+            />
+          </div>
+        </div>
+
+        {{! Restaurant seats and delivery service }}
+        <div class="d-flex">
+          <div class="mb-2 me-1">
+            <label for="restSeat" class="form-label">No of seats</label>
+            <input type="number" class="form-control" id="restSeat" />
+          </div>
+          <div class="mb-2">
+            <label for="restDelivery" class="form-label">Delivery service</label>
+            <select class="form-select" id="restDelivery" style="width: 212px;">
+              <option value="1" selected>No</option>
+              <option value="2">Yes</option>
+            </select>
+          </div>
+        </div>
+
+        {{! Restaurant discount }}
+        <div class="d-flex">
+          <div class="mb-2 me-1">
+            <label for="restDiscountCode" class="form-label">Discount code</label>
+            <input type="text" class="form-control" id="restDiscountCode" />
+          </div>
+          <div class="mb-2">
+            <label for="restDiscount" class="form-label">Discount</label>
+            <select class="form-select" id="restDiscount" style="width: 212px;">
+              <option selected></option>
+              <option value="1">10%</option>
+              <option value="2">20%</option>
+              <option value="3">30%</option>
+              <option value="4">40%</option>
+              <option value="5">50%</option>
+              <option value="6">60%</option>
+              <option value="7">70%</option>
+              <option value="8">80%</option>
+              <option value="9">90%</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {{! Restaurant introduction }}
+      <div class="col-4 ms-3 mt-4">
+        <h4 class="restSignUpTitle">About</h4>
+        <div class="mb-3">
+          <div class="form-floating">
+            <textarea
+              class="form-control"
+              placeholder="Leave a comment here"
+              id="floatingTextarea2"
+              style="height: 250px"
+            ></textarea>
+            <label for="floatingTextarea2">Brief introduction of your restaurant</label>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="tags" class="form-label">Tags</label><br />
+          <div class="dropdown">
+            <button
+              class="border-0 rounded btn-restTag dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton1"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Features of your restaurant
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="hongKongStyle"
+                  value="hongKongStyle"
+                />
+                <label class="form-check-label" for="hongKongStyle">Hong Kong
+                  Style</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="chinese"
+                  value="chinese"
+                />
+                <label class="form-check-label" for="chinese">Chinese</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="taiwanese"
+                  value="taiwanese"
+                />
+                <label
+                  class="form-check-label"
+                  for="taiwanese"
+                >Taiwanese</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="japanese"
+                  value="japanese"
+                />
+                <label class="form-check-label" for="japanese">Japanese</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="korean"
+                  value="korean"
+                />
+                <label class="form-check-label" for="korean">Korean</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="western"
+                  value="western"
+                />
+                <label class="form-check-label" for="western">Western</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="petFriendly"
+                  value="petFriendly"
+                />
+                <label
+                  class="form-check-label"
+                  for="petFriendly"
+                >Pet-friendly</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="liveBroadcast"
+                  value="liveBroadcast"
+                />
+                <label class="form-check-label" for="liveBroadcast">Live Sports
+                  Broadcast</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="parking"
+                  value="parking"
+                />
+                <label class="form-check-label" for="parking">Parking</label>
+              </div>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-4"></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        <a href="#"><button
+            type="submit"
+            class="mt-2 border-0 rounded btn-restGo"
+          >Go ></button></a>
+      </div>
+    </div>
+  </div>
+</form>
+
+<br />
+<br />

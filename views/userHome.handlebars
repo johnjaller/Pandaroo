@@ -1,0 +1,32 @@
+<form class="d-flex justify-content-center mb-5">
+  <input
+    class="form-control me-2 userSearch"
+    type="search"
+    placeholder="Search restaurant name"
+    aria-label="Search"
+  />
+  <button type="submit" class="border-0 rounded btn-userSearch">GO ></button>
+</form>
+
+<div class="d-flex flex-wrap justify-content-center">
+  {{! #Each restaurant }}
+  <a href="#" class="text-decoration-none">
+    <div
+      class="card mx-4 mb-4 border border-top-0 border-start-0 border-3 rounded-2 userRestCard"
+      style="width: 20rem;"
+    >
+      <img
+        src={{rest.photo_path}}
+        class="card-img-top mx-auto"
+        alt="Restaurant profile pic"
+      />
+      <div class="card-body">
+        <p class="card-text text-center userRestCardTitle">{{rest.name}}</p>
+      </div>
+    </div>
+  </a>
+  {{! /each restaurant }}
+</div>
+
+<br />
+<br />

@@ -1,0 +1,43 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Fredoka One", cursive;
+  color: #555;
+}
+
+/* User header 
+---------------------------------------------- */
+.restLogo {
+  font-family: "Bungee", cursive;
+  font-size: 2.5rem;
+  color: #fff;
+  -webkit-text-stroke: 4px #4b8494;
+  letter-spacing: -4px;
+}
+
+.restLogo:hover {
+  color: #4b8494;
+  -webkit-text-stroke: 4px #fff;
+}
+
+.restNavbarTitle {
+  font-family: "Bungee", cursive;
+  color: #4b8494;
+  font-size: 1.25rem;
+}
+
+.restNavbarIcon {
+  color: #4b8494;
+}
+
+.btn-restLogout {
+  font-family: "Bungee", cursive;
+  font-size: 1rem;
+  background-color: #4b8494;
+  color: #fff;
+  padding: 8px 15px;
+}

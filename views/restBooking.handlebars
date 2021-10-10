@@ -1,0 +1,43 @@
+<div class="container">
+  <h2 class="my-4 restBookingTitle">Current Bookings</h2>
+  <div class="table-responsive">
+    <table
+      class="table align-middle table-bordered table-hover text-center restTable"
+    >
+      <thead>
+        <tr class="restBooking">
+          <th>Booking</th>
+          <th>First name</th>
+          <th>Last name</th>
+          <th>No of guest</th>
+          <th>Booking date</th>
+          <th>Booking time</th>
+          <th>Special request</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{! #each booking }}
+        <tr>
+          <td>1</td>
+          <td>World</td>
+          <td>Hello</td>
+          <td>2</td>
+          <td>10 Oct 2021</td>
+          <td>12:00pm</td>
+          <td>Window seat, have children</td>
+          <td>
+            <select id="bookingStatus" class="form-select">
+              <option selected></option>
+              <option value="1">Confirmed</option>
+            </select>
+          </td>
+        </tr>
+        {{! /each booking }}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<br />
+<br />

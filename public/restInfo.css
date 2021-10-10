@@ -1,0 +1,32 @@
+/* Restaurant information
+---------------------------------------------- */
+.restProfilePic {
+  width: 300px;
+  height: 200px;
+}
+.restInfoTitle {
+  font-family: "Bungee", cursive;
+  color: #4b8494;
+}
+
+/* Restaurant menu
+---------------------------------------------- */
+.restMenu h4 {
+  font-family: "Bungee", cursive;
+  color: #ff6b62;
+}
+
+.restMenu table {
+  border: 3px solid #ff6b62;
+}
+
+.restMenu a {
+  color: #ff6b62;
+}
+
+/* Each dishes
+---------------------------------------------- */
+.rest-dishes img {
+  width: 280px;
+  height: 180px;
+}

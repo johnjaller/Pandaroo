@@ -1,0 +1,42 @@
+/* User information
+---------------------------------------------- */
+.userInfoTitle {
+  font-family: "Bungee", cursive;
+  color: #4b8494;
+}
+
+.userInfoContent {
+  font-size: 1.15rem;
+}
+
+/* User info button
+---------------------------------------------- */
+.btn-user {
+  font-family: "Bungee", cursive;
+  font-size: 1.25rem;
+  color: #4b8494;
+  border: 5px solid #ff6b62;
+}
+
+/* User info - Booking, Order, Bookmark
+---------------------------------------------- */
+.userBooking,
+.userOrder,
+.userBookmark {
+  border: 5px solid #555;
+  margin-top: 2vh;
+}
+
+.rest-profile-pic img {
+  width: 130px;
+  height: 130px;
+}
+
+.btn-userStatus,
+.btn-userCancel {
+  font-family: "Bungee", cursive;
+  font-size: 1rem;
+  background-color: #ff6b62;
+  color: #fff;
+  padding: 5px 20px;
+}

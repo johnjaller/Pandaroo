@@ -1,0 +1,112 @@
+<section>
+  <div class="container">
+    <div class="row">
+      <div class="col-3">
+        <h2 class="mt-5 userInfoTitle">Your<br />Information</h2>
+        <p class="my-4 userInfoContent">First name: </p>
+        <p class="my-4 userInfoContent">Last name: </p>
+        <p class="my-4 userInfoContent">Email: </p>
+        <p class="my-4 userInfoContent">Address: </p>
+        <p class="my-4 userInfoContent">Tel: </p>
+      </div>
+      <div class="col-9">
+        <div>
+          <a href=""><button
+              type="button"
+              class="me-3 py-2 px-4 rounded bg-white btn-user"
+            >My Booking</button></a>
+          <a href=""><button
+              type="button"
+              class="me-3 py-2 px-4 rounded bg-white btn-user"
+            >My Order</button></a>
+          <a href=""><button
+              type="button"
+              class="me-3 py-2 px-4 rounded bg-white btn-user"
+            >My Bookmark</button></a>
+        </div>
+
+        {{! #User booking }}
+        <div class="userBooking rounded">
+          <div class="container">
+            <div class="row d-flex justify-content-center align-items-center">
+              <div class="col-2 rest-profile-pic">
+                <img src="./panna-cotta.png" alt="restaurant profile pic" />
+              </div>
+              <div class="col-8 align-self-center">
+                <p>ABC restaurant</p>
+                <p><i class="fas fa-map-marker-alt userNavbarIcon"></i>&nbsp;ABC
+                  building, Tsim Sha Tsui, Kowloon, Hong Kong
+                </p>
+                <p>2 guests</p>
+                <p>08 Oct 2021&nbsp;&nbsp;&nbsp;12:00pm</p>
+              </div>
+              <div class="col-2">
+                <button
+                  type="button"
+                  class="border-0 rounded my-3 btn-userStatus"
+                >Status</button>
+                <button
+                  type="button"
+                  class="border-0 rounded my-3 btn-userCancel"
+                >Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{! /User booking }}
+
+        {{! #User order }}
+        <div class="userOrder rounded">
+          <div class="container">
+            <div class="row d-flex justify-content-center align-items-center">
+              <div class="col-2 rest-profile-pic">
+                <img src="./panna-cotta.png" alt="restaurant profile pic" />
+              </div>
+              <div class="col-8">
+                <p>ABC restaurant</p>
+                <p><i class="fas fa-map-marker-alt userNavbarIcon"></i>&nbsp;ABC
+                  building, Tsim Sha Tsui, Kowloon, Hong Kong
+                </p>
+                <p>Order details</p>
+              </div>
+              <div class="col-2">
+                <button
+                  type="button"
+                  class="border-0 rounded my-3 btn-userStatus"
+                >Status</button>
+                <button
+                  type="button"
+                  class="border-0 rounded my-3 btn-userCancel"
+                >Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{! /user order }}
+
+        {{! #User bookmark }}
+        <div class="userBookmark rounded">
+          <div class="container">
+            <div class="row d-flex justify-content-center align-items-center">
+              <div class="col-2 rest-profile-pic">
+                <img src="./panna-cotta.png" alt="restaurant profile pic" />
+              </div>
+              <div class="col-10">
+                <p>ABC restaurant</p>
+                <p><i class="fas fa-map-marker-alt userNavbarIcon"></i>&nbsp;ABC
+                  building, Tsim Sha Tsui, Kowloon, Hong Kong
+                </p>
+                <p>Tag</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{! /user Bookmark }}
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<br />
+<br />
