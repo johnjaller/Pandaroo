@@ -1,3 +1,4 @@
+// For preview photo
 function readURL(input) {
   if (input.files && input.files[0]) {
     let reader = new FileReader();
