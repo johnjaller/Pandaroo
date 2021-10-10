@@ -16,7 +16,6 @@ const handlebars = require("express-handlebars");
 app.engine("handlebars", handlebars({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
-route;
 app.get("/", (req, res) => {
   res.render("Hello World");
 });
