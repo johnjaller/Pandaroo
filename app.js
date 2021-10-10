@@ -5,20 +5,29 @@ const app = express();
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
 
-//middleware
-app.use(cors());
-app.use(express.static("public"));
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+// Set up passport authentication
+const passport = require("./passport/passport");
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Set up handlebars
 const handlebars = require("express-handlebars");
 app.engine("handlebars", handlebars({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
-app.get("/", (req, res) => {
-  res.render("Hello World");
-});
+// Set up router
+const UserRouter = require("./router/userRouter");
+const userRouter = new UserRouter();
+
+//middleware
+app.use(cors());
+app.use(express.static("public"));
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
+// app.get("/", (req, res) => {
+//   res.render("Hello World");
+// });
 
 // Sher: Temporary route set up for testing sign in page
 app.get("/login", (req, res) => {
@@ -29,6 +38,9 @@ app.get("/loginbiz", (req, res) => {
   res.render("rest-login");
 });
 
+app.use("/secret", userRouter.router());
+
+// Set up port
 http.listen(8080, () => {
   console.log("app listening to port 8080");
 });
