@@ -30,6 +30,17 @@ body {
   font-size: 1.25rem;
 }
 
+#navbarDropdown {
+  font-family: "Bungee", cursive;
+  color: #4b8494;
+  font-size: 1.25rem;
+}
+
+.dropdown-item {
+  font-family: "Bungee", cursive;
+  color: #4b8494;
+}
+
 .restNavbarIcon {
   color: #4b8494;
 }
