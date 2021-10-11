@@ -1,10 +1,23 @@
+const fs=require('fs')
+const options = {
+    cert: fs.readFileSync("./localhost.crt"),
+    key: fs.readFileSync("./localhost.key"),
+  };
+
 //import package
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const http = require("http").Server(app);
-const io = require("socket.io")(http);
+const https = require("https").Server(options,app);
+const io = require("socket.io")(https);
+const UserService=require('./service/userService')
+const UserRouter=require('./router/userRouter')
+//initialisation
 
+const knexConfig = require("./knexfile").development;
+const knex = require("knex")(knexConfig);
+const userService=new UserService(knex)
+const userRouter=new UserRouter(userService)
 //middleware
 app.use(cors());
 app.use(express.static("public"));
@@ -17,9 +30,10 @@ app.engine("handlebars", handlebars({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 // Route for users
-app.get("/user", (req, res) => {
-  res.render("userInfo", { layout: "user" });
-});
+app.use('/user',userRouter.route())
+// app.get("/user", (req, res) => {
+//   res.render("userInfo", { layout: "user" });
+// });
 
 app.get("/", (req, res) => {
   res.render("userHome", { layout: "user" });
@@ -73,9 +87,10 @@ app.get("/loginbiz", (req, res) => {
   res.render("rest-login");
 });
 
-http.listen(8080, () => {
-  console.log("app listening to port 8080");
-});
+  
+https.listen(8080, () => {
+    console.log("application listening to port 8080");
+  });
 
 module.exports = { app, http };
 
