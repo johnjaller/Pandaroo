@@ -60,7 +60,9 @@ app.get("/bookingshistory", (req, res) => {
 
 app.get("/ordershistory", (req, res) => {
   res.render("restOrderHistory", { layout: "restaurant" });
+
 });
+
 
 // Sher: Temporary route set up for testing sign in page
 app.get("/login", (req, res) => {
@@ -76,3 +78,4 @@ http.listen(8080, () => {
 });
 
 module.exports = { app, http };
+
