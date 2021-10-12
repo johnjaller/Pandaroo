@@ -7,6 +7,9 @@ const options = {
 //import package
 const express = require("express");
 const cors = require("cors");
+const passportFunction=require('./passport')
+const expressSession=require('express-session')
+const cookieParser=require('cookie-parser')
 const app = express();
 const https = require("https").Server(options,app);
 const io = require("socket.io")(https);
@@ -20,12 +23,18 @@ const userService=new UserService(knex)
 const userRouter=new UserRouter(userService)
 //middleware
 app.use(cors());
+app.use(cookieParser())
+app.use(expressSession({secret:'secret',resave:true,saveUninitialized:true}))
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(passportFunction.initialize());
+app.use(passportFunction.session());
 
 // Set up handlebars
-const handlebars = require("express-handlebars")
+const handlebars = require("express-handlebars");
+const { profile } = require('console');
+const { nextTick } = require('process');
 app.engine("handlebars", handlebars({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
@@ -34,9 +43,22 @@ app.use('/user',userRouter.route())
 // app.get("/user", (req, res) => {
 //   res.render("userInfo", { layout: "user" });
 // });
-
-app.get("/", (req, res) => {
-  res.render("userHome", { layout: "user" });
+function userLogIn(req,res,next)
+{
+    if(req.isAuthenticated())
+    {
+    console.log(req.cookies);
+    console.log(req.session.passport.user, "passport USER");
+    console.log(req.user, "USER");
+    return next()
+    }
+    else{
+        res.redirect('/login')
+    }
+}
+app.get("/", userLogIn);
+app.get("/", (req,res)=>{
+    res.render("userHome", { layout: "user" });
 });
 
 app.get("/userbooking", (req, res) => {
@@ -74,7 +96,9 @@ app.get("/bookingshistory", (req, res) => {
 
 app.get("/ordershistory", (req, res) => {
   res.render("restOrderHistory", { layout: "restaurant" });
-})
+
+});
+
 
 // Sher: Temporary route set up for testing sign in page
 app.get("/login", (req, res) => {
@@ -84,11 +108,17 @@ app.get("/login", (req, res) => {
 app.get("/loginbiz", (req, res) => {
   res.render("rest-login");
 });
+app.get('/auth/google',passportFunction.authenticate('google',{scope:['email','profile']}))
 
-
+app.get('/auth/google/callback',passportFunction.authenticate('google',{successRedirect:'/',failureRedirect:'/login'}))
   
+app.get("/logout", (req, res) => {
+    req.logout();
+    res.render("user-login");
+  });
 https.listen(8080, () => {
     console.log("application listening to port 8080");
   });
 
 module.exports={app,https}
+
