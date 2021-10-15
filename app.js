@@ -1,10 +1,14 @@
+const fs=require('fs')
+const options = {
+    cert: fs.readFileSync("./localhost.crt"),
+    key: fs.readFileSync("./localhost.key"),
+  };
+
 //import package
 const express = require("express");
 const app = express();
 const path = require("path");
-const http = require("http").Server(app);
 const cors = require("cors");
-const io = require("socket.io")(http);
 
 // Set up express session
 const session = require("express-session");
@@ -24,6 +28,22 @@ const isLoggedIn = (req, res, next) => {
   res.redirect("/bizsignup");
 };
 
+const https = require("https").Server(options,app);
+const io = require("socket.io")(https);
+const UserService=require('./service/userService')
+const UserRouter=require('./router/userRouter')
+//initialisation
+
+const knexConfig = require("./knexfile").development;
+const knex = require("knex")(knexConfig);
+const userService=new UserService(knex)
+const userRouter=new UserRouter(userService)
+//middleware
+app.use(cors());
+app.use(express.static("public"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 // Set up handlebars
 const handlebars = require("express-handlebars");
 app.engine("handlebars", handlebars({ defaultLayout: "main" }));
@@ -36,9 +56,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Route for users
-app.get("/user", (req, res) => {
-  res.render("userInfo", { layout: "user" });
-});
+app.use('/user',userRouter.route())
+// app.get("/user", (req, res) => {
+//   res.render("userInfo", { layout: "user" });
+// });
 
 app.get("/", isLoggedIn, (req, res) => {
   console.log("loading first page ");
@@ -122,8 +143,9 @@ app.post(
 );
 
 // Set up port
-http.listen(8080, () => {
-  console.log("app listening to port 8080");
-});
+https.listen(8080, () => {
+    console.log("application listening to port 8080");
+  });
 
 module.exports = { app, http };
+

@@ -2,30 +2,33 @@
   <div class="container">
     <div class="row">
       <div class="col-3">
+        {{#each info}}
         <h2 class="mt-5 userInfoTitle">Your<br />Information</h2>
-        <p class="my-4 userInfoContent">First name: </p>
-        <p class="my-4 userInfoContent">Last name: </p>
-        <p class="my-4 userInfoContent">Email: </p>
-        <p class="my-4 userInfoContent">Address: </p>
-        <p class="my-4 userInfoContent">Tel: </p>
+        <p class="my-4 userInfoContent">First name: {{this.firstname}}</p>
+        <p class="my-4 userInfoContent">Last name: {{this.surname}}</p>
+        <p class="my-4 userInfoContent">Email: {{this.username}}</p>
+        <p class="my-4 userInfoContent">Address: {{this.address}}</p>
+        <p class="my-4 userInfoContent">Tel: {{this.phone_no}}</p>
+        {{/each}}
       </div>
       <div class="col-9">
         <div>
-          <a href=""><button
+          <a href="/user"><button
               type="button"
               class="me-3 py-2 px-4 rounded bg-white btn-user"
             >My Booking</button></a>
-          <a href=""><button
+          <a href="/user/order"><button
               type="button"
               class="me-3 py-2 px-4 rounded bg-white btn-user"
             >My Order</button></a>
-          <a href=""><button
+          <a href="/user/bookmark"><button
               type="button"
               class="me-3 py-2 px-4 rounded bg-white btn-user"
             >My Bookmark</button></a>
         </div>
 
         {{! #User booking }}
+        {{#each booking}}
         <div class="userBooking rounded">
           <div class="container">
             <div class="row d-flex justify-content-center align-items-center">
@@ -33,29 +36,32 @@
                 <img src="/assets/panna-cotta.png" alt="restaurant profile pic" />
               </div>
               <div class="col-8 align-self-center">
-                <p>ABC restaurant</p>
-                <p><i class="fas fa-map-marker-alt userNavbarIcon"></i>&nbsp;ABC
-                  building, Tsim Sha Tsui, Kowloon, Hong Kong
+                <p>{{this.name}}</p>
+                <p><i class="fas fa-map-marker-alt userNavbarIcon"></i>&nbsp;
+                  {{this.address}}
                 </p>
-                <p>2 guests</p>
-                <p>08 Oct 2021&nbsp;&nbsp;&nbsp;12:00pm</p>
+                <p>{{this.no_of_ppl}} guests</p>
+                <p>{{this.booking_date}}&nbsp;&nbsp;&nbsp;{{this.booking_time}}</p>
               </div>
               <div class="col-2">
                 <button
                   type="button"
                   class="border-0 rounded my-3 btn-userStatus"
-                >Status</button>
+                >{{this.booking_status}}</button>
                 <button
                   type="button"
                   class="border-0 rounded my-3 btn-userCancel"
+                  id="{{this.id}}" data-bs-toggle="modal" data-bs-target="#exampleModal"
                 >Cancel</button>
               </div>
             </div>
           </div>
         </div>
+        {{/each}}
         {{! /User booking }}
 
         {{! #User order }}
+        {{#each order}}
         <div class="userOrder rounded">
           <div class="container">
             <div class="row d-flex justify-content-center align-items-center">
@@ -76,15 +82,17 @@
                 >Status</button>
                 <button
                   type="button"
-                  class="border-0 rounded my-3 btn-userCancel"
+                  class="border-0 rounded my-3 btn-userCancel" data-bs-toggle="modal" data-bs-target="#exampleModal"
                 >Cancel</button>
               </div>
             </div>
           </div>
         </div>
+        {{/each}}
         {{! /user order }}
 
         {{! #User bookmark }}
+        {{#each bookmark}}
         <div class="userBookmark rounded">
           <div class="container">
             <div class="row d-flex justify-content-center align-items-center">
@@ -101,12 +109,30 @@
             </div>
           </div>
         </div>
+        {{/each}}
         {{! /user Bookmark }}
 
       </div>
     </div>
   </div>
 </section>
-
+{{!-- delete modal --}}
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Cancel booking</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure to cancel the booking?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
 <br />
 <br />
