@@ -8,7 +8,7 @@ const options = {
 require('dotenv').config()
 const express = require("express");
 const cors = require("cors");
-const passportFunction=require('./passport')
+const passportFunction=require('./passport/passport.js')
 const expressSession=require('express-session')
 const cookieParser=require('cookie-parser')
 const app = express();
@@ -35,8 +35,6 @@ app.use(passportFunction.session());
 
 // Set up handlebars
 const handlebars = require("express-handlebars");
-const { profile } = require('console');
-const { nextTick } = require('process');
 app.engine("handlebars", handlebars({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
