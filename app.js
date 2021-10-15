@@ -19,6 +19,7 @@ app.use(session({ secret: "secret", resave: false, saveUninitialized: true }));
 const passportFunction = require("./passport/passport");
 app.use(passportFunction.initialize());
 app.use(passportFunction.session());
+
 // Middleware to check if the user is logged in
 const isLoggedIn = (req, res, next) => {
   if (req.isAuthenticated()) {
@@ -33,12 +34,13 @@ const https = require("https").Server(options, app);
 const io = require("socket.io")(https);
 const UserService = require("./service/userService");
 const UserRouter = require("./router/userRouter");
-//initialisation
 
+//initialisation
 const knexConfig = require("./knexfile").development;
 const knex = require("knex")(knexConfig);
 const userService = new UserService(knex);
 const userRouter = new UserRouter(userService);
+
 //middleware
 app.use(cors());
 app.use(express.static("public"));
@@ -50,15 +52,6 @@ const handlebars = require("express-handlebars");
 app.engine("handlebars", handlebars({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 const handlebarHelpers = require("./handlebars-helpers");
-
-// Session
-app.use(
-  expressSession({
-    secret: "secret",
-    resave: true,
-    saveUninitialized: true,
-  })
-);
 
 // Passport
 const passportFunctions = require("./passport/passport");
@@ -80,12 +73,6 @@ app.get(
   })
 );
 
-// Set up user service and router
-const UserService = require("./service/userService");
-const UserRouter = require("./router/userRouter");
-const userService = new UserService(knex);
-const userRouter = new UserRouter(userService);
-
 // Set up restaurant service and router
 const RestService = require("./service/restService");
 const RestRouter = require("./router/restRouter");
@@ -100,9 +87,6 @@ app.use(express.json());
 
 // Route for users
 app.use("/user", userRouter.route());
-// app.get("/user", (req, res) => {
-//   res.render("userInfo", { layout: "user" });
-// });
 
 app.get("/", isLoggedIn, (req, res) => {
   console.log("loading first page ");
@@ -141,7 +125,7 @@ app.get("/login", (req, res) => {
   res.render("userLogin");
 });
 
-app.get("/loginbiz", (req, res) => {
+app.get("/bizlogin", (req, res) => {
   res.render("restLogin");
 });
 
@@ -168,7 +152,7 @@ app.post(
 );
 
 app.post(
-  "/loginbiz",
+  "/bizlogin",
   passportFunction.authenticate("local-login", {
     successRedirect: "/info",
     failureRedirect: "/bizsignup",
@@ -180,4 +164,4 @@ https.listen(8080, () => {
   console.log("application listening to port 8080");
 });
 
-module.exports = { app, http };
+module.exports = { app, https };
