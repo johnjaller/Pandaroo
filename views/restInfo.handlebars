@@ -2,22 +2,23 @@
   <div class="container">
     <div class="row">
       <div class="col-3">
-        <img
-          src="./panna-cotta.png"
-          alt="restaurant profile pic"
-          class="restProfilePic"
-        />
-        <p class="my-4 lh-1">Restaurant name: </p>
-        <p class="my-4 lh-1">Description: </p>
-        <p class="my-4 lh-1">Address: </p>
-        <p class="my-4 lh-1">District: </p>
-        <p class="my-4 lh-1">Tel: </p>
-        <p class="my-4 lh-1">Opening hour: </p>
-        <p class="my-4 lh-1">Closing hour: </p>
-        <p class="my-4 lh-1">No of seat: </p>
-        <p class="my-4 lh-1">Delivery service: </p>
+        {{#each restInfo}}
+          <img
+            src={{this.profile_path}}
+            alt="restaurant profile pic"
+            class="restProfilePic"
+          />
+          <p class="my-4 lh-1">Restaurant name: {{this.name}}</p>
+          <p class="my-4 lh-1">Description: {{this.description}}</p>
+          <p class="my-4 lh-1">Address: {{this.address}}</p>
+          <p class="my-4 lh-1">District: {{this.district}}</p>
+          <p class="my-4 lh-1">Tel: {{this.phone_no}}</p>
+          <p class="my-4 lh-1">Opening hour: {{this.opening_time}}</p>
+          <p class="my-4 lh-1">Closing hour: {{this.closing_time}}</p>
+          <p class="my-4 lh-1">No of seat: {{this.seats}}</p>
+          <p class="my-4 lh-1">Delivery service: {{this.delivery}}</p>
+        {{/each}}
       </div>
-
       <div class="restMenu col-9">
         <h4>Menu</h4>
         <table class="table table-bordered">

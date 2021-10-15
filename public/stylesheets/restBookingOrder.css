@@ -13,3 +13,18 @@
   background-color: #4b8494;
   color: #fff;
 }
+
+/* Pagination
+---------------------------------------------- */
+.page-link {
+  color: #ff6b62;
+}
+
+.page-link:hover {
+  color: #4b8494;
+}
+
+.active > a {
+  background-color: #ff6b62;
+  color: #fff;
+}
