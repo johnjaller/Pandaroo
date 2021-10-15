@@ -1,32 +1,99 @@
-<form class="d-flex justify-content-center mb-5">
+<form class="d-flex justify-content-center mb-5" method="GET" target="/">
   <input
     class="form-control me-2 userSearch"
-    type="search"
+    type="search" name="q" value="{{queryString}}"
     placeholder="Search restaurant name"
     aria-label="Search"
   />
   <button type="submit" class="border-0 rounded btn-userSearch">GO ></button>
 </form>
-
+{{#each userInfo}}
+<h2>Welcome home, {{this.firstname}}</h2>
+<p>We have some recommendation for you at {{this.district}}</p>
+{{/each}}
+{{#each recommendation}}
+  <a href="/search/{{this.id}}" class="text-decoration-none">
+    <div
+      class="card mx-4 mb-4 border border-top-0 border-start-0 border-3 rounded-2 userRestCard"
+      style="width: 20rem;"
+    >
+    <p>{{this.id}}</p>
+      <img
+        src={{this.profile_path}}
+        class="card-img-top mx-auto"
+        alt="Restaurant profile pic"
+      />
+      <div class="card-body">
+        <p class="card-text text-center userRestCardTitle">{{this.name}}</p>
+        <p>Address: {{this.address}}</p>
+        <p>Tel: {{this.phone_no}}</p>
+        <p>Seats: {{this.seats}}</p>
+      </div>
+    </div>
+  </a>
+</div>
+{{/each}}
+<h2>{{result}}</h2>
 <div class="d-flex flex-wrap justify-content-center">
-  {{! #Each restaurant }}
-  <a href="#" class="text-decoration-none">
+{{#each feature}}
+  <a href="/search/{{this.id}}" class="text-decoration-none">
     <div
       class="card mx-4 mb-4 border border-top-0 border-start-0 border-3 rounded-2 userRestCard"
       style="width: 20rem;"
     >
       <img
-        src={{rest.photo_path}}
+        src={{this.profile_path}}
         class="card-img-top mx-auto"
         alt="Restaurant profile pic"
       />
       <div class="card-body">
-        <p class="card-text text-center userRestCardTitle">{{rest.name}}</p>
+        <p class="card-text text-center userRestCardTitle">{{this.name}}</p>
+        <p>Address: {{this.address}}</p>
+        <p>Tel: {{this.phone_no}}</p>
+        <p>Seats: {{this.seats}}</p>
       </div>
     </div>
   </a>
-  {{! /each restaurant }}
+  {{/each}}
 </div>
+<div class="d-flex flex-wrap justify-content-center">
+  {{! #Each restaurant }}
+  {{#each rest}}
+  <a href="/search/{{this.id}}" class="text-decoration-none">
+    <div
+      class="card mx-4 mb-4 border border-top-0 border-start-0 border-3 rounded-2 userRestCard"
+      style="width: 20rem;"
+    >
+      <img
+        src={{this.profile_path}}
+        class="card-img-top mx-auto"
+        alt="Restaurant profile pic"
+      />
+      <div class="card-body">
+        <p class="card-text text-center userRestCardTitle">{{this.name}}</p>
+        <p>Address: {{this.address}}</p>
+        <p>Tel: {{this.phone_no}}</p>
+        <p>Seats: {{this.seats}}</p>
+      </div>
+    </div>
+  </a>
+</div>
+  {{/each}}
+  {{#if tag}}
+  <div class="container">
+  <h2>Tag</h2>
+  <div class="row row-cols-3" style="height: 300px;">
+  {{#each tag}}
+  <a href="/tag/{{this.id}}">
+  <div class="col">
+    {{this.tag_name}}
+  </div>
+  </a>
+  {{/each}}
+  </div>
+  </div>
+  {{/if}}
+  {{! /each restaurant }}
 
 <br />
 <br />

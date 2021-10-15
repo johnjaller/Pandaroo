@@ -3,13 +3,14 @@
     <div class="row">
       <div class="col-3">
         {{#each info}}
-        <h2 class="mt-5 userInfoTitle">Your<br />Information</h2>
-        <p class="my-4 userInfoContent">First name: {{this.firstname}}</p>
-        <p class="my-4 userInfoContent">Last name: {{this.surname}}</p>
-        <p class="my-4 userInfoContent">Email: {{this.username}}</p>
-        <p class="my-4 userInfoContent">Address: {{this.address}}</p>
-        <p class="my-4 userInfoContent">Tel: {{this.phone_no}}</p>
+          <h2 class="mt-5 userInfoTitle">Your<br />Information</h2>
+          <p class="my-4 userInfoContent">First name:{{this.firstname}}</p>
+          <p class="my-4 userInfoContent">Last name: {{this.surname}}</p>
+          <p class="my-4 userInfoContent">Email: {{this.username}}</p>
+          <p class="my-4 userInfoContent">Address: {{this.address}}</p>
+          <p class="my-4 userInfoContent">Tel: {{this.phone_no}}</p>
         {{/each}}
+        <button class="btn-userlogout me-4 border-0 rounded" data-bs-toggle="modal" data-bs-target="#edit">Edit my profile</button>
       </div>
       <div class="col-9">
         <div>
@@ -51,12 +52,11 @@
                 <button
                   type="button"
                   class="border-0 rounded my-3 btn-userCancel"
-                  id="{{this.id}}" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                  id="{{this.id}}" data-bs-toggle="modal" data-bs-target="#delete"
                 >Cancel</button>
               </div>
             </div>
           </div>
-        </div>
         {{/each}}
         {{! /User booking }}
 
@@ -69,9 +69,8 @@
                 <img src="/assets/panna-cotta.png" alt="restaurant profile pic" />
               </div>
               <div class="col-8">
-                <p>ABC restaurant</p>
-                <p><i class="fas fa-map-marker-alt userNavbarIcon"></i>&nbsp;ABC
-                  building, Tsim Sha Tsui, Kowloon, Hong Kong
+                <p>{{this.name}}</p>
+                <p><i class="fas fa-map-marker-alt userNavbarIcon"></i>&nbsp;{{this.address}}
                 </p>
                 <p>Order details</p>
               </div>
@@ -82,57 +81,162 @@
                 >Status</button>
                 <button
                   type="button"
-                  class="border-0 rounded my-3 btn-userCancel" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                  class="border-0 rounded my-3 btn-userCancel" data-bs-toggle="modal" data-bs-target="#delete"
                 >Cancel</button>
               </div>
             </div>
           </div>
-        </div>
         {{/each}}
         {{! /user order }}
 
         {{! #User bookmark }}
         {{#each bookmark}}
-        <div class="userBookmark rounded">
-          <div class="container">
-            <div class="row d-flex justify-content-center align-items-center">
-              <div class="col-2 rest-profile-pic">
-                <img src="/assets/panna-cotta.png" alt="restaurant profile pic" />
-              </div>
-              <div class="col-10">
-                <p>ABC restaurant</p>
-                <p><i class="fas fa-map-marker-alt userNavbarIcon"></i>&nbsp;ABC
-                  building, Tsim Sha Tsui, Kowloon, Hong Kong
-                </p>
-                <p>Tag</p>
+          <div class="userBookmark rounded">
+            <div class="container">
+              <div class="row d-flex justify-content-center align-items-center">
+                <div class="col-2 rest-profile-pic">
+                  <img
+                    src="/assets/panna-cotta.png"
+                    alt="restaurant profile pic"
+                  />
+                </div>
+                <div class="col-10">
+                  <p>ABC restaurant</p>
+                  <p><i
+                      class="fas fa-map-marker-alt userNavbarIcon"
+                    ></i>&nbsp;ABC building, Tsim Sha Tsui, Kowloon, Hong Kong
+                  </p>
+                  <p>Tag</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
         {{/each}}
         {{! /user Bookmark }}
 
       </div>
     </div>
   </div>
+
+  <div
+    class="modal fade"
+    id="exampleModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Cancel booking</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          Are you sure to cancel the booking?
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >Close</button>
+          <button type="button" class="btn btn-danger">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </section>
+
+<br />
+<br />
 {{!-- delete modal --}}
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="delete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Cancel booking</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
         Are you sure to cancel the booking?
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >Close</button>
         <button type="button" class="btn btn-danger">Cancel</button>
       </div>
     </div>
   </div>
 </div>
-<br />
-<br />
+
+{{!-- edit profile --}}
+<div class="modal fade" id="edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit your info</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {{#each info}}
+        <label for="username">Email</label>
+        <br>
+        <input class="username" type="email" value="{{this.username}}">
+        <br>
+        <label for="firstname">First Name</label>
+        <br>
+        <input class="firstname" type="text" value="{{this.firstname}}">
+        <br>
+        <label for="surname">Surname</label>
+        <br>
+        <input class="surname" type="text" value="{{this.surname}}">
+         <br>
+        <label for="address">Address</label>
+        <br>
+        <input class="address" type="text" value="{{this.address}}">
+        <br>
+         <label for="userDistrict" class="form-label">District</label>
+            <select  class="form-select district" id="userDistrict">
+              <option value="{{this.district}}" selected hidden>{{this.district}}</option>
+              <option value="Central and Western">Central and Western</option>
+              <option value="Eastern">Eastern</option>
+              <option value="Southern">Southern</option>
+              <option value="Wai Chai">Wai Chai</option>
+              <option value="Kowloon City">Kowloon City</option>
+              <option value="Kwun Tong">Kwun Tong</option>
+              <option value="Sham Shui Po">Sham Shui Po</option>
+              <option value="Wong Tai Sin">Wong Tai Sin</option>
+              <option value="Yau Tsim Mong">Yau Tsim Mong</option>
+              <option value="Tsuen Wan">Tsuen Wan</option>
+              <option value="Kwai Tsing">Kwai Tsing</option>
+              <option value="Shatin">Shatin</option>
+              <option value="North">North</option>
+              <option value="Tai Po">Tai Po</option>
+              <option value="Tuen Mun">Tuen Mun</option>
+              <option value="Yuen Long">Yuen Long</option>
+              <option value="Sai Kung">Sai Kung</option>
+              <option value="Islands">Islands</option>
+            </select>
+        {{/each}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary userInfoSubmit">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>

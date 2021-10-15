@@ -17,27 +17,81 @@
         </tr>
       </thead>
       <tbody>
-        {{! #each booking }}
-        <tr>
-          <td>1</td>
-          <td>World</td>
-          <td>Hello</td>
-          <td>2</td>
-          <td>10 Oct 2021</td>
-          <td>12:00pm</td>
-          <td>Window seat, have children</td>
-          <td>
-            <select id="bookingStatus" class="form-select">
-              <option selected></option>
-              <option value="1">Confirmed</option>
-            </select>
-          </td>
-        </tr>
-        {{! /each booking }}
+        {{#each restBooking}}
+          <tr>
+            <td>{{this.id}}</td>
+            <td>{{this.firstname}}</td>
+            <td>{{this.surname}}</td>
+            <td>{{this.no_of_ppl}}</td>
+            <td>{{this.booking_date}}</td>
+            <td>{{this.booking_time}}</td>
+            <td>{{this.special_request}}</td>
+            <td>
+              <select id="bookingStatus" class="form-select">
+                <option selected></option>
+                <option value="1">Confirmed</option>
+                <option value="2">Completed</option>
+                <option value="3">Cancelled</option>
+              </select>
+            </td>
+          </tr>
+        {{/each}}
       </tbody>
     </table>
   </div>
 </div>
+
+<br />
+<br />
+
+{{! Pagination }}
+<nav aria-label="Page navigation">
+  <ul class="pagination d-flex justify-content-center fixed-bottom mt-3 mb-5">
+    {{#if hasLastPage}}
+      <li class="page-item">
+        <a
+          class="page-link"
+          href="/bookings?page={{lastPage}}"
+          aria-label="Previous"
+        >
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+    {{else}}
+      <li class="page-item disabled">
+        <a
+          class="page-link"
+          href="/bookings?page={{lastPage}}"
+          aria-label="Previous"
+        >
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+    {{/if}}
+    {{{createPageNumber type totalPage currentPage}}}
+    {{#if hasNextPage}}
+      <li class="page-item">
+        <a
+          class="page-link"
+          href="/bookings?page={{nextPage}}"
+          aria-label="Next"
+        >
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    {{else}}
+      <li class="page-item disabled">
+        <a
+          class="page-link"
+          href="/bookings?page={{nextPage}}"
+          aria-label="Next"
+        >
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    {{/if}}
+  </ul>
+</nav>
 
 <br />
 <br />

@@ -7,44 +7,66 @@ class UserRouter{
     route()
     {
         let router=express.Router()
-        router.get('/',this.get.bind(this))
+        router.get('/',this.getBooking.bind(this))
         router.get('/order',this.getOrder.bind(this))
+        router.get('/bookmark',this.getBookmark.bind(this))
+        router.put('/info',this.putUserInfo.bind(this))
         return router
     }
-    async get(req,res)
+    async getBooking(req,res)
     {
     try {
-        let userInfo= await this.userService.getUserInfo(1)
-        let userBooking=await this.userService.getUserBooking(1)
+        console.log(req.cookies)
+        console.log(req.user.id)
+        console.log(req.session)
+        let userInfo= await this.userService.getUserInfo(req.user.id||1)
+        let userBooking=await this.userService.getUserBooking(req.user.id)
         console.log(userBooking)
+        if(userBooking.length===1)
+        {
         let date=userBooking[0].booking_date.toDateString()
         userBooking[0].booking_date=date
+        }
         return res.render("userInfo", { layout: "user" ,
     info:userInfo,
     booking:userBooking
     })
     } catch (error) {
-        console.log(error)
+      console.log(error);
     }
-    
-    }
-    async getOrder(req,res)
-    {
+  }
+  async getOrder(req, res) {
     try {
-        let userInfo= await this.userService.getUserInfo(1)
-        let userBooking=await this.userService.getUserBooking(1)
-        console.log(userBooking)
-        let date=userBooking[0].booking_date.toDateString()
-        userBooking[0].booking_date=date
+        let userInfo= await this.userService.getUserInfo(req.user.id||1)
+        let userOrder=await this.userService.getUserOrder(req.user.id||1)
+        console.log(userOrder)
         return res.render("userInfo", { layout: "user" ,
     info:userInfo,
-    booking:userBooking
+    order:userOrder
     })
     } catch (error) {
-        console.log(error)
-    }
-    
+      console.log(error);
     }
 }
+    async getBookmark(req,res)
+    {
+    try {
+        let userInfo= await this.userService.getUserInfo(req.user.id||1)
+        let userBookmark=await this.userService.getUserBookmark(req.user.id||1)
+        return res.render("userInfo", { layout: "user" ,
+    info:userInfo,
+    bookmark:userBookmark
+    })
+    } catch (error) {
+        console.log(error)
+    }
+}
+     putUserInfo(req,res)
+    {
+        console.log(req.body)
+    }
+    
+    
+}
 
-module.exports=UserRouter
+module.exports = UserRouter;
