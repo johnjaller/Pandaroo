@@ -32,12 +32,10 @@ class UserRouter{
     booking:userBooking
     })
     } catch (error) {
-        console.log(error)
+      console.log(error);
     }
-    
-    }
-    async getOrder(req,res)
-    {
+  }
+  async getOrder(req, res) {
     try {
         let userInfo= await this.userService.getUserInfo(req.user.id||1)
         let userOrder=await this.userService.getUserOrder(req.user.id||1)
@@ -47,10 +45,9 @@ class UserRouter{
     order:userOrder
     })
     } catch (error) {
-        console.log(error)
+      console.log(error);
     }
-    
-    }
+}
     async getBookmark(req,res)
     {
     try {
@@ -72,4 +69,4 @@ class UserRouter{
     
 }
 
-module.exports=UserRouter
+module.exports = UserRouter;

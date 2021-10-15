@@ -1,45 +1,87 @@
-const fs=require('fs')
+const fs = require("fs");
 const options = {
-    cert: fs.readFileSync("./localhost.crt"),
-    key: fs.readFileSync("./localhost.key"),
-  };
+  cert: fs.readFileSync("./localhost.crt"),
+  key: fs.readFileSync("./localhost.key"),
+};
 
 //import package
 require('dotenv').config()
 const express = require("express");
 const cors = require("cors");
-const passportFunction=require('./passport/passport.js')
-const expressSession=require('express-session')
-const cookieParser=require('cookie-parser')
+const path = require("path")
 const app = express();
 const stripePayment=require('./stripe/stripePayment.js')
-const https = require("https").Server(options,app);
+
+// Set up express session
+const session = require("express-session");
+app.use(session({ secret: "secret", resave: false, saveUninitialized: true }));
+
+// Set up passport authentication
+const passportFunction = require("./passport/passport");
+app.use(passportFunction.initialize());
+app.use(passportFunction.session());
+app.use(cors())
+app.use(express.json())
+app.use(express.static('public'))
+app.use(express.urlencoded({extended:false}))
+// Middleware to check if the user is logged in
+const isLoggedIn = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    console.log(req.user, "USER");
+    return next();
+  }
+  console.log("failed");
+  res.redirect("/bizsignup");
+};
+
+const https = require("https").Server(options, app);
 const io = require("socket.io")(https);
-const UserService=require('./service/userService')
-const UserRouter=require('./router/userRouter')
 //initialisation
 
 const knexConfig = require("./knexfile").development;
 const knex = require("knex")(knexConfig);
-const userService=new UserService(knex)
-const userRouter=new UserRouter(userService)
 //middleware
-app.use(cors());
-app.use(cookieParser())
-app.use(expressSession({secret:'secret',resave:true,saveUninitialized:true}))
-app.use(express.static("public"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(passportFunction.initialize());
-app.use(passportFunction.session());
+
 
 // Set up handlebars
 const handlebars = require("express-handlebars");
 app.engine("handlebars", handlebars({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
+const handlebarHelpers = require("./handlebars-helpers");
+
+
+
+
+app.get(
+  "/auth/facebook",
+  passportFunction.authenticate("facebook", {
+    scope: ["email", "public_profile"],
+  })
+);
+
+app.get(
+  "/auth/facebook/callback",
+  passportFunction.authenticate("facebook", {
+    successRedirect: "/",
+    failureRedirect: "/error",
+  })
+);
+
+// Set up user service and router
+const UserService = require("./service/userService");
+const UserRouter = require("./router/userRouter");
+const userService = new UserService(knex);
+const userRouter = new UserRouter(userService);
+
+// Set up restaurant service and router
+const RestService = require("./service/restService");
+const RestRouter = require("./router/restRouter");
+const restService = new RestService(knex);
+const restRouter = new RestRouter(restService);
+
 
 // Route for users
-app.use('/user',userRouter.route())
+app.use("/user", userRouter.route());
 // app.get("/user", (req, res) => {
 //   res.render("userInfo", { layout: "user" });
 // });
@@ -105,10 +147,6 @@ app.get('/search/:restID',(req,res)=>{
     }).catch((e)=> console.log(e))
 })
 
-app.get('/test/:testing', (req, res)=>{
-  console.log(req.params.testing)
-  res.send('tested')
-})
 
 app.post('/search/:id',(req,res)=>{
     return knex('bookmark').insert({account_id:req.user.id,rest_id:req.params.id}).then(()=>{
@@ -129,21 +167,11 @@ app.get("/bizsetupmenu", (req, res) => {
   res.render("restSetUpMenu", { layout: "restaurant" });
 });
 
-app.get("/info", (req, res) => {
-  res.render("restInfo", { layout: "restaurant" });
-});
+app.get("/info", restRouter.router());
 
-app.get("/bookings", (req, res) => {
-  res.render("restBooking", { layout: "restaurant" });
-});
+app.get("/bookings", restRouter.router());
 
-app.get("/orders", (req, res) => {
-  res.render("restOrder", { layout: "restaurant" });
-});
-
-app.get("/bookingshistory", (req, res) => {
-  res.render("restBookingHistory", { layout: "restaurant" });
-});
+app.get("/orders", restRouter.router());
 
 app.get("/ordershistory", (req, res) => {
   res.render("restOrderHistory", { layout: "restaurant" });
@@ -161,13 +189,17 @@ app.post('/checkout',stripePayment);
   app.get('/cancel',(req,res)=>{
     res.render('paymentFailed',{layout:'user',})
 })
+app.get("/bookingshistory", restRouter.router());
+
+app.get("/ordershistory", restRouter.router());
+
 // Sher: Temporary route set up for testing sign in page
 app.get("/login", (req, res) => {
-  res.render("user-login");
+  res.render("userLogin");
 });
 
-app.get("/loginbiz", (req, res) => {
-  res.render("rest-login");
+app.get("/bizlogin", (req, res) => {
+  res.render("restLogin");
 });
 app.get('/auth/google',passportFunction.authenticate('google',{scope:['email','profile']}))
 
@@ -175,11 +207,42 @@ app.get('/auth/google/callback',passportFunction.authenticate('google',{successR
   
 app.get("/logout", (req, res) => {
     req.logout();
-    res.render("user-login");
+    res.render("userLogin");
   });
+// app.get("/logout", (req, res) => {
+//   req.logout();
+//   res.render("/login");
+// });
+
+// Sher: Post route for testing local strategy
+app.post(
+  "/login",
+  passportFunction.authenticate("local-login", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+  })
+);
+
+app.post(
+  "/signup",
+  passportFunction.authenticate("local-signup", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+  })
+);
+
+app.post(
+  "/bizlogin",
+  passportFunction.authenticate("local-login", {
+    successRedirect: "/info",
+    failureRedirect: "/bizsignup",
+  })
+);
+
+// Set up port
 https.listen(8080, () => {
-    console.log("application listening to port 8080");
-  });
+  console.log("application listening to port 8080");
+});
 
 module.exports={app,https}
 

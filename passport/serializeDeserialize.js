@@ -1,32 +1,25 @@
-const userQueries=require('../database/userQueries.js')
-function serializeUser(user, done) {
-    console.log(
-      "Serialize: Passport generates token, puts it in cookie and sends to browser:",
-      user
-    );
-  
-    return done(null, user);
-  }
+const userQueries = require("../database/userQueries");
 
-  function deserializeUser(user, done) {
-    console.log(user, "<<< from serialise ");
-    console.log(
-      "Deserialize: server will take token from your browser, and run this function to check if user exists"
-    );
-    userQueries
-      .getidByid(user.id)
-      .then((users) => {
-        if (users.length === 0) {
-          return done(null, false);
-        }
-        done(null, users[0]);
-      })
-      .catch((err) => {
-        console.log("DESERIALSE FAIL");
-        done(err, false);
-      });
-  }
-  module.exports = {
-    serializeUser: serializeUser,
-    deserializeUser: deserializeUser,
-  };
+function serializeUser(user, done) {
+  console.log("Serialize:", user);
+  return done(null, user);
+}
+
+function deserializeUser(id, done) {
+  userQueries
+    .getById(id.id)
+    .then((users) => {
+      if (users.length === 0) {
+        return done(null, false);
+      }
+      done(null, users[0]);
+    })
+    .catch((error) => {
+      console.log("Fail to deserialize");
+      done(error, false);
+    });
+}
+module.exports = {
+  serializeUser: serializeUser,
+  deserializeUser: deserializeUser,
+};

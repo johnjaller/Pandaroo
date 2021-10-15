@@ -24,5 +24,4 @@ class UserService{
         return this.knex('tag').select('tag_name','id')
     }
 }
-module.exports=UserService
-
+module.exports = UserService;

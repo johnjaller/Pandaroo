@@ -1,28 +1,150 @@
-
-exports.seed = function(knex) {
+exports.seed = function (knex) {
   // Deletes ALL existing entries
-  return knex('menu').del()
+  return knex("menu")
+    .del()
     .then(function () {
       // Inserts seed entries
-      return knex('menu').insert([
-        {item:'iced lemon tea',rest_id:1,price:10,category:'beverage'},
-        {item:'iced milk tea',rest_id:1,price:10,category:'beverage'},
-        {item:'hot coffee',rest_id:1,price:10,category:'beverage'},
-        {item:'vegetarian chicken',rest_id:1,price:55,category:'food'},
-        {item:'tofu',rest_id:1,price:55,category:'food'},
-        {item:'vegetarian pork',rest_id:1,price:55,category:'food'},
-        {item:'sake',rest_id:2,price:10,category:'beverage'},
-        {item:'Ramune',rest_id:2,price:10,category:'beverage'},
-        {item:'hot coffee',rest_id:2,price:10,category:'beverage'},
-        {item:'Salmon sushi',rest_id:2,price:15,category:'food'},
-        {item:'tamago sushi',rest_id:2,price:15,category:'food'},
-        {item:'sashimi sets',rest_id:2,price:65,category:'food'},
-        {item:'iced lemon tea',rest_id:3,price:15,category:'beverage'},
-        {item:'coccola',rest_id:3,price:20,category:'beverage'},
-        {item:'iced coffee',rest_id:3,price:15,category:'beverage'},
-        {item:'Very raw steak',rest_id:3,price:85,category:'food'},
-        {item:'frozen chicken breast',rest_id:3,price:75,category:'food'},
-        {item:'unchewable garlic bread',rest_id:3,price:75,category:'food'},
+      return knex("menu").insert([
+        {
+          item: "Pear and blue cheese salad",
+          rest_id: 1,
+          price: 60,
+          category: "soup n salad",
+        },
+        {
+          item: "Classic wedge salad",
+          rest_id: 1,
+          price: 50,
+          category: "soup n salad",
+        },
+        {
+          item: "Avocado cucumber salad",
+          rest_id: 1,
+          price: 30,
+          category: "soup n salad",
+        },
+        { item: "Mushroom soup", rest_id: 1, price: 40, category: "starter" },
+        {
+          item: "Courgette fries with spicy chilli mayonnasie",
+          rest_id: 1,
+          price: 55,
+          category: "starter",
+        },
+        {
+          item: "Greek courgette and feta frittata",
+          rest_id: 1,
+          price: 45,
+          category: "starter",
+        },
+        {
+          item: "Vegetarian chicken",
+          rest_id: 1,
+          price: 110,
+          category: "main",
+        },
+        {
+          item: "Vegetarian wellington",
+          rest_id: 1,
+          price: 80,
+          category: "main",
+        },
+        {
+          item: "Mushroom buckwheat risotto",
+          rest_id: 1,
+          price: 95,
+          category: "main",
+        },
+        {
+          item: "Sticky toffee pear pudding",
+          rest_id: 1,
+          price: 55,
+          category: "desserts",
+        },
+        {
+          item: "orange & rhubarb amaretti pots",
+          rest_id: 1,
+          price: 50,
+          category: "desserts",
+        },
+        {
+          item: "Lemon cheesecake",
+          rest_id: 1,
+          price: 50,
+          category: "desserts",
+        },
+        { item: "Iced tea", rest_id: 1, price: 30, category: "drinks" },
+        { item: "Orange juice", rest_id: 1, price: 30, category: "drinks" },
+        { item: "Apple juice", rest_id: 1, price: 30, category: "drinks" },
+        { item: "nuts", rest_id: 1, price: 5, category: "others" },
+        {
+          item: "Salad with wafu dressing",
+          rest_id: 2,
+          price: 20,
+          category: "soup n salad",
+        },
+        {
+          item: "Japanese potato salad",
+          rest_id: 2,
+          price: 30,
+          category: "soup n salad",
+        },
+        {
+          item: "Japanese kani salad",
+          rest_id: 2,
+          price: 40,
+          category: "soup n salad",
+        },
+        { item: "Chicken wings", rest_id: 2, price: 30, category: "starter" },
+        {
+          item: "Vegetable tempura",
+          rest_id: 2,
+          price: 40,
+          category: "starter",
+        },
+        { item: "Gyoza", rest_id: 2, price: 20, category: "starter" },
+        { item: "Salmon sushi", rest_id: 2, price: 15, category: "main" },
+        { item: "Sashimi sets", rest_id: 2, price: 65, category: "main" },
+        { item: "Tamago sushi", rest_id: 2, price: 15, category: "main" },
+        { item: "Lemon pie", rest_id: 2, price: 60, category: "desserts" },
+        { item: "Wagashi", rest_id: 2, price: 50, category: "desserts" },
+        { item: "Crepes", rest_id: 2, price: 50, category: "desserts" },
+        { item: "Iced coffee", rest_id: 2, price: 20, category: "drinks" },
+        { item: "Green tea", rest_id: 2, price: 18, category: "drinks" },
+        { item: "Sake", rest_id: 2, price: 40, category: "drinks" },
+        {
+          item: "Creamy chicken mushroom soup",
+          rest_id: 3,
+          price: 20,
+          category: "soup n salad",
+        },
+        { item: "Taco soup", rest_id: 3, price: 30, category: "soup n salad" },
+        { item: "Pumpkin", rest_id: 3, price: 25, category: "soup n salad" },
+        {
+          item: "Frozen chicken breast",
+          rest_id: 3,
+          price: 75,
+          category: "starter",
+        },
+        {
+          item: "Unchewable garlic bread",
+          rest_id: 3,
+          price: 75,
+          category: "starter",
+        },
+        { item: "Steak", rest_id: 3, price: 85, category: "main" },
+        { item: "Roasted pork", rest_id: 3, price: 75, category: "main" },
+        { item: "Fried fish", rest_id: 3, price: 65, category: "main" },
+        { item: "Ginger pudding", rest_id: 3, price: 30, category: "desserts" },
+        { item: "Apple crumbie", rest_id: 3, price: 30, category: "desserts" },
+        {
+          item: "Mango cheesecake",
+          rest_id: 3,
+          price: 30,
+          category: "desserts",
+        },
+        { item: "Iced lemon tea", rest_id: 3, price: 15, category: "drinks" },
+        { item: "Coca cola", rest_id: 3, price: 20, category: "drinks" },
+        { item: "Iced coffee", rest_id: 3, price: 15, category: "drinks" },
       ]);
     });
 };
