@@ -20,15 +20,24 @@
             >LOG IN VIA FACEBOOK</button></a><br />
         </div>
         <p class="text-center py-3 my-0 pe-4">- or -</p>
-        <form class="row d-flex g-0">
+        <form
+          id="user-login-form"
+          method="POST"
+          action="/login"
+          class="row d-flex g-0"
+        >
           <div class="col-8">
             <div class="mb-3">
               <label name="email">E-mail</label><br />
-              <input type="email" class="border-3 rounded-2" />
+              <input type="email" name="username" class="border-3 rounded-2" />
             </div>
             <div class="mb-3">
               <label name="password">Password</label><br />
-              <input type="password" class="border-3 rounded-2" />
+              <input
+                type="password"
+                name="password"
+                class="border-3 rounded-2"
+              />
             </div>
           </div>
           <div
@@ -43,27 +52,36 @@
         id="signup"
       >
         <h2>SIGN UP</h2><br />
-        <form class="row d-flex g-0 pt-2">
+        <form
+          id="user-signup-form"
+          method="POST"
+          action="/signup"
+          class="row d-flex g-0 pt-2"
+        >
           <div class="col-8">
             <div class="mb-2">
               <label name="fname">First name</label>
-              <input type="fname" class="border-3 rounded-2" />
+              <input type="fname" name="fname" class="border-3 rounded-2" />
             </div>
             <div class="mb-2">
               <label name="lname">Last name</label>
-              <input type="lname" class="border-3 rounded-2" />
+              <input type="lname" name="lname" class="border-3 rounded-2" />
             </div>
             <div class="mb-2">
               <label name="phone">Phone</label>
-              <input type="phone" class="border-3 rounded-2" />
+              <input type="phone" name="phone" class="border-3 rounded-2" />
             </div>
             <div class="mb-2">
               <label name="email">E-mail</label>
-              <input type="email" class="border-3 rounded-2" />
+              <input type="email" name="username" class="border-3 rounded-2" />
             </div>
             <div class="mb-2">
               <label name="password">Password</label>
-              <input type="password" class="border-3 rounded-2" />
+              <input
+                type="password"
+                name="password"
+                class="border-3 rounded-2"
+              />
             </div>
           </div>
           <div

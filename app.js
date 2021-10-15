@@ -1,24 +1,45 @@
-// Enable HTTPS in express server
 const fs = require("fs");
 const options = {
   cert: fs.readFileSync("./localhost.crt"),
   key: fs.readFileSync("./localhost.key"),
 };
 
-// Node packages
+//import package
 require("dotenv").config();
 const express = require("express");
 const app = express();
+const path = require("path");
 const cors = require("cors");
-const expressSession = require("express-session");
+
+// Set up express session
+const session = require("express-session");
+app.use(session({ secret: "secret", resave: false, saveUninitialized: true }));
+
+// Set up passport authentication
+const passportFunction = require("./passport/passport");
+app.use(passportFunction.initialize());
+app.use(passportFunction.session());
+// Middleware to check if the user is logged in
+const isLoggedIn = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    console.log(req.user, "USER");
+    return next();
+  }
+  console.log("failed");
+  res.redirect("/bizsignup");
+};
+
 const https = require("https").Server(options, app);
 const io = require("socket.io")(https);
+const UserService = require("./service/userService");
+const UserRouter = require("./router/userRouter");
+//initialisation
 
-// Set up knex
 const knexConfig = require("./knexfile").development;
 const knex = require("knex")(knexConfig);
-
-// Set up public folder and middleware
+const userService = new UserService(knex);
+const userRouter = new UserRouter(userService);
+//middleware
 app.use(cors());
 app.use(express.static("public"));
 app.use(express.json());
@@ -71,13 +92,20 @@ const RestRouter = require("./router/restRouter");
 const restService = new RestService(knex);
 const restRouter = new RestRouter(restService);
 
+//middleware
+app.use(cors());
+app.use(express.static(path.join(__dirname, path.sep, "public")));
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
 // Route for users
 app.use("/user", userRouter.route());
 // app.get("/user", (req, res) => {
 //   res.render("userInfo", { layout: "user" });
 // });
 
-app.get("/", (req, res) => {
+app.get("/", isLoggedIn, (req, res) => {
+  console.log("loading first page ");
   res.render("userHome", { layout: "user" });
 });
 
@@ -110,15 +138,46 @@ app.get("/ordershistory", restRouter.router());
 
 // Sher: Temporary route set up for testing sign in page
 app.get("/login", (req, res) => {
-  res.render("user-login");
+  res.render("userLogin");
 });
 
 app.get("/loginbiz", (req, res) => {
-  res.render("rest-login");
+  res.render("restLogin");
 });
 
+// app.get("/logout", (req, res) => {
+//   req.logout();
+//   res.render("/login");
+// });
+
+// Sher: Post route for testing local strategy
+app.post(
+  "/login",
+  passportFunction.authenticate("local-login", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+  })
+);
+
+app.post(
+  "/signup",
+  passportFunction.authenticate("local-signup", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+  })
+);
+
+app.post(
+  "/loginbiz",
+  passportFunction.authenticate("local-login", {
+    successRedirect: "/info",
+    failureRedirect: "/bizsignup",
+  })
+);
+
+// Set up port
 https.listen(8080, () => {
   console.log("application listening to port 8080");
 });
 
-module.exports = { app, https };
+module.exports = { app, http };

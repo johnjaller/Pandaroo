@@ -104,7 +104,10 @@
             <div class="container">
               <div class="row d-flex justify-content-center align-items-center">
                 <div class="col-2 rest-profile-pic">
-                  <img src="./panna-cotta.png" alt="restaurant profile pic" />
+                  <img
+                    src="/assets/panna-cotta.png"
+                    alt="restaurant profile pic"
+                  />
                 </div>
                 <div class="col-10">
                   <p>ABC restaurant</p>
@@ -160,6 +163,38 @@
 </section>
 
 {{! delete modal }}
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Cancel booking</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        Are you sure to cancel the booking?
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >Close</button>
+        <button type="button" class="btn btn-danger">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <br />
 <br />
