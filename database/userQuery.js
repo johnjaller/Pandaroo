@@ -8,8 +8,8 @@ function postGmail(email,gmailID,givenName,familyName)
 {
 return knex(user).insert({username:email,gmail_id:gmailID,firstname:givenName,surname:familyName}).returning('id')
 }
-function getidByid(id)
+function getidByid(userId)
 {
-    return knex(user).select().where('id',id)
+    return knex(user).select().where('id',userId)
 }
 module.exports={getGmailById,postGmail,getidByid}

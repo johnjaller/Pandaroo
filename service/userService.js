@@ -5,7 +5,7 @@ class UserService{
     }
     getUserInfo(userId)
     {
-        return this.knex.select('firstname','surname','username','address','phone_no').from('account').where('id',userId)
+        return this.knex.select('firstname','surname','username','address','phone_no','district').from('account').where('id',userId)
     }
     getUserBooking(userId)
     {
@@ -18,6 +18,10 @@ class UserService{
     getUserBookmark(userId)
     {
         return this.knex('bookmark').join('account','account_id','account.id').join('restaurant','rest_id','restaurant.id').select('restaurant.name','restaurant.address','opening_time','closing_time').where({account_id:userId})
+    }
+    getRestTag()
+    {
+        return this.knex('tag').select('tag_name','id')
     }
 }
 module.exports=UserService

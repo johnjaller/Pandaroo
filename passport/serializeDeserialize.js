@@ -8,13 +8,13 @@ function serializeUser(user, done) {
     return done(null, user);
   }
 
-  function deserializeUser(id, done) {
-    console.log(id, "<<< from serialise ");
+  function deserializeUser(user, done) {
+    console.log(user, "<<< from serialise ");
     console.log(
       "Deserialize: server will take token from your browser, and run this function to check if user exists"
     );
     userQuery
-      .getidByid(id.id)
+      .getidByid(user.id)
       .then((users) => {
         if (users.length === 0) {
           return done(null, false);

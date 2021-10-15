@@ -5,12 +5,14 @@ const options = {
   };
 
 //import package
+require('dotenv').config()
 const express = require("express");
 const cors = require("cors");
 const passportFunction=require('./passport')
 const expressSession=require('express-session')
 const cookieParser=require('cookie-parser')
 const app = express();
+const stripePayment=require('./stripe/stripePayment.js')
 const https = require("https").Server(options,app);
 const io = require("socket.io")(https);
 const UserService=require('./service/userService')
@@ -57,13 +59,64 @@ function userLogIn(req,res,next)
     }
 }
 app.get("/", userLogIn);
-app.get("/", (req,res)=>{
-    res.render("userHome", { layout: "user" });
+app.get("/", async(req,res)=>{
+    if(req.query.q===undefined)
+    {
+        let restTag=await userService.getRestTag()
+        let user= await knex('account').select('district','firstname').where('id',req.user.id)
+        console.log(user[0].district)
+        let featuredRest=await knex('restaurant').select()
+        let locationRecommendation
+        if(user[0].district!=undefined)
+        {
+        locationRecommendation= await knex('restaurant').select().where('district',user[0].district)
+        }else{
+        locationRecommendation=[]
+        }
+
+        console.log(locationRecommendation, 'loaded info')
+    res.render("userHome", { layout: "user",userInfo:user,recommendation:locationRecommendation,feature:featuredRest,result:'Featured',tag: restTag});
+    }else{
+        console.log(req.query.q,"this is a query")
+        let query=req.query.q.split(" ").join("|")
+        let queryResult= await knex('restaurant').select().join('tag_rest_join','restaurant.id','tag_rest_join.rest_id').join('tag','tag.id','tag_rest_join.tag_id').where(knex.raw( `to_tsvector(concat_ws(' ',name,address,district,description,tag.tag_name)::text) @@ to_tsquery('${query}:*')`))
+        console.log(queryResult)
+        res.render('userHome',{layout:'user',
+        result:'Search result:',
+        queryString:req.query.q,
+        rest:queryResult
+    })
+    }
 });
+
+
 
 app.get("/userbooking", (req, res) => {
   res.render("userBooking", { layout: "user" });
 });
+
+app.get('/search/:restID',(req,res)=>{
+
+  // console.log(req, 'REQUEST!!!!<><><><>')
+
+    console.log(req.params.restID, 'rest id how many times?')
+
+    return knex('restaurant').select().where({'id':req.params.restID}).then((data)=>{
+        console.log(data)
+        return res.render('userOrder',{layout:'user',})
+    }).catch((e)=> console.log(e))
+})
+
+app.get('/test/:testing', (req, res)=>{
+  console.log(req.params.testing)
+  res.send('tested')
+})
+
+app.post('/search/:id',(req,res)=>{
+    return knex('bookmark').insert({account_id:req.user.id,rest_id:req.params.id}).then(()=>{
+        res.send('success')
+    }).catch((e)=> console.log(e))
+})
 
 app.get("/userorder", (req, res) => {
   res.render("userOrder", { layout: "user" });
@@ -98,8 +151,18 @@ app.get("/ordershistory", (req, res) => {
   res.render("restOrderHistory", { layout: "restaurant" });
 
 });
+//stripe checkout test route
+app.get('/checkout',(req,res)=>{
+    res.render('checkout',{layout:'user'})
+})
 
-
+app.post('/checkout',stripePayment);
+  app.get('/success',(req,res)=>{
+      res.render('paymentSuccess',{layout:'user',})
+  })
+  app.get('/cancel',(req,res)=>{
+    res.render('paymentFailed',{layout:'user',})
+})
 // Sher: Temporary route set up for testing sign in page
 app.get("/login", (req, res) => {
   res.render("user-login");
