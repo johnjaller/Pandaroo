@@ -8,22 +8,21 @@ const io = require("socket.io")(http);
 
 // Set up express session
 const session = require("express-session");
-app.use(session({ secret: "secret", resave: true, saveUninitialized: true }));
+app.use(session({ secret: "secret", resave: false, saveUninitialized: true }));
 
 // Set up passport authentication
 const passportFunction = require("./passport/passport");
 app.use(passportFunction.initialize());
 app.use(passportFunction.session());
 // Middleware to check if the user is logged in
-// const isLoggedIn = (req, res, next) => {
-//   if (req.isAuthenticated()) {
-//     console.log(req.cookies);
-//     console.log(req.session.passport.user, "passport USER");
-//     console.log(req.user, "USER");
-//     return next();
-//   }
-//   res.redirect("/login");
-// };
+const isLoggedIn = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    console.log(req.user, "USER");
+    return next();
+  }
+  console.log("failed");
+  res.redirect("/bizsignup");
+};
 
 // Set up handlebars
 const handlebars = require("express-handlebars");
@@ -41,7 +40,8 @@ app.get("/user", (req, res) => {
   res.render("userInfo", { layout: "user" });
 });
 
-app.get("/", (req, res) => {
+app.get("/", isLoggedIn, (req, res) => {
+  console.log("loading first page ");
   res.render("userHome", { layout: "user" });
 });
 
@@ -90,6 +90,36 @@ app.get("/login", (req, res) => {
 app.get("/loginbiz", (req, res) => {
   res.render("restLogin");
 });
+
+// app.get("/logout", (req, res) => {
+//   req.logout();
+//   res.render("/login");
+// });
+
+// Sher: Post route for testing local strategy
+app.post(
+  "/login",
+  passportFunction.authenticate("local-login", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+  })
+);
+
+app.post(
+  "/signup",
+  passportFunction.authenticate("local-signup", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+  })
+);
+
+app.post(
+  "/loginbiz",
+  passportFunction.authenticate("local-login", {
+    successRedirect: "/info",
+    failureRedirect: "/bizsignup",
+  })
+);
 
 // Set up port
 http.listen(8080, () => {

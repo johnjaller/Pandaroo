@@ -14,14 +14,13 @@ module.exports = new LocalStrategy(async (username, password, done) => {
     // Return false if user doesnt exist
     if (matchedUser.length == 0 && matchedRest.length == 0) {
       console.log("User does not exist!");
-      return done(null, false);
+      return done(null, false, { message: "User does not exist" });
     }
 
     // Check password for a non-business user
     if (matchedUser.length > 0 && matchedRest.length == 0) {
       let user = matchedUser[0];
-      console.log(`User: ${user}`);
-      console.log(`Password: ${user.password}`);
+      console.log(user);
 
       let result = await hashFunction.checkPassowrd(password, user.password);
       console.log(`Result of checkPassword: ${result}`);
@@ -31,12 +30,12 @@ module.exports = new LocalStrategy(async (username, password, done) => {
         return done(null, user);
       } else {
         console.log("Wrong password");
-        return done(null, false);
+        return done(null, false, { message: "Incorrect password" });
       }
     }
 
     // Check password for a business user
-    else if (matchedUser.length == 0 && matchedRest.length > 0) {
+    if (matchedUser.length == 0 && matchedRest.length > 0) {
       let rest = matchedRest[0];
       console.log(`Restaurant: ${rest}`);
       console.log(`Password: ${rest.password}`);
@@ -53,41 +52,11 @@ module.exports = new LocalStrategy(async (username, password, done) => {
       }
     }
 
-    // Throw error if username appears in both table
+    // Return if error occur in server side
     else {
-      throw new Error("Error: Repetitive user");
+      return done(err);
     }
   } catch (err) {
     throw new Error(err);
   }
 });
-
-// Auth check for just user table
-/*
-  try {
-    // Check if the user exist
-    let matchedUser = await knex("account").where({ username: email });
-    // Return false if user doesnt exist
-    if (matchedUser.length == 0) {
-      console.log("User does not exist!");
-      return done(null, false);
-    }
-    // Check if the password is correct
-    let user = matchedUsers[0];
-    console.log(`User: ${user}`);
-    console.log(`Password: ${user.password}`);
-
-    let result = await hashFunction.checkPassowrd(password, user.password);
-    console.log(`Result of checkPassword: ${result}`);
-
-    if (result) {
-      console.log("Successfully logged in!");
-      return done(null, user);
-    } else {
-      console.log("Wrong password");
-      return done(null, false);
-    }
-  } catch (err) {
-    throw new Error(err);
-  }
-  */

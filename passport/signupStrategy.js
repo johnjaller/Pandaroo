@@ -5,13 +5,15 @@ const LocalStrategy = require("passport-local").Strategy;
 
 module.exports = new LocalStrategy(async (username, password, done) => {
   console.log("Signing up");
-  console.log("E-mail: ", email);
+  console.log("E-mail: ", username);
   console.log("Password", password);
 
   try {
     // Check if the user already exist
     let matchedUser = await knex("account").where({ username: username });
-    let matchedRest = await knex("restaurant").where({ username: username });
+    let matchedRest = await knex("restaurant").where({
+      username: username,
+    });
 
     if (matchedUser.length > 0 || matchedRest.length > 0) {
       console.log("User already exist.");
@@ -22,17 +24,22 @@ module.exports = new LocalStrategy(async (username, password, done) => {
     let hashedPassword = await hashFunction.hashPassword(password);
     let newUser = {
       username: username,
+      // firstname: data.fname,
+      // surname: data.lname,
       password: hashedPassword,
+      // phone_no: data.phone,
     };
-    console.log(`New user: ${newUser}`);
 
     // Insert new user / restaurant into database correspondingly
     if (username.includes("@")) {
-      await knex("account").insert(newUser);
+      // get user id and update the newuser object
+      let userID = await knex("account").insert(newUser).returning("id");
+      newUser.id = userID[0];
       console.log("New user: ", newUser);
       done(null, newUser);
     } else {
-      await knex("restaurant").insert(newUser);
+      let restID = await knex("restaurant").insert(newUser).returning("id");
+      newUser.id = restID[0];
       console.log("New restaurant: ", newUser);
       done(null, newUser);
     }

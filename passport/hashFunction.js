@@ -4,7 +4,7 @@ const hashPassword = async (plainTextPassword) => {
   try {
     let salt = await bcrypt.genSalt();
     let hash = await bcrypt.hash(plainTextPassword, salt);
-    console.log(hash);
+    console.log(`Hashed password: ${hash}`);
     return hash;
   } catch (err) {
     throw new Error(err);
