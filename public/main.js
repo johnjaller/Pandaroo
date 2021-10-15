@@ -11,19 +11,19 @@ function readURL(input) {
 }
 
 
-$(document).on('click',".userInfoSubmit",()=>{
-  let username=$('.username').val()
-  let firstname=$('.firstname').val()
-  let surname=$('.surname').val()
-  let address=$('.address').val()
-  let district=$('.district').val()
-  $.ajax({
-    type: "PUT",
-    url: "/user/info",
-    data: {'username':username,'firstname':firstname,'surname':surname,'address':address,'district':district},
-    dataType: "json",
-    success: function (response) {
+// $(document).on('click',".userInfoSubmit",()=>{
+//   let username=$('.username').val()
+//   let firstname=$('.firstname').val()
+//   let surname=$('.surname').val()
+//   let address=$('.address').val()
+//   let district=$('.district').val()
+//   $.ajax({
+//     type: "PUT",
+//     url: "/user/info",
+//     data: {'username':username,'firstname':firstname,'surname':surname,'address':address,'district':district},
+//     dataType: "json",
+//     success: function (response) {
       
-    }
-  });
-})
+//     }
+//   });
+// })
