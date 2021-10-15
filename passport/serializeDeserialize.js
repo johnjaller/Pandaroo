@@ -1,4 +1,4 @@
-const userQuery=require('../database/userQuery')
+const userQueries=require('../database/userQueries.js')
 function serializeUser(user, done) {
     console.log(
       "Serialize: Passport generates token, puts it in cookie and sends to browser:",
@@ -13,7 +13,7 @@ function serializeUser(user, done) {
     console.log(
       "Deserialize: server will take token from your browser, and run this function to check if user exists"
     );
-    userQuery
+    userQueries
       .getidByid(user.id)
       .then((users) => {
         if (users.length === 0) {

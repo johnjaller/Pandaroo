@@ -1,5 +1,5 @@
 const GoogleStrategy=require("passport-google-oauth").OAuth2Strategy
-const userQuery=require('../database/userQuery.js')
+const userQueries=require('../database/userQueries.js')
 const googleConfig = {
     clientID: process.env.GOOGLE_ID,
     clientSecret: process.env.GOOGLE_SECRET,
@@ -9,10 +9,10 @@ function googleCallback(accessToken,refreshToken,profile,done)
 {
     console.log(profile)
  const user={username:profile.emails[0].value}
-    userQuery.getGmailById(profile.id).then((queryData)=>{
+    userQueries.getGmailById(profile.id).then((queryData)=>{
         if(queryData.length===0)
         {
-        userQuery.postGmail(user.username,profile.id,profile.name.givenName,profile.name.familyName).then((id)=>{
+        userQueries.postGmail(user.username,profile.id,profile.name.givenName,profile.name.familyName).then((id)=>{
             user.id=id
             console.log(user)
             return done(null,user)
