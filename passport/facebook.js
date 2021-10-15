@@ -23,7 +23,7 @@ function facebookCallback(accessToken, refreshToken, profile, done) {
       if (queryRow.length === 0) {
         console.log("Create new user");
         return userQueries
-          .postFacebook(profile.displayName, profile.id)
+          .postFacebook(profile.emails[0].value, profile.id,profile.name.givenName,profile.name.familyName)
           .then((newId) => {
             user.id = newId[0];
             console.log("User facebook added");

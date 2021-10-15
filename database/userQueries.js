@@ -14,11 +14,11 @@ function getByFacebookId(facebookId) {
   return knex("account").where("facebook_id", facebookId);
 }
 
-function postFacebook(username, facebookId) {
+function postFacebook(username, facebookId,givenName,familyName) {
   return knex("account")
     .insert({
       username: username,
-      facebook_id: facebookId,
+      facebook_id: facebookId,firstname:givenName,surname:familyName
     })
     .returning("id");
 }
