@@ -14,6 +14,7 @@ class RestRouter {
     router.get("/bookingshistory", this.getBookingHistory.bind(this));
     router.get("/ordershistory", this.getOrderHistory.bind(this));
     router.get("/bizsetup", this.getRestSetUp.bind(this));
+    router.get("/setupmenu", this.getSetUpMenu.bind(this));
     router.put("/bizsetup", this.putRestInfo.bind(this));
 
     return router;
@@ -182,15 +183,19 @@ class RestRouter {
 
   async getRestSetUp(req, res) {
     return res.render("restSetUp", {
-      layout: "restaurantSimple",
+      layout: "restaurant",
+    });
+  }
+
+  async getSetUpMenu(req, res) {
+    return res.render("restSetUpMenu", {
+      layout: "restaurant",
     });
   }
 
   // Update restaurant info
   async putRestInfo(req, res) {
     console.log("restRouter req.user.id: ", req.user.id);
-    console.log("restRouter req.body", req.body);
-    console.log("restRoter req.file", req.file);
 
     console.log("restRouter: Updating restaurant info");
     await this.restService.updateRestInfo(req.user.id, req.body);

@@ -78,7 +78,7 @@ $("#userSetUpForm").submit((event) => {
 });
 
 // Restaurant setup PUT req
-$("#restSignUpSubmit").click((event) => {
+$("#restSetUpSubmit").click((event) => {
   event.preventDefault();
   // Converting phone data from string into number
   let phoneData = parseInt($("#restPhone").val());
@@ -121,7 +121,7 @@ $("#restSignUpSubmit").click((event) => {
       type: "PUT",
       data: restInfo,
       success: function () {
-        window.location.replace("https://localhost:8080/biz");
+        window.location.replace("https://localhost:8080/biz/bizsetupmenu");
       },
     });
   } else {

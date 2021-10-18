@@ -1,14 +1,17 @@
-const fs = require("fs");
-const options = {
-  cert: fs.readFileSync("./localhost.crt"),
-  key: fs.readFileSync("./localhost.key"),
-};
-
 //import package
 require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const fs = require("fs");
+const util = require("util");
+const unlinkFile = util.promisify(fs.unlink);
+
+// Set up HTTPS
+const options = {
+  cert: fs.readFileSync("./localhost.crt"),
+  key: fs.readFileSync("./localhost.key"),
+};
 const https = require("https").Server(options, app);
 
 // Set up socket.io
@@ -34,7 +37,7 @@ app.engine("handlebars", handlebars({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 const handlebarHelpers = require("./handlebars-helpers");
 
-// Set up multer
+// Set up multer and S3 bucket
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 const { uploadFile, downloadFile } = require("./s3Bucket/s3");
@@ -188,7 +191,6 @@ app.get("/userorder", (req, res) => {
   res.render("userOrder", { layout: "user" });
 });
 
-// Sher: Getting user set up page
 app.get("/setup", userLogIn, (req, res) => {
   res.render("userSetUp", { layout: "user" });
 });
@@ -211,13 +213,14 @@ app.post("/bizsetuppropic", upload.single("uploadedFile"), async (req, res) => {
       .then(() => {
         console.log("Inserting path done");
       });
-    res.send("ok");
+    await unlinkFile(file.path);
+    res.redirect("/biz/bizsetup");
   } catch (err) {
-    console.log(err);
-    throw err;
+    throw new Error(err);
   }
 });
 
+// Route for loading images from S3
 app.get("/image/:key", (req, res) => {
   const key = req.params.key;
   const readStream = downloadFile(key);
@@ -238,7 +241,7 @@ app.get("/cancel", (req, res) => {
   res.render("paymentFailed", { layout: "user" });
 });
 
-// Sher: Temporary route set up for testing signin page
+// Route for local login & signup
 app.get("/login", (req, res) => {
   res.render("userLogin");
 });
@@ -288,7 +291,6 @@ app.post(
   })
 );
 
-// Sher: PUT route for testing info update
 // Submit user info setup form
 app.put("/setup", userLogIn, async (req, res) => {
   console.log("app.js 281 ID: ", req.user.id);
