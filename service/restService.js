@@ -1,3 +1,5 @@
+const { default: knex } = require("knex");
+
 class RestService {
   constructor(knex) {
     this.knex = knex;
@@ -92,6 +94,75 @@ class RestService {
       })
       .andWhere("delivery.rest_id", restId);
   }
+
+  // Update restaurant info
+  async updateRestInfo(restId, data) {
+    try {
+      console.log(restId);
+      return await this.knex("restaurant").where("id", restId).update({
+        name: data.restName,
+        address: data.restAddress,
+        district: data.restDistrict,
+        phone_no: data.restPhone,
+        opening_time: data.restOpening,
+        closing_time: data.restClosing,
+        seats: data.restSeat,
+        description: data.restAbout,
+        delivery: data.restDelivery,
+      });
+    } catch (err) {
+      console.log(err);
+      throw new Error("User does not exist, cannot edit restaurant info!");
+    }
+  }
+
+  async updateRestDiscount(restId, data) {
+    try {
+      let discountQuery = await this.knex("discount").where("rest_id", restId);
+      if (discountQuery.length == 0) {
+        await this.knex("discount").insert({
+          rest_id: restId,
+          code: data.restDiscountCode,
+          discount: data.restDiscount,
+        });
+      } else {
+        await this.knex("discount")
+          .update({
+            code: data.restDiscountCode,
+            discount: data.restDiscount,
+          })
+          .where("rest_id", restId);
+      }
+    } catch (err) {
+      console.log(err);
+      throw new Error("User does not exist, cannot edit restaurant discount!");
+    }
+  }
+
+  async deleteRestTag(restId) {
+    try {
+      let restTagQuery = await this.knex("tag_rest_join").where(
+        "rest_id",
+        restId
+      );
+      if (restTagQuery) {
+        return await this.knex("tag_rest_join").where("rest_id", restId).del();
+      }
+    } catch (err) {
+      throw new Error("User does not exist, cannot delete restaurant tag");
+    }
+  }
+
+  // async insertRestTag(restId, data) {
+  //   try {
+  //     return await this.knex("tag_rest_join").insert({
+  //       rest_id: restId,
+  //       tag_id: data.id,
+  //     });
+  //   } catch (err) {
+  //     throw new Error("User does not exist, cannot insert restaurant tag");
+  //   }
+  // }
 }
 
 module.exports = RestService;

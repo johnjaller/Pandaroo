@@ -7,37 +7,24 @@ const options = {
 //import package
 require("dotenv").config();
 const express = require("express");
-const cors = require("cors");
-const path = require("path");
 const app = express();
-const stripePayment = require("./stripe/stripePayment.js");
+const cors = require("cors");
+const https = require("https").Server(options, app);
+
+// Set up socket.io
+const io = require("socket.io")(https);
 
 // Set up express session
 const session = require("express-session");
 app.use(session({ secret: "secret", resave: false, saveUninitialized: true }));
 
-// Set up passport authentication
-const passportFunction = require("./passport/passport");
-app.use(passportFunction.initialize());
-app.use(passportFunction.session());
+// Set up public files and middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
-// Middleware to check if the user is logged in
-const isLoggedIn = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    console.log(req.user, "USER");
-    return next();
-  }
-  console.log("failed");
-  res.redirect("/bizsignup");
-};
 
-const https = require("https").Server(options, app);
-const io = require("socket.io")(https);
-//initialisation
-
+// Set up knex
 const knexConfig = require("./knexfile").development;
 const knex = require("knex")(knexConfig);
 
@@ -47,20 +34,10 @@ app.engine("handlebars", handlebars({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 const handlebarHelpers = require("./handlebars-helpers");
 
-app.get(
-  "/auth/facebook",
-  passportFunction.authenticate("facebook", {
-    scope: ["email", "public_profile"],
-  })
-);
-
-app.get(
-  "/auth/facebook/callback",
-  passportFunction.authenticate("facebook", {
-    successRedirect: "/",
-    failureRedirect: "/error",
-  })
-);
+// Set up multer
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
+const { uploadFile, downloadFile } = require("./s3Bucket/s3");
 
 // Set up user service and router
 const UserService = require("./service/userService");
@@ -74,11 +51,20 @@ const RestRouter = require("./router/restRouter");
 const restService = new RestService(knex);
 const restRouter = new RestRouter(restService);
 
-// Route for users
-app.use("/user", userRouter.route());
-// app.get("/user", (req, res) => {
-//   res.render("userInfo", { layout: "user" });
-// });
+// Set up passport authentication
+const passportFunction = require("./passport/passport");
+app.use(passportFunction.initialize());
+app.use(passportFunction.session());
+
+// Set up middleware to check login status
+function restLogIn(req, res, next) {
+  if (req.isAuthenticated()) {
+    console.log("REST ID: ", req.user.id);
+    return next();
+  }
+  console.log("app.js restLogIn failed");
+  res.redirect("/bizlogin");
+}
 function userLogIn(req, res, next) {
   if (req.isAuthenticated()) {
     console.log(req.cookies);
@@ -89,6 +75,38 @@ function userLogIn(req, res, next) {
     res.redirect("/login");
   }
 }
+
+// Set up facebook authentication
+app.get(
+  "/auth/facebook",
+  passportFunction.authenticate("facebook", {
+    scope: ["email", "public_profile"],
+  })
+);
+app.get(
+  "/auth/facebook/callback",
+  passportFunction.authenticate("facebook", {
+    successRedirect: "/",
+    failureRedirect: "/error",
+  })
+);
+
+// Set up google authentication
+app.get(
+  "/auth/google",
+  passportFunction.authenticate("google", { scope: ["email", "profile"] })
+);
+app.get(
+  "/auth/google/callback",
+  passportFunction.authenticate("google", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+  })
+);
+
+// Route for users
+app.use("/user", userRouter.route());
+
 app.get("/", userLogIn);
 app.get("/", async (req, res) => {
   if (req.query.q === undefined) {
@@ -170,25 +188,44 @@ app.get("/userorder", (req, res) => {
   res.render("userOrder", { layout: "user" });
 });
 
+// Sher: Getting user set up page
+app.get("/setup", userLogIn, (req, res) => {
+  res.render("userSetUp", { layout: "user" });
+});
+
 // Route for restaurants
-app.get("/bizsignup", (req, res) => {
-  res.render("restSignUp", { layout: "restaurantSimple" });
+app.use("/biz", restLogIn, restRouter.router());
+
+app.post("/bizsetuppropic", upload.single("uploadedFile"), async (req, res) => {
+  try {
+    console.log("app.js req.file: ", req.file);
+    const file = req.file;
+    let result = await uploadFile(file);
+    console.log(result);
+
+    await knex("restaurant")
+      .update({
+        profile_path: result.Key,
+      })
+      .where("id", req.user.id)
+      .then(() => {
+        console.log("Inserting path done");
+      });
+    res.send("ok");
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 });
 
-app.get("/bizsetupmenu", (req, res) => {
-  res.render("restSetUpMenu", { layout: "restaurant" });
+app.get("/image/:key", (req, res) => {
+  const key = req.params.key;
+  const readStream = downloadFile(key);
+  readStream.pipe(res);
 });
 
-app.get("/info", restRouter.router());
-
-app.get("/bookings", restRouter.router());
-
-app.get("/orders", restRouter.router());
-
-app.get("/ordershistory", (req, res) => {
-  res.render("restOrderHistory", { layout: "restaurant" });
-});
 //stripe checkout test route
+const stripePayment = require("./stripe/stripePayment.js");
 app.get("/checkout", (req, res) => {
   res.render("checkout", { layout: "user" });
 });
@@ -200,11 +237,8 @@ app.get("/success", (req, res) => {
 app.get("/cancel", (req, res) => {
   res.render("paymentFailed", { layout: "user" });
 });
-app.get("/bookingshistory", restRouter.router());
 
-app.get("/ordershistory", restRouter.router());
-
-// Sher: Temporary route set up for testing sign in page
+// Sher: Temporary route set up for testing signin page
 app.get("/login", (req, res) => {
   res.render("userLogin");
 });
@@ -212,29 +246,13 @@ app.get("/login", (req, res) => {
 app.get("/bizlogin", (req, res) => {
   res.render("restLogin");
 });
-app.get(
-  "/auth/google",
-  passportFunction.authenticate("google", { scope: ["email", "profile"] })
-);
-
-app.get(
-  "/auth/google/callback",
-  passportFunction.authenticate("google", {
-    successRedirect: "/",
-    failureRedirect: "/login",
-  })
-);
 
 app.get("/logout", (req, res) => {
   req.logout();
   res.render("userLogin");
 });
-// app.get("/logout", (req, res) => {
-//   req.logout();
-//   res.render("/login");
-// });
 
-// Sher: Post route for testing local strategy
+// Submit user login form
 app.post(
   "/login",
   passportFunction.authenticate("local-login", {
@@ -243,21 +261,49 @@ app.post(
   })
 );
 
+// Submit user signup form
 app.post(
   "/signup",
   passportFunction.authenticate("local-signup", {
-    successRedirect: "/",
+    successRedirect: "/setup",
     failureRedirect: "/login",
   })
 );
 
+// Submit rest login form
 app.post(
   "/bizlogin",
   passportFunction.authenticate("local-login", {
-    successRedirect: "/info",
-    failureRedirect: "/bizsignup",
+    successRedirect: "/biz/info",
+    failureRedirect: "/bizlogin",
   })
 );
+
+// Submit rest signup form
+app.post(
+  "/bizsignup",
+  passportFunction.authenticate("local-signup", {
+    successRedirect: "/biz/bizsetup",
+    failureRedirect: "/bizlogin",
+  })
+);
+
+// Sher: PUT route for testing info update
+// Submit user info setup form
+app.put("/setup", userLogIn, async (req, res) => {
+  console.log("app.js 281 ID: ", req.user.id);
+  knex("account")
+    .where("id", req.user.id)
+    .update({
+      firstname: req.body.fname,
+      surname: req.body.lname,
+      address: req.body.address,
+      district: req.body.district,
+      phone_no: req.body.phone,
+    })
+    .catch((e) => console.log(e));
+  res.send("OKAY");
+});
 
 // Set up port
 https.listen(8080, () => {

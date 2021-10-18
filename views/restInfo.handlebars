@@ -4,7 +4,7 @@
       <div class="col-3">
         {{#each restInfo}}
           <img
-            src={{this.profile_path}}
+            src="/image/{{this.profile_path}}"
             alt="restaurant profile pic"
             class="restProfilePic"
           />
@@ -18,6 +18,7 @@
           <p class="my-4 lh-1">No of seat: {{this.seats}}</p>
           <p class="my-4 lh-1">Delivery service: {{this.delivery}}</p>
         {{/each}}
+        <a href="/biz/bizsetup"><button class="btn-userlogout me-4 border-0 rounded">Edit my profile</button></a>
       </div>
       <div class="restMenu col-9">
         <h4>Menu</h4>

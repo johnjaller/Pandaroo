@@ -13,6 +13,8 @@ class RestRouter {
     router.get("/orders", this.getOrder.bind(this));
     router.get("/bookingshistory", this.getBookingHistory.bind(this));
     router.get("/ordershistory", this.getOrderHistory.bind(this));
+    router.get("/bizsetup", this.getRestSetUp.bind(this));
+    router.put("/bizsetup", this.putRestInfo.bind(this));
 
     return router;
   }
@@ -176,6 +178,35 @@ class RestRouter {
     } catch (error) {
       throw new Error(error);
     }
+  }
+
+  async getRestSetUp(req, res) {
+    return res.render("restSetUp", {
+      layout: "restaurantSimple",
+    });
+  }
+
+  // Update restaurant info
+  async putRestInfo(req, res) {
+    console.log("restRouter req.user.id: ", req.user.id);
+    console.log("restRouter req.body", req.body);
+    console.log("restRoter req.file", req.file);
+
+    console.log("restRouter: Updating restaurant info");
+    await this.restService.updateRestInfo(req.user.id, req.body);
+
+    console.log("restRouter: Updating restaurant discount");
+    await this.restService.updateRestDiscount(req.user.id, req.body);
+
+    // console.log("restRouter: Updating restaurant tag");
+    // await this.restService
+    //   .deleteRestTag(req.user.id)
+    //   .then(() => {
+    //     this.restService.insertRestTag(req.user.id);
+    //   })
+    //   .catch((err) => {
+    //     res.status(500).json(err);
+    //   });
   }
 }
 

@@ -5,8 +5,8 @@ const LocalStrategy = require("passport-local").Strategy;
 
 module.exports = new LocalStrategy(async (username, password, done) => {
   console.log("Signing up");
-  console.log("E-mail: ", username);
-  console.log("Password", password);
+  console.log("Username: ", username);
+  console.log("Password: ", password);
 
   try {
     // Check if the user already exist
@@ -24,10 +24,7 @@ module.exports = new LocalStrategy(async (username, password, done) => {
     let hashedPassword = await hashFunction.hashPassword(password);
     let newUser = {
       username: username,
-      // firstname: data.fname,
-      // surname: data.lname,
       password: hashedPassword,
-      // phone_no: data.phone,
     };
 
     // Insert new user / restaurant into database correspondingly
