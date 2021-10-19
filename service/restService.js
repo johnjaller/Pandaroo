@@ -109,6 +109,8 @@ class RestService {
         seats: data.restSeat,
         description: data.restAbout,
         delivery: data.restDelivery,
+        code: data.restDiscountCode,
+        discount: data.restDiscount,
       });
     } catch (err) {
       console.log(err);
@@ -116,28 +118,28 @@ class RestService {
     }
   }
 
-  async updateRestDiscount(restId, data) {
-    try {
-      let discountQuery = await this.knex("discount").where("rest_id", restId);
-      if (discountQuery.length == 0) {
-        await this.knex("discount").insert({
-          rest_id: restId,
-          code: data.restDiscountCode,
-          discount: data.restDiscount,
-        });
-      } else {
-        await this.knex("discount")
-          .update({
-            code: data.restDiscountCode,
-            discount: data.restDiscount,
-          })
-          .where("rest_id", restId);
-      }
-    } catch (err) {
-      console.log(err);
-      throw new Error("User does not exist, cannot edit restaurant discount!");
-    }
-  }
+  // async updateRestDiscount(restId, data) {
+  //   try {
+  //     let discountQuery = await this.knex("discount").where("rest_id", restId);
+  //     if (discountQuery.length == 0) {
+  //       await this.knex("discount").insert({
+  //         rest_id: restId,
+  //         code: data.restDiscountCode,
+  //         discount: data.restDiscount,
+  //       });
+  //     } else {
+  //       await this.knex("discount")
+  //         .update({
+  //           code: data.restDiscountCode,
+  //           discount: data.restDiscount,
+  //         })
+  //         .where("rest_id", restId);
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //     throw new Error("User does not exist, cannot edit restaurant discount!");
+  //   }
+  // }
 
   async deleteRestTag(restId) {
     try {

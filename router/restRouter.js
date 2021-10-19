@@ -26,7 +26,9 @@ class RestRouter {
     router.put("/bizsetup", this.putRestInfo.bind(this));
 
     router.get("/bizsetupmenu", this.getSetUpMenu.bind(this));
-    router.post("/bizaddmenu"), upload.single("uploadedPhoto"), this.postRestMenu.bind(this);
+    router.post("/bizaddmenu"),
+      upload.single("uploadedPhoto"),
+      this.postRestMenu.bind(this);
 
     return router;
   }
@@ -211,8 +213,8 @@ class RestRouter {
     console.log("restRouter: Updating restaurant info");
     await this.restService.updateRestInfo(req.user.id, req.body);
 
-    console.log("restRouter: Updating restaurant discount");
-    await this.restService.updateRestDiscount(req.user.id, req.body);
+    // console.log("restRouter: Updating restaurant discount");
+    // await this.restService.updateRestDiscount(req.user.id, req.body);
 
     console.log("restRouter: Updating restaurant tag");
     await this.restService
@@ -234,9 +236,8 @@ class RestRouter {
       const file = req.file;
       let result = await uploadFile(file);
       console.log(result);
-  
-      await 
-      await unlinkFile(file.path);
+
+      await await unlinkFile(file.path);
       res.redirect("/biz/bizsetup");
     } catch (err) {
       throw new Error(err);
