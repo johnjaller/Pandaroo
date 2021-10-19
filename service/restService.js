@@ -153,16 +153,47 @@ class RestService {
     }
   }
 
-  // async insertRestTag(restId, data) {
-  //   try {
-  //     return await this.knex("tag_rest_join").insert({
-  //       rest_id: restId,
-  //       tag_id: data.id,
-  //     });
-  //   } catch (err) {
-  //     throw new Error("User does not exist, cannot insert restaurant tag");
-  //   }
-  // }
+  async insertRestTag(restId, data) {
+    try {
+      console.log("158 restService", data["restTag[]"]);
+      let tagArr = data["restTag[]"];
+      let tagIdArr = [];
+      for (let i = 0; i < tagArr.length; i++) {
+        let tagId = await this.knex
+          .select("id")
+          .from("tag")
+          .where("tag_name", tagArr[i]);
+        tagIdArr.push(tagId[0].id);
+        console.log("167 tagId: ", tagId[0].id);
+      }
+      console.log("167 restService tagIdArr: ", tagIdArr);
+      for (let j = 0; j < tagIdArr.length; j++) {
+        console.log("Adding into joint table");
+        await this.knex("tag_rest_join").insert({
+          rest_id: restId,
+          tag_id: tagIdArr[j],
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      throw new Error("User does not exist, cannot insert restaurant tag");
+    }
+  }
+
+  async addRestMenu(menuId, result) {
+    try {
+      await this.knex("menu_gallery")
+        .insert({
+          profile_path: result.Key,
+          menu_id: menuId,
+        })
+        .then(() => {
+          console.log("Inserting path done");
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  }
 }
 
 module.exports = RestService;

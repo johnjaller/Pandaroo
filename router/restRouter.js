@@ -1,5 +1,14 @@
 const express = require("express");
 
+const fs = require("fs");
+const util = require("util");
+const unlinkFile = util.promisify(fs.unlink);
+
+// Set up multer and S3 bucket
+const multer = require("multer");
+const upload = multer({ dest: "../uploads/" });
+const { uploadFile, downloadFile } = require("../s3Bucket/s3");
+
 class RestRouter {
   constructor(restService) {
     this.restService = restService;
@@ -14,8 +23,10 @@ class RestRouter {
     router.get("/bookingshistory", this.getBookingHistory.bind(this));
     router.get("/ordershistory", this.getOrderHistory.bind(this));
     router.get("/bizsetup", this.getRestSetUp.bind(this));
-    router.get("/setupmenu", this.getSetUpMenu.bind(this));
     router.put("/bizsetup", this.putRestInfo.bind(this));
+
+    router.get("/bizsetupmenu", this.getSetUpMenu.bind(this));
+    router.post("/bizaddmenu"), upload.single("uploadedPhoto"), this.postRestMenu.bind(this);
 
     return router;
   }
@@ -203,15 +214,33 @@ class RestRouter {
     console.log("restRouter: Updating restaurant discount");
     await this.restService.updateRestDiscount(req.user.id, req.body);
 
-    // console.log("restRouter: Updating restaurant tag");
-    // await this.restService
-    //   .deleteRestTag(req.user.id)
-    //   .then(() => {
-    //     this.restService.insertRestTag(req.user.id);
-    //   })
-    //   .catch((err) => {
-    //     res.status(500).json(err);
-    //   });
+    console.log("restRouter: Updating restaurant tag");
+    await this.restService
+      .deleteRestTag(req.user.id)
+      .then(() => {
+        console.log("Deleted restaurant tag");
+        this.restService.insertRestTag(req.user.id, req.body);
+      })
+      .catch((err) => {
+        res.status(500).json(err);
+      });
+    res.redirect("/biz/info");
+  }
+
+  // Add menu
+  async postRestMenu(req, res) {
+    try {
+      console.log("restRouter req.file: ", req.file);
+      const file = req.file;
+      let result = await uploadFile(file);
+      console.log(result);
+  
+      await 
+      await unlinkFile(file.path);
+      res.redirect("/biz/bizsetup");
+    } catch (err) {
+      throw new Error(err);
+    }
   }
 }
 

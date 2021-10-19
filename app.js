@@ -197,7 +197,9 @@ app.get("/setup", userLogIn, (req, res) => {
 
 // Route for restaurants
 app.use("/biz", restLogIn, restRouter.router());
+app.post("/bizaddmenu", upload.single("uploadedPhoto"), restRouter.router());
 
+// Upload restaurant profile pic
 app.post("/bizsetuppropic", upload.single("uploadedFile"), async (req, res) => {
   try {
     console.log("app.js req.file: ", req.file);

@@ -30,3 +30,22 @@
   width: 280px;
   height: 180px;
 }
+
+/* Edit profile
+---------------------------------------------- */
+.btn-editProfile {
+  font-family: "Bungee", cursive;
+  font-size: 1rem;
+  background-color: #4b8494;
+  color: #fff;
+  padding: 8px 15px;
+}
+
+.btn-editMenu {
+  font-family: "Bungee", cursive;
+  font-size: 1rem;
+  background-color: #fff;
+  color: #4b8494;
+  border: 3px solid #4b8494;
+  padding: 8px 15px;
+}

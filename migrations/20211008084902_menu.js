@@ -7,6 +7,7 @@ exports.up = function(knex) {
       table.foreign('rest_id').references('restaurant.id')
       table.decimal('price')
       table.string('category')
+      table.string('photo_path')
   })
 };
 
