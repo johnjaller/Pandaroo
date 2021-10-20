@@ -10,6 +10,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path")
 const app = express();
+const stripe=require('stripe')(process.env.stripe_secret)
 const stripePayment=require('./stripe/stripePayment.js')
 
 // Set up express session
@@ -76,6 +77,8 @@ const userRouter = new UserRouter(userService);
 // Set up restaurant service and router
 const RestService = require("./service/restService");
 const RestRouter = require("./router/restRouter");
+const { default: Stripe } = require("stripe");
+const { resolve } = require("path");
 const restService = new RestService(knex);
 const restRouter = new RestRouter(restService);
 
@@ -199,28 +202,49 @@ app.get('/checkout',(req,res)=>{
 app.post('/checkout',stripePayment);
 const endPointSecret='whsec_G2nJNMFVmpCn275FSbScXynzCytZxtJX'
 
-app.post('/webhook', (request, response) => {
+app.post('/webhook', async(request, response) => {
   console.log(request.body)
   let event=request.body
   if(event.type==='checkout.session.completed')
   {
     console.log('it is a successful payment')
-    console.log(event.data.object.total_details)
-  }
-  // const payload = request.body;
-  // const sig = request.headers['stripe-signature'];
-  // let event
+    console.log(event.data.object.metadata)
+    let specialRequest=event.data.object.metadata.specialRequest
+    let restId=event.data.object.metadata.rest_id
+    let userId=event.data.object.metadata.user_id;
+    let sessionId=event.data.object.id
+    let totalAmount=event.data.object.amount_total/100
+    let products=[]
+    stripe.checkout.sessions.listLineItems(
+      sessionId,
+      { limit: 10 },
+      async function(err, lineItems) {
+   console.log(lineItems)
+   for(let i=0;i<lineItems.data.length;i++)
+   {
+     let menuId=await knex('menu').select('id').where('item',lineItems.data[i].description)
+     console.log(menuId)
+     products.push({quantity:lineItems.data[i].quantity,menu_id:menuId[0].id})
 
-  // try {
-  //   event = stripe.webhooks.constructEvent(payload, sig, endPointSecret);
-  // } catch (err) {
-  //   return response.status(400).send(`Webhook Error: ${err.message}`);
-  // }
-  // console.log(event)
-  // if (event.type === 'checkout.session.completed') {
-  //   console.log("It is a success payment")
-  // }
+   }
+  
+   console.log(products)
+   let deliveryId=await knex('delivery').insert({rest_id:restId,account_id:userId,order_status:'Preparing',special_request:specialRequest,amount:totalAmount}).returning('id')
+   console.log(deliveryId)
+   for(let i=0;i<products.length;i++)
+   {
+
+     return knex('order_detail').insert({delivery_id:deliveryId[0],menu_id:products[i].menu_id,quantity:products[i].quantity})
+   }
+  
+      
+    
+    //return knex('order_detail').insert({delivery_id:deliveryId,menu_id:,quantity:}))
+  
+  
   response.status(200);
+})
+  }
 });
 
   app.get('/success',(req,res)=>{

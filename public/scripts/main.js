@@ -57,18 +57,21 @@ $(document).ready(function () {
     console.log(shoppingCart[requestId])
     shoppingCart[requestId].item.forEach(item=>{
       $('.orderList').append(`<tr class="dish text-center"><td>${item.name}</td><td>${item.amount}</td><td>HKD ${item.price}</td></tr>`)
-      let coupon= shoppingCart[requestId].discount
-      let discount=coupon.percent_off*100
-      let price=shoppingCart[requestId].item.map(i=>i.price*i.amount).reduce((a,b)=>a+b)
+    })
+      let price
       if(Object.keys(shoppingCart[requestId].discount).length>0)
       {
-  $('.orderList').append(`<tr class="dish text-center"><td>Discount: '${coupon.discountCode}'</td><td></td><td>-${discount}%</td></tr>`)
+        let coupon= shoppingCart[requestId].discount
+        let discount=coupon.percent_off*100
+  $('.discountList').append(`<tr class="dish text-center"><td>Discount: '${coupon.discountCode}'</td><td></td><td>-${discount}%</td></tr>`)
   $('#discountCode').prop('disabled','disabled')
   $('.couponCheck').addClass('disabled')
   price=Number((price*(1-shoppingCart[requestId].discount.percent_off)).toFixed(1))
+}else{
+  price=shoppingCart[requestId].item.map(i=>i.price*i.amount).reduce((a,b)=>a+b)
 }
       $('.totalPrice').html(`HKD ${price}`)
-    })
+    
     $('#specialRequest').val(shoppingCart[requestId].specialRequest)
 
   }else{
@@ -148,14 +151,21 @@ $('#userOrderForm').submit(function () {
       currency: 'hkd',
       product_data: {
         name: dish.name,
+        metadata:{menu_id:dish.menuId},
       },
       unit_amount: dish.price*100,
     },
     quantity: dish.amount,
   }))
-  let discount=shoppingCart[requestId].discount.percent_off*100
+  $('.userRest').val(requestId)
   $('.userOrder').val(JSON.stringify(order))
+  if(Object.keys(shoppingCart[requestId].discount).length>0)
+  {
+  let discount=shoppingCart[requestId].discount.percent_off*100
   $('#discount').val(JSON.stringify({name:shoppingCart[requestId].discount.discountCode,percent_off:discount}))
+  }else{
+    $('#discount').val(JSON.stringify({}))
+  }
   return true
 });
 
@@ -178,7 +188,7 @@ $('.couponCheck').on('click', function (event) {
   $(event.target).addClass('disabled')
         let discount=response.percent_off*100
         shoppingCart[requestId].discount=response
-        $('.orderList').append(`<tr class="dish text-center"><td>Discount: '${couponCode}'</td><td></td><td>-${discount}%</td></tr>`)
+        $('.discountList').append(`<tr class="dish text-center"><td>Discount: '${couponCode}'</td><td></td><td>-${discount}%</td></tr>`)
 let price=shoppingCart[requestId].item.map(i=>i.price*i.amount).reduce((a,b)=>a+b)
 price=Number((price*(1-shoppingCart[requestId].discount.percent_off)).toFixed(1))
 
@@ -192,6 +202,21 @@ $('.totalPrice').html(`HKD ${price}`)
 $('.userLogout').on('click', function () {
   localStorage.clear()
 });
+
+$('.bookmark').on('click',(event)=>{
+  let restId=$(event.target).parent().attr('id')
+  let icon=$(event.target)
+  icon.toggleClass('far fas')
+  console.log(restId)
+  $.ajax({
+    type: "post",
+    url: `/bookmark/${restId}`,
+    success: function (response) {
+      console.log(response)
+      
+    }
+  });
+})
 // // User login Ajax POST req
 // $("#user-login-form").submit((event) => {
 //   event.preventDefault();

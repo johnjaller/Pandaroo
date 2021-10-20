@@ -8,8 +8,7 @@ exports.up = function(knex) {
         table.foreign('account_id').references('account.id')
         table.string('order_status')
         table.text('special_request')
-        table.integer('discount_id')
-        table.foreign('discount_id').references('discount.id')
+        table.decimal('amount')
         table.timestamps(false,true)
 
     })
