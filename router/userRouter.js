@@ -64,6 +64,7 @@ class UserRouter{
      putUserInfo(req,res)
     {
         console.log(req.body)
+     return this.userService.putUserInfo(req.user.id,req.body.username,req.body.firstname,req.body.surname,req.body.address,req.body.district,req.body.phone).catch(e=>console.log(e))
     }
     
     

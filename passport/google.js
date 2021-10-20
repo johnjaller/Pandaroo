@@ -12,8 +12,8 @@ function googleCallback(accessToken,refreshToken,profile,done)
     userQueries.getGmailById(profile.id).then((queryData)=>{
         if(queryData.length===0)
         {
-        userQueries.postGmail(user.username,profile.id,profile.name.givenName,profile.name.familyName).then((data)=>{
-            user.id=data[0].id
+        return userQueries.postGmail(user.username,profile.id,profile.name.givenName,profile.name.familyName).then((data)=>{
+            user.id=data[0]
             console.log(user)
             return done(null,user)
         }).catch((e)=>
