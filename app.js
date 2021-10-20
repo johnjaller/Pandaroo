@@ -6,6 +6,7 @@ const cors = require("cors");
 const fs = require("fs");
 const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
+const stripePayment = require("./stripe/stripePayment.js");
 
 // Set up HTTPS
 const options = {
