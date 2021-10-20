@@ -1,5 +1,3 @@
-const { default: knex } = require("knex");
-
 class RestService {
   constructor(knex) {
     this.knex = knex;
@@ -21,6 +19,35 @@ class RestService {
       )
       .from("restaurant")
       .where("id", restId);
+  }
+
+  getRestSetUpInfo(restId) {
+    try {
+      console.log("restService restId: ", restId);
+      return this.knex("restaurant")
+        .join("tag_rest_join", "restaurant.id", "tag_rest_join.rest_id")
+        .join("tag", "tag_rest_join.tag_id", "tag.id")
+        .select(
+          "profile_path",
+          "name",
+          "description",
+          "address",
+          "district",
+          "phone_no",
+          "opening_time",
+          "closing_time",
+          "seats",
+          "delivery",
+          "code",
+          "discount",
+          "description",
+          this.knex.raw("ARRAY_AGG(tag.tag_name) as tag")
+        )
+        .whereRaw("restaurant.id = ?", [restId])
+        .groupBy("restaurant.id", restId);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   getRestCurrentBooking(restId) {
@@ -114,32 +141,9 @@ class RestService {
       });
     } catch (err) {
       console.log(err);
-      throw new Error("User does not exist, cannot edit restaurant info!");
+      return new Error(err);
     }
   }
-
-  // async updateRestDiscount(restId, data) {
-  //   try {
-  //     let discountQuery = await this.knex("discount").where("rest_id", restId);
-  //     if (discountQuery.length == 0) {
-  //       await this.knex("discount").insert({
-  //         rest_id: restId,
-  //         code: data.restDiscountCode,
-  //         discount: data.restDiscount,
-  //       });
-  //     } else {
-  //       await this.knex("discount")
-  //         .update({
-  //           code: data.restDiscountCode,
-  //           discount: data.restDiscount,
-  //         })
-  //         .where("rest_id", restId);
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //     throw new Error("User does not exist, cannot edit restaurant discount!");
-  //   }
-  // }
 
   async deleteRestTag(restId) {
     try {
@@ -151,7 +155,7 @@ class RestService {
         return await this.knex("tag_rest_join").where("rest_id", restId).del();
       }
     } catch (err) {
-      throw new Error("User does not exist, cannot delete restaurant tag");
+      return new Error("User does not exist, cannot delete restaurant tag");
     }
   }
 
@@ -178,16 +182,19 @@ class RestService {
       }
     } catch (err) {
       console.log(err);
-      throw new Error("User does not exist, cannot insert restaurant tag");
+      return new Error("User does not exist, cannot insert restaurant tag");
     }
   }
 
-  async addRestMenu(menuId, result) {
+  async addRestMenu(restId, data, result) {
     try {
-      await this.knex("menu_gallery")
+      await this.knex("menu")
         .insert({
+          item: data.restMenuItem,
+          rest_id: restId,
+          price: data.restMenuPrice,
+          category: data.restMenuCategory,
           profile_path: result.Key,
-          menu_id: menuId,
         })
         .then(() => {
           console.log("Inserting path done");

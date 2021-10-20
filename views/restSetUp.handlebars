@@ -16,6 +16,7 @@
   </div>
 
 <form class="restSignUpForm" action="/bizsetup" method="put"></form>
+{{#each restInfo}}
   <div class="container d-flex justify-content-center">
     {{! Restaurant information }}
     <div class="col-4 mt-4 pb-3">
@@ -23,19 +24,19 @@
       {{! Restaurant name }}
       <div class="mb-2">
         <label for="restName" class="form-label">Restaurant name</label>
-        <input type="text" class="form-control" id="restName" />
+        <input type="text" value="{{this.name}}" class="form-control" id="restName" />
       </div>
       
       {{! Restaurant phone and district }}
       <div class="d-flex">
         <div class="mb-2 me-1">
           <label for="restPhone" class="form-label">Phone</label>
-          <input type="tel" class="form-control" id="restPhone" />
+          <input type="tel" value="{{this.phone_no}}" class="form-control" id="restPhone" />
         </div>
         <div class="mb-2">
           <label for="restDistrict" class="form-label">District</label>
           <select class="form-select" id="restDistrict">
-              <option selected></option>
+              <option selected>{{this.district}}</option>
               <option value="1">Central and Western</option>
               <option value="2">Eastern</option>
               <option value="3">Southern</option>
@@ -60,30 +61,31 @@
       {{! Restaurant address }}
       <div class="mb-2 me-1">
         <label for="restAddress" class="form-label">Address</label>
-        <input type="text" class="form-control" id="restAddress" />
+        <input type="text" value="{{this.address}}" class="form-control" id="restAddress" />
       </div>
       {{! Restaurant opening and closing time }}
       <div class="d-flex">
         <div class="mb-2 me-1">
           <label for="restOpening" class="form-label">Opening time</label>
-          <input type="time" class="form-control" id="restOpening" style="width: 212px;"/>
+          <input type="time" value="{{this.opening_time}}" class="form-control" id="restOpening" style="width: 212px;"/>
         </div>
         <div class="mb-2">
           <label for="restClosing" class="form-label">Closing time</label>
-          <input type="time" class="form-control" id="restClosing" style="width: 212px;"/>
+          <input type="time" value="{{this.closing_time}}" class="form-control" id="restClosing" style="width: 212px;"/>
         </div>
       </div>
       {{! Restaurant seats and delivery service }}
       <div class="d-flex">
         <div class="mb-2 me-1">
           <label for="restSeat" class="form-label">No of seats</label>
-          <input type="number" class="form-control" id="restSeat" min="1"/>
+          <input type="number" value="{{this.seats}}" class="form-control" id="restSeat" min="1"/>
         </div>
         <div class="mb-2">
           <label for="restDelivery" class="form-label">Delivery service</label>
           <select class="form-select" id="restDelivery" style="width: 212px;">
-              <option value="False" selected>No</option>
+              <option value="False" selected>{{this.delivery}}</option>
               <option value="True">Yes</option>
+              <option value="False">No</option>
           </select>
         </div>
       </div>
@@ -91,12 +93,12 @@
       <div class="d-flex">
         <div class="mb-2 me-1">
           <label for="restDiscountCode" class="form-label">Discount code</label>
-          <input type="text" class="form-control" id="restDiscountCode" />
+          <input type="text" value="{{this.code}}" class="form-control" id="restDiscountCode" />
         </div>
         <div class="mb-2">
           <label for="restDiscount" class="form-label">Discount</label>
           <select class="form-select" id="restDiscount" style="width: 212px;">
-              <option selected></option>
+              <option selected>{{this.discount}}</option>
               <option value="10">10% Off</option>
               <option value="20">20% Off</option>
               <option value="30">30% Off</option>
@@ -121,7 +123,7 @@
               placeholder="Leave a comment here"
               id="floatingTextarea2"
               style="height: 250px"
-            ></textarea>
+            >{{this.description}}</textarea>
             <label for="floatingTextarea2">Brief introduction of your restaurant</label>
           </div>
         </div>
@@ -232,13 +234,23 @@
         </div>
       </div>
     </div>
+    {{/each}}
 
   <div class="container pb-5">
     <div class="row">
       <div class="col-12 text-center">
-        <button type="submit" value="submit" class="mt-2 border-0 rounded btn-restGo" id="restSetUpSubmit">Go ></button>
+        <div id="setUpMsg"></div>
+        <button type="submit" value="submit" class="mt-2 mx-2 border-0 rounded btn-restGo" id="restSetUpSubmit">
+          Submit ></button>
+        <a href="/biz/bizsetupmenu"><button value="setmenu" class="mt-2 mx-2 border-0 rounded btn-restGo" id="restSetUpSubmit">
+          Set Menu > ></button></a>
       </div>
     </div>
   </div>
 </form>
 </section>
+
+{{! Jquery }}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="/scripts/restSetUp.js"></script>

@@ -77,59 +77,6 @@ $("#userSetUpForm").submit((event) => {
   });
 });
 
-// Restaurant setup PUT req
-$("#restSetUpSubmit").click((event) => {
-  event.preventDefault();
-  // Converting phone data from string into number
-  let phoneData = parseInt($("#restPhone").val());
-  console.log("main.js phoneData: ", phoneData);
-  // Converting delivery data from string to boolean
-  let deliveryData = true;
-  if ($("#restDelivery option:selected").val() === "False") {
-    deliveryData = false;
-  }
-  // Converting discount data from string to decimal
-  let discountData = parseInt($("#restDiscount").val()) / 100;
-  console.log("main.js discountData: ", discountData);
-  // Converting tag checkbox data to an array
-  let checkboxData = [];
-  $.each($(".form-check-input:checked"), function () {
-    checkboxData.push($(this).val());
-  });
-  console.log("main.js checkboxData", checkboxData);
-
-  // Validating phone data must be 8-digit integer
-  if (/^\d{8}$/.test($("#restPhone").val())) {
-    let restInfo = {
-      restName: $("#restName").val(),
-      restPhone: phoneData,
-      restDistrict: $("#restDistrict option:selected").text(),
-      restAddress: $("#restAddress").val(),
-      restOpening: $("#restOpening").val(),
-      restClosing: $("#restClosing").val(),
-      restSeat: $("#restSeat").val(),
-      restDelivery: deliveryData,
-      restDiscountCode: $("#restDiscountCode").val(),
-      restDiscount: discountData,
-      restAbout: $("#floatingTextarea2").val(),
-      restTag: checkboxData,
-    };
-    console.log("Rest Info: ", restInfo);
-
-    $.ajax({
-      url: "/biz/bizsetup",
-      type: "PUT",
-      data: restInfo,
-      success: function () {
-        window.location.replace("https://localhost:8080/biz/bizsetupmenu");
-      },
-    });
-  } else {
-    console.log("Incorrect phone number");
-    return false;
-  }
-});
-
 // $(document).on('click',".userInfoSubmit",()=>{
 //   let username=$('.username').val()
 //   let firstname=$('.firstname').val()
@@ -146,17 +93,3 @@ $("#restSetUpSubmit").click((event) => {
 //     }
 //   });
 // })
-
-// // User login Ajax POST req
-// $("#user-login-form").submit((event) => {
-//   event.preventDefault();
-//   let usernameInput = $("input[type=email]").val();
-//   let passwordInput = $("input[type=password]").val();
-//   console.log(`USERNAME: ${usernameInput}, PASSWORD: ${passwordInput}`);
-//   $.post({
-//     url: "/login",
-//     data: { username: usernameInput, password: passwordInput },
-//   }).done(() => {
-//     console.log("Successfully sent POST request");
-//   });
-// });
