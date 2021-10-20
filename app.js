@@ -133,21 +133,34 @@ app.get("/userbooking", (req, res) => {
   res.render("userBooking", { layout: "user" });
 });
 
-app.get('/search/:restID',(req,res)=>{
+app.get('/order/:restID',async(req,res)=>{
 
     console.log(req.params.restID, 'rest id how many times?')
-
-    return knex('restaurant').select().join('menu','restaurant.id','menu.rest_id').where({'restaurant.id':req.params.restID,'category':'soup n salad'}).then((data)=>{
-        console.log(data)
-        let dishItems=[]
-        data.forEach(dish => {
-          dishItems.push({id:dish.id,name:dish.item,price:dish.price,photoPath:dish.photo_path})
-        })
-        return res.render('userOrder',{layout:'user',restaurant:data[0],dish:dishItems})
-    }).catch((e)=> console.log(e))
+ 
+    let restDetail=await  knex('restaurant').select().where('restaurant.id',req.params.restID)
+    
+  let dish=await knex('restaurant').select().join('menu','restaurant.id','menu.rest_id').where({'restaurant.id':req.params.restID,'category':"soup n salad"})
+    console.log(dish)
+    let dishItems=[]
+    dish.forEach(i => {
+      dishItems.push({id:i.id,name:i.item,price:i.price,photoPath:i.photo_path})
+    })
+    return res.render('userOrder',{layout:'user',restaurant:restDetail[0],dish:dishItems
+})
+  
 })
 
-
+app.get('/order/:restID/:category',async(req,res)=>{
+  let restDetail=await  knex('restaurant').select().where('restaurant.id',req.params.restID)
+  let dish=await knex('restaurant').select().join('menu','restaurant.id','menu.rest_id').where({'restaurant.id':req.params.restID,'category':req.params.category})
+    console.log(dish)
+    let dishItems=[]
+    dish.forEach(i => {
+      dishItems.push({id:i.id,name:i.item,price:i.price,photoPath:i.photo_path})
+    })
+    return res.render('userOrder',{layout:'user',restaurant:restDetail[0],dish:dishItems
+})
+})
 
 app.post('/bookmark/:id',(req,res)=>{
     return knex('bookmark').insert({account_id:req.user.id,rest_id:req.params.id}).then(()=>{

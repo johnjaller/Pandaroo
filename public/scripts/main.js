@@ -37,7 +37,7 @@ $(document).on('click',".userInfoSubmit",()=>{
 let shoppingCart={}
 let requestId
 $(document).ready(function () {
-  if(window.location.pathname.includes('/search/'))
+  if(window.location.pathname.includes('/order/'))
   {
   if(!localStorage.hasOwnProperty('shoppingCart'))
   {
@@ -48,7 +48,7 @@ $(document).ready(function () {
   }
   console.log(shoppingCart)
  
-    requestId=window.location.pathname.replace("/search/","")
+    requestId=window.location.pathname.replace(/[^\d]/g,"")
 
   
   console.log(requestId)
@@ -159,7 +159,7 @@ $('#userOrderForm').submit(function () {
   return true
 });
 
-$('.couponCheck').on('click', function () {
+$('.couponCheck').on('click', function (event) {
   let couponCode=$('#discountCode').val()
   $('#discountCode').val('')
   console.log(couponCode)
@@ -175,7 +175,7 @@ $('.couponCheck').on('click', function () {
         return alert(`There is no such coupon for "${couponCode}"`)
       }else{
   $('#discountCode').prop('disabled','disabled')
-  $(this).addClass('disabled')
+  $(event.target).addClass('disabled')
         let discount=response.percent_off*100
         shoppingCart[requestId].discount=response
         $('.orderList').append(`<tr class="dish text-center"><td>Discount: '${couponCode}'</td><td></td><td>-${discount}%</td></tr>`)
