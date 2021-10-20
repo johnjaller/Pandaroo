@@ -17,6 +17,7 @@ async function stripePayment (req,res)
         mode: 'payment',
         success_url: 'https://localhost:8080/success',
         cancel_url: 'https://localhost:8080/cancel',
+        locale:'en'
       });
       res.redirect(303, session.url);
 

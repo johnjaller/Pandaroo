@@ -59,10 +59,10 @@ $(document).ready(function () {
       $('.orderList').append(`<tr class="dish text-center"><td>${item.name}</td><td>${item.amount}</td><td>HKD ${item.price}</td></tr>`)
       let coupon= shoppingCart[requestId].discount
       let discount=coupon.percent_off*100
-      $('.orderList').append(`<tr class="dish text-center"><td>Discount: '${coupon.discountCode}'</td><td></td><td>-${discount}%</td></tr>`)
       let price=shoppingCart[requestId].item.map(i=>i.price*i.amount).reduce((a,b)=>a+b)
       if(Object.keys(shoppingCart[requestId].discount).length>0)
-{
+      {
+  $('.orderList').append(`<tr class="dish text-center"><td>Discount: '${coupon.discountCode}'</td><td></td><td>-${discount}%</td></tr>`)
   $('#discountCode').prop('disabled','disabled')
   $('.couponCheck').addClass('disabled')
   price=Number((price*(1-shoppingCart[requestId].discount.percent_off)).toFixed(1))
@@ -79,12 +79,14 @@ $(document).ready(function () {
   return false;
 }
 });
-$('.addToCart').on('click',()=>{
+
+$('.addToCart').on('click',(event)=>{
+  console.log($(event.target).parent().find('.item-name').html())
   let dishAmount
   let dishPrice
   let dishName
   let dishMenuId
-  dishName=$('.addToCart').parent().find('.item-name').html()
+  dishName=$(event.target).parent().find('.item-name').html()
   if(shoppingCart.hasOwnProperty(requestId))
   {
   let cart=shoppingCart[requestId].item
@@ -100,9 +102,9 @@ $('.addToCart').on('click',()=>{
     $(item).html(`<td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td>`)
   }else{
     dishAmount=1
-    dishPrice=Number($('.addToCart').parent().find('.item-price').html().replace("HKD ",''))
+    dishPrice=Number($(event.target).parent().find('.item-price').html().replace("HKD ",''))
     console.log(dishPrice)
-    dishMenuId=Number($('.addToCart').parent().find('.item-name').attr('id'))
+    dishMenuId=Number($(event.target).parent().find('.item-name').attr('id'))
     console.log(dishMenuId)
     let dishItem={name:dishName,price:dishPrice,amount:dishAmount,menuId:dishMenuId}
     cart.push(dishItem)
@@ -112,9 +114,9 @@ $('.addToCart').on('click',()=>{
   shoppingCart[requestId]={item:[],specialRequest:"",discount:{}}
   let cart=shoppingCart[requestId].item
   dishAmount=1
-  dishPrice=Number($('.addToCart').parent().find('.item-price').html().replace("HKD ",''))
+  dishPrice=Number($(event.target).parent().find('.item-price').html().replace("HKD ",''))
   console.log(dishPrice)
-  dishMenuId=Number($('.addToCart').parent().find('.item-name').attr('id'))
+  dishMenuId=Number($(event.target).parent().find('.item-name').attr('id'))
   let dishItem={name:dishName,price:dishPrice,amount:dishAmount,menuId:dishMenuId}
   cart.push(dishItem)
   $('.orderList').append(`<tr class="dish text-center"><td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td></tr>`)
@@ -156,6 +158,7 @@ $('#userOrderForm').submit(function () {
   $('#discount').val(JSON.stringify({name:shoppingCart[requestId].discount.discountCode,percent_off:discount}))
   return true
 });
+
 $('.couponCheck').on('click', function () {
   let couponCode=$('#discountCode').val()
   $('#discountCode').val('')

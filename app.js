@@ -137,9 +137,13 @@ app.get('/search/:restID',(req,res)=>{
 
     console.log(req.params.restID, 'rest id how many times?')
 
-    return knex('restaurant').select().where({'id':req.params.restID}).then((data)=>{
+    return knex('restaurant').select().join('menu','restaurant.id','menu.rest_id').where({'restaurant.id':req.params.restID,'category':'soup n salad'}).then((data)=>{
         console.log(data)
-        return res.render('userOrder',{layout:'user',restaurant:data})
+        let dishItems=[]
+        data.forEach(dish => {
+          dishItems.push({id:dish.id,name:dish.item,price:dish.price,photoPath:dish.photo_path})
+        })
+        return res.render('userOrder',{layout:'user',restaurant:data[0],dish:dishItems})
     }).catch((e)=> console.log(e))
 })
 
@@ -184,8 +188,12 @@ const endPointSecret='whsec_G2nJNMFVmpCn275FSbScXynzCytZxtJX'
 
 app.post('/webhook', (request, response) => {
   console.log(request.body)
-  let webhookResult=request.body
-  
+  let event=request.body
+  if(event.type==='checkout.session.completed')
+  {
+    console.log('it is a successful payment')
+    console.log(event.data.object.total_details)
+  }
   // const payload = request.body;
   // const sig = request.headers['stripe-signature'];
   // let event
