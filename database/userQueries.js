@@ -14,17 +14,17 @@ function getByFacebookId(facebookId) {
   return knex("account").where("facebook_id", facebookId);
 }
 
-function postFacebook(username, facebookId) {
+function postFacebook(username, facebookId,givenName,familyName) {
   return knex("account")
     .insert({
       username: username,
-      facebook_id: facebookId,
+      facebook_id: facebookId,firstname:givenName,surname:familyName
     })
     .returning("id");
 }
 
-function getById(id) {
-  return knex("account").select("id", "username").where("id", id);
+function getById(userId) {
+  return knex("account").select("id", "username").where("id", userId);
 }
 
 module.exports = {

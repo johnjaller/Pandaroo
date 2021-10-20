@@ -1,4 +1,4 @@
-<form class="d-flex justify-content-center mb-5" method="GET" target="/">
+<form class="d-flex justify-content-center mb-5" method="GET" action="/search">
   <input
     class="form-control me-2 userSearch"
     type="search" name="q" value="{{queryString}}"
@@ -12,7 +12,7 @@
 <p>We have some recommendation for you at {{this.district}}</p>
 {{/each}}
 {{#each recommendation}}
-  <a href="/search/{{this.id}}" class="text-decoration-none">
+  <a href="/order/{{this.id}}" class="text-decoration-none">
     <div
       class="card mx-4 mb-4 border border-top-0 border-start-0 border-3 rounded-2 userRestCard"
       style="width: 20rem;"
@@ -36,7 +36,7 @@
 <h2>{{result}}</h2>
 <div class="d-flex flex-wrap justify-content-center">
 {{#each feature}}
-  <a href="/search/{{this.id}}" class="text-decoration-none">
+  <a href="/order/{{this.id}}" class="text-decoration-none">
     <div
       class="card mx-4 mb-4 border border-top-0 border-start-0 border-3 rounded-2 userRestCard"
       style="width: 20rem;"
@@ -59,7 +59,7 @@
 <div class="d-flex flex-wrap justify-content-center">
   {{! #Each restaurant }}
   {{#each rest}}
-  <a href="/search/{{this.id}}" class="text-decoration-none">
+  <a href="/order/{{this.id}}" class="text-decoration-none">
     <div
       class="card mx-4 mb-4 border border-top-0 border-start-0 border-3 rounded-2 userRestCard"
       style="width: 20rem;"

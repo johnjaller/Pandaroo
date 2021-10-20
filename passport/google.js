@@ -12,7 +12,7 @@ function googleCallback(accessToken, refreshToken, profile, done) {
     .getGmailById(profile.id)
     .then((queryData) => {
       if (queryData.length === 0) {
-        userQueries
+        return userQueries
           .postGmail(
             user.username,
             profile.id,
@@ -20,7 +20,7 @@ function googleCallback(accessToken, refreshToken, profile, done) {
             profile.name.familyName
           )
           .then((data) => {
-            user.id = data[0].id;
+            user.id = data[0];
             console.log(user);
             return done(null, user);
           })
