@@ -6,6 +6,7 @@ function serializeUser(user, done) {
 }
 
 function deserializeUser(id, done) {
+  console.log('desrilaizing user')
   userQueries
     .getById(id.id)
     .then((users) => {

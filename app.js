@@ -100,8 +100,7 @@ function userLogIn(req,res,next)
 }
 app.get("/", userLogIn);
 app.get("/", async(req,res)=>{
-    if(req.query.q===undefined)
-    {
+
         let restTag=await userService.getRestTag()
         let user= await knex('account').select('district','firstname').where('id',req.user.id)
         console.log(user[0].district)
@@ -116,39 +115,54 @@ app.get("/", async(req,res)=>{
 
         console.log(locationRecommendation, 'loaded info')
     res.render("userHome", { layout: "user",userInfo:user,recommendation:locationRecommendation,feature:featuredRest,result:'Featured',tag: restTag});
-    }else{
-        console.log(req.query.q,"this is a query")
-        let query=req.query.q.split(" ").join("|")
-        let queryResult= await knex('restaurant').select().join('tag_rest_join','restaurant.id','tag_rest_join.rest_id').join('tag','tag.id','tag_rest_join.tag_id').where(knex.raw( `to_tsvector(concat_ws(' ',name,address,district,description,tag.tag_name)::text) @@ to_tsquery('${query}:*')`))
-        console.log(queryResult)
-        res.render('userHome',{layout:'user',
-        result:'Search result:',
-        queryString:req.query.q,
-        rest:queryResult
-    })
-    }
 });
-
+app.get('/search',async(req,res)=>{
+  console.log(req.query.q,"this is a query")
+  let query=req.query.q.split(" ").join("|")
+  let queryResult= await knex('restaurant').select().join('tag_rest_join','restaurant.id','tag_rest_join.rest_id').join('tag','tag.id','tag_rest_join.tag_id').where(knex.raw( `to_tsvector(concat_ws(' ',name,address,district,description,tag.tag_name)::text) @@ to_tsquery('${query}:*')`))
+  console.log(queryResult)
+  res.render('userHome',{layout:'user',
+  result:'Search result:',
+  queryString:req.query.q,
+  rest:queryResult
+})
+})
 
 
 app.get("/userbooking", (req, res) => {
   res.render("userBooking", { layout: "user" });
 });
 
-app.get('/search/:restID',(req,res)=>{
-
-  // console.log(req, 'REQUEST!!!!<><><><>')
+app.get('/order/:restID',async(req,res)=>{
 
     console.log(req.params.restID, 'rest id how many times?')
-
-    return knex('restaurant').select().where({'id':req.params.restID}).then((data)=>{
-        console.log(data)
-        return res.render('userOrder',{layout:'user',})
-    }).catch((e)=> console.log(e))
+ 
+    let restDetail=await  knex('restaurant').select().where('restaurant.id',req.params.restID)
+    
+  let dish=await knex('restaurant').select().join('menu','restaurant.id','menu.rest_id').where({'restaurant.id':req.params.restID,'category':"soup n salad"})
+    console.log(dish)
+    let dishItems=[]
+    dish.forEach(i => {
+      dishItems.push({id:i.id,name:i.item,price:i.price,photoPath:i.photo_path})
+    })
+    return res.render('userOrder',{layout:'user',restaurant:restDetail[0],dish:dishItems
+})
+  
 })
 
+app.get('/order/:restID/:category',async(req,res)=>{
+  let restDetail=await  knex('restaurant').select().where('restaurant.id',req.params.restID)
+  let dish=await knex('restaurant').select().join('menu','restaurant.id','menu.rest_id').where({'restaurant.id':req.params.restID,'category':req.params.category})
+    console.log(dish)
+    let dishItems=[]
+    dish.forEach(i => {
+      dishItems.push({id:i.id,name:i.item,price:i.price,photoPath:i.photo_path})
+    })
+    return res.render('userOrder',{layout:'user',restaurant:restDetail[0],dish:dishItems
+})
+})
 
-app.post('/search/:id',(req,res)=>{
+app.post('/bookmark/:id',(req,res)=>{
     return knex('bookmark').insert({account_id:req.user.id,rest_id:req.params.id}).then(()=>{
         res.send('success')
     }).catch((e)=> console.log(e))
@@ -183,6 +197,32 @@ app.get('/checkout',(req,res)=>{
 })
 
 app.post('/checkout',stripePayment);
+const endPointSecret='whsec_G2nJNMFVmpCn275FSbScXynzCytZxtJX'
+
+app.post('/webhook', (request, response) => {
+  console.log(request.body)
+  let event=request.body
+  if(event.type==='checkout.session.completed')
+  {
+    console.log('it is a successful payment')
+    console.log(event.data.object.total_details)
+  }
+  // const payload = request.body;
+  // const sig = request.headers['stripe-signature'];
+  // let event
+
+  // try {
+  //   event = stripe.webhooks.constructEvent(payload, sig, endPointSecret);
+  // } catch (err) {
+  //   return response.status(400).send(`Webhook Error: ${err.message}`);
+  // }
+  // console.log(event)
+  // if (event.type === 'checkout.session.completed') {
+  //   console.log("It is a success payment")
+  // }
+  response.status(200);
+});
+
   app.get('/success',(req,res)=>{
       res.render('paymentSuccess',{layout:'user',})
   })
@@ -213,7 +253,20 @@ app.get("/logout", (req, res) => {
 //   req.logout();
 //   res.render("/login");
 // });
-
+app.post('/discount',(req,res)=>{
+  console.log(req.body.code)
+  let discountCode=req.body.code
+  knex('restaurant').select('discount').where('discount_code',discountCode).then((data)=>{
+  if(data.length===0)
+  {
+    console.log("there is no such coupon")
+    res.json({percent_off:null})
+  }else{
+    res.json({discountCode:req.body.code,percent_off:Number(data[0].discount)})
+  }
+}
+  )
+})
 // Sher: Post route for testing local strategy
 app.post(
   "/login",
