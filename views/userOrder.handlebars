@@ -12,7 +12,7 @@
       <i class="fas fa-star"></i>
     </div>
     <div class="col-2 userBooking-bookmark">
-      <button type="button" class="border-0 bg-white bookmark"><i
+     <button type="button" class="border-0 bg-white bookmark" id="{{restaurant.id}}"><i
           class="far fa-bookmark fa-2x"
         ></i></button>
     </div>
@@ -42,8 +42,12 @@
 
             <table class="table table-borderless">
               <input type="text" name="order" class="d-none userOrder">
+              <input type="text" name="restaurant" class="d-none userRest">
               <input type="text" name="discount" class="d-none discount" id="discount">
               <tbody class="orderList">
+
+              </tbody>
+            <tbody class="discountList">
 
               </tbody>
             </table>
@@ -106,7 +110,7 @@
         {{#each dish}}
         <div class="card me-1 text-center user-dishes" style="width: 13rem;">
           <img
-            src="/image/{{photo_path}}"
+            src="/image/{{this.photoPath}}"
             class="card-img-top mx-auto"
             alt="dishes pic"
           />

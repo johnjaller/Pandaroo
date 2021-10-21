@@ -147,7 +147,7 @@ class RestService {
       .orderBy("delivery.id");
     return query.then((data) => {
       console.log("Order list", data);
-
+      if (data.length > 0) {
       let result = [];
       let last = 0;
       for (let i = 1; i < data.length; i++) {
@@ -175,9 +175,13 @@ class RestService {
         orderList.push(eachOrder);
       }
       return orderList;
+    } else {
+      let orderList = [];
+      return orderList;
+      }
     });
   }
-
+//
   getRestOrderHistory(restId) {
     let query = this.knex("delivery")
       .join("order_detail", "delivery.id", "delivery_id")
@@ -201,7 +205,7 @@ class RestService {
       .orderBy("delivery.id");
     return query.then((data) => {
       console.log("Order list", data);
-
+      if (data.length > 0) {
       let result = [];
       let last = 0;
       for (let i = 1; i < data.length; i++) {
@@ -229,6 +233,10 @@ class RestService {
         orderList.push(eachOrder);
       }
       return orderList;
+    } else {
+      let orderList = [];
+      return orderList;
+      }
     });
   }
 
