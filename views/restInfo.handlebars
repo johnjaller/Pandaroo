@@ -24,30 +24,48 @@
         <table class="table table-bordered">
           <thead>
             <tr class="text-center">
-              <th><a href="#" class="text-decoration-none">Soup n Salad</a></th>
-              <th><a href="#" class="text-decoration-none">Starter</a></th>
-              <th><a href="#" class="text-decoration-none">Main</a></th>
-              <th><a href="#" class="text-decoration-none">Dessert</a></th>
-              <th><a href="#" class="text-decoration-none">Drinks</a></th>
-              <th><a href="#" class="text-decoration-none">Others</a></th>
+              <th><a
+                  href="/biz/info/soup&salad"
+                  class="text-decoration-none soup"
+                >Soup n Salad</a></th>
+              <th><a
+                  href="/biz/info/starter"
+                  class="text-decoration-none"
+                >Starter</a></th>
+              <th><a
+                  href="/biz/info/main"
+                  class="text-decoration-none"
+                >Main</a></th>
+              <th><a
+                  href="/biz/info/dessert"
+                  class="text-decoration-none"
+                >Dessert</a></th>
+              <th><a
+                  href="/biz/info/drinks"
+                  class="text-decoration-none"
+                >Drinks</a></th>
+              <th><a
+                  href="/biz/info/others"
+                  class="text-decoration-none"
+                >Others</a></th>
             </tr>
           </thead>
         </table>
 
-        <div class="d-flex flex-wrap justify-content-start">
-          {{! #each dishes }}
-          <div class="card me-3 rest-dishes" style="max-width: 20rem;">
-            <img
-              src="/assets/panna-cotta.png"
-              class="card-img-top mx-auto"
-              alt="dishes pic"
-            />
-            <div class="card-body">
-              <p class="card-text">Apple pie</p>
-              <p class="card-text">HKD 12.50</p>
+        <div class="d-flex flex-wrap justify-content-center">
+          {{#each dishInfo}}
+            <div class="card me-3 rest-dishes" style="max-width: 20rem;">
+              <img
+                src={{this.photo_path}}
+                class="card-img-top mx-auto"
+                alt="dishes pic"
+              />
+              <div class="card-body">
+                <p class="card-text">{{this.item}}</p>
+                <p class="card-text">HKD {{this.price}}</p>
+              </div>
             </div>
-          </div>
-          {{! /each dishes }}
+          {{/each}}
         </div>
       </div>
     </div>

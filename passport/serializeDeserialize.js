@@ -19,6 +19,7 @@ function deserializeUser(id, done) {
       done(error, false);
     });
 }
+
 module.exports = {
   serializeUser: serializeUser,
   deserializeUser: deserializeUser,

@@ -6,7 +6,7 @@
     >
       <thead>
         <tr class="restBooking">
-          <th>Order</th>
+          <th>Order no.</th>
           <th>Order time</th>
           <th>Dishes</th>
           <th>Total amount</th>
@@ -19,17 +19,30 @@
           <tr>
             <td>{{this.id}}</td>
             <td>{{this.created_at}}</td>
-            <td>{{this.item}} x {{this.quantity}}</td>
-            <td></td>
+            <td>
+              {{#each items}}
+                {{this.item}}
+                x
+                {{this.quantity}}
+                <br />
+              {{/each}}
+            </td>
+
+            <td>HKD {{this.total_amount}}</td>
             <td>{{this.special_request}}</td>
             <td>
-              <select id="orderStatus" class="form-select">
-                <option selected></option>
-                <option value="1">Preparing</option>
-                <option value="2">Ready</option>
-                <option value="3">Delivered</option>
-                <option value="4">Cancelled</option>
+              <select class="form-select mb-2 orderStatus">
+                <option>{{this.order_status}}</option>
+                <option value="Preparing">Preparing</option>
+                <option value="Ready">Ready</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Cancelled">Cancelled</option>
               </select>
+              <button
+                type="submit"
+                id={{this.id}}
+                class="border-0 rounded btn-restSubmitOrder"
+              >Submit</button>
             </td>
           </tr>
         {{/each}}
@@ -48,7 +61,7 @@
       <li class="page-item">
         <a
           class="page-link"
-          href="/orders?page={{lastPage}}"
+          href="/biz/orders?page={{lastPage}}"
           aria-label="Previous"
         >
           <span aria-hidden="true">&laquo;</span>
@@ -58,7 +71,7 @@
       <li class="page-item disabled">
         <a
           class="page-link"
-          href="/orders?page={{lastPage}}"
+          href="/biz/orders?page={{lastPage}}"
           aria-label="Previous"
         >
           <span aria-hidden="true">&laquo;</span>
@@ -68,13 +81,21 @@
     {{{createPageNumber type totalPage currentPage}}}
     {{#if hasNextPage}}
       <li class="page-item">
-        <a class="page-link" href="/orders?page={{nextPage}}" aria-label="Next">
+        <a
+          class="page-link"
+          href="/biz/orders?page={{nextPage}}"
+          aria-label="Next"
+        >
           <span aria-hidden="true">&raquo;</span>
         </a>
       </li>
     {{else}}
       <li class="page-item disabled">
-        <a class="page-link" href="/orders?page={{nextPage}}" aria-label="Next">
+        <a
+          class="page-link"
+          href="/biz/orders?page={{nextPage}}"
+          aria-label="Next"
+        >
           <span aria-hidden="true">&raquo;</span>
         </a>
       </li>

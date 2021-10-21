@@ -7,10 +7,13 @@ const options = {
 //import package
 require("dotenv").config();
 const express = require("express");
-const cors = require("cors");
-const path = require("path");
 const app = express();
+const cors = require("cors");
 const stripePayment = require("./stripe/stripePayment.js");
+const https = require("https").Server(options, app);
+
+// Set up socket.io
+const io = require("socket.io")(https);
 
 // Set up express session
 const session = require("express-session");
@@ -20,31 +23,16 @@ app.use(session({ secret: "secret", resave: false, saveUninitialized: true }));
 const passportFunction = require("./passport/passport");
 app.use(passportFunction.initialize());
 app.use(passportFunction.session());
+
+// Set up public folder and middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 
-// Middleware to check if the user is logged in
-const isLoggedIn = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    console.log(req.user, "USER");
-    return next();
-  }
-  console.log("failed");
-  res.redirect("/bizsignup");
-};
-
-const https = require("https").Server(options, app);
-const io = require("socket.io")(https);
-
-//initialisation
+// Set up knex
 const knexConfig = require("./knexfile").development;
 const knex = require("knex")(knexConfig);
-const userService = new UserService(knex);
-const userRouter = new UserRouter(userService);
-
-//middleware
 
 // Set up handlebars
 const handlebars = require("express-handlebars");
@@ -52,6 +40,38 @@ app.engine("handlebars", handlebars({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 const handlebarHelpers = require("./handlebars-helpers");
 
+// Set up restaurant service and router
+const UserService = require("./service/userService");
+const UserRouter = require("./router/userRouter");
+const userService = new UserService(knex);
+const userRouter = new UserRouter(userService);
+
+const RestService = require("./service/restService");
+const RestRouter = require("./router/restRouter");
+const restService = new RestService(knex);
+const restRouter = new RestRouter(restService);
+
+// Middleware to check if the user/rest is logged in
+function userLogIn(req, res, next) {
+  if (req.isAuthenticated()) {
+    console.log(req.session.passport.user, "passport USER");
+    console.log(req.user, "USER");
+    return next();
+  } else {
+    res.redirect("/login");
+  }
+}
+
+function restLogIn(req, res, next) {
+  if (req.isAuthenticated()) {
+    console.log(req.user, "REST");
+    return next();
+  }
+  console.log("failed");
+  res.redirect("/bizlogin");
+}
+
+// Set up facebook login
 app.get(
   "/auth/facebook",
   passportFunction.authenticate("facebook", {
@@ -67,28 +87,25 @@ app.get(
   })
 );
 
-// Set up restaurant service and router
-const RestService = require("./service/restService");
-const RestRouter = require("./router/restRouter");
-const restService = new RestService(knex);
-const restRouter = new RestRouter(restService);
+// Set up google login
+app.get(
+  "/auth/google",
+  passportFunction.authenticate("google", { scope: ["email", "profile"] })
+);
+
+app.get(
+  "/auth/google/callback",
+  passportFunction.authenticate("google", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+  })
+);
 
 // Route for users
 app.use("/user", userRouter.route());
-// app.get("/user", (req, res) => {
-//   res.render("userInfo", { layout: "user" });
-// });
-function userLogIn(req, res, next) {
-  if (req.isAuthenticated()) {
-    console.log(req.cookies);
-    console.log(req.session.passport.user, "passport USER");
-    console.log(req.user, "USER");
-    return next();
-  } else {
-    res.redirect("/login");
-  }
-}
+
 app.get("/", userLogIn);
+
 app.get("/", async (req, res) => {
   if (req.query.q === undefined) {
     let restTag = await userService.getRestTag();
@@ -137,13 +154,7 @@ app.get("/", async (req, res) => {
   }
 });
 
-app.get("/userbooking", (req, res) => {
-  res.render("userBooking", { layout: "user" });
-});
-
 app.get("/search/:restID", (req, res) => {
-  // console.log(req, 'REQUEST!!!!<><><><>')
-
   console.log(req.params.restID, "rest id how many times?");
 
   return knex("restaurant")
@@ -165,43 +176,35 @@ app.post("/search/:id", (req, res) => {
     .catch((e) => console.log(e));
 });
 
+app.get("/userbooking", (req, res) => {
+  res.render("userBooking", { layout: "user" });
+});
+
 app.get("/userorder", (req, res) => {
   res.render("userOrder", { layout: "user" });
 });
 
-// Route for restaurants
-app.get("/bizsignup", (req, res) => {
-  res.render("restSignUp", { layout: "restaurantSimple" });
-});
-
-app.get("/bizsetupmenu", (req, res) => {
-  res.render("restSetUpMenu", { layout: "restaurant" });
-});
-
-app.get("/info", restRouter.router());
-
-app.get("/bookings", restRouter.router());
-
-app.get("/orders", restRouter.router());
-
-app.get("/ordershistory", (req, res) => {
-  res.render("restOrderHistory", { layout: "restaurant" });
-});
 //stripe checkout test route
 app.get("/checkout", (req, res) => {
   res.render("checkout", { layout: "user" });
 });
 
 app.post("/checkout", stripePayment);
+
 app.get("/success", (req, res) => {
   res.render("paymentSuccess", { layout: "user" });
 });
+
 app.get("/cancel", (req, res) => {
   res.render("paymentFailed", { layout: "user" });
 });
-app.get("/bookingshistory", restRouter.router());
 
-app.get("/ordershistory", restRouter.router());
+// Route for restaurants
+app.get("/bizsetup", (req, res) => {
+  res.render("restSetUp", { layout: "restaurantSimple" });
+});
+
+app.use("/biz", restRouter.router());
 
 // Sher: Temporary route set up for testing sign in page
 app.get("/login", (req, res) => {
@@ -211,27 +214,11 @@ app.get("/login", (req, res) => {
 app.get("/bizlogin", (req, res) => {
   res.render("restLogin");
 });
-app.get(
-  "/auth/google",
-  passportFunction.authenticate("google", { scope: ["email", "profile"] })
-);
-
-app.get(
-  "/auth/google/callback",
-  passportFunction.authenticate("google", {
-    successRedirect: "/",
-    failureRedirect: "/login",
-  })
-);
 
 app.get("/logout", (req, res) => {
   req.logout();
   res.render("userLogin");
 });
-// app.get("/logout", (req, res) => {
-//   req.logout();
-//   res.render("/login");
-// });
 
 // Sher: Post route for testing local strategy
 app.post(

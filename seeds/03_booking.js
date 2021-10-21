@@ -8,7 +8,7 @@ exports.seed = function (knex) {
         {
           rest_id: 1,
           account_id: 1,
-          booking_status: "Cancelled",
+          booking_status: "",
           special_request: "My friend birthday",
           booking_date: "11/2/2021",
           booking_time: "19:00",
@@ -17,7 +17,7 @@ exports.seed = function (knex) {
         {
           rest_id: 1,
           account_id: 2,
-          booking_status: "Confirmed",
+          booking_status: "",
           special_request: "Window seat",
           booking_date: "11/6/2021",
           booking_time: "18:00",
@@ -26,7 +26,7 @@ exports.seed = function (knex) {
         {
           rest_id: 1,
           account_id: 3,
-          booking_status: "Completed",
+          booking_status: "",
           special_request: "Need a private room",
           booking_date: "11/18/2021",
           booking_time: "20:00",
