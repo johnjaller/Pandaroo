@@ -1,14 +1,5 @@
 const express = require("express");
 
-// const fs = require("fs");
-// const util = require("util");
-// const unlinkFile = util.promisify(fs.unlink);
-
-// // Set up multer and S3 bucket
-// const multer = require("multer");
-// const upload = multer({ dest: "../uploads/" });
-// const { uploadFile } = require("../s3Bucket/s3");
-
 class RestRouter {
   constructor(restService) {
     this.restService = restService;
@@ -22,17 +13,21 @@ class RestRouter {
     router.get("/orders", this.getOrder.bind(this));
     router.get("/bookingshistory", this.getBookingHistory.bind(this));
     router.get("/ordershistory", this.getOrderHistory.bind(this));
+
+    // Submit signup form > redirect to this route
+    router.get("/bizinit", this.getRestInitialSetUp.bind(this));
+
+    // Click edit info on homepage > redirect to this route
     router.get("/bizsetup", this.getRestSetUp.bind(this));
     router.put("/bizsetup", this.putRestInfo.bind(this));
 
+    // Click edit menu > redirect to this route
     router.get("/bizsetupmenu", this.getSetUpMenu.bind(this));
-    // router.post("/bizaddmenu"),
-    //   upload.single("uploadedPhoto"),
-    //   this.postRestMenu.bind(this);
 
     return router;
   }
 
+  // Get "/info"
   async get(req, res) {
     console.log("Get restaurant info");
     try {
@@ -200,6 +195,21 @@ class RestRouter {
     }
   }
 
+  // Get "/restinit"
+  async getRestInitialSetUp(req, res) {
+    console.log("First login from a restaurant user");
+    try {
+      // await this.restService.postRestInit(req.user.id);
+      let restInfo = await this.restService.getRestInfo(req.user.id);
+      return res.render("restSetUp", {
+        layout: "restaurant",
+        restInfo: restInfo,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   async getRestSetUp(req, res) {
     try {
       console.log("Get restaurant info");
@@ -254,13 +264,14 @@ class RestRouter {
     }
   }
 
+  // Get "/bizsetupmenu"
   async getSetUpMenu(req, res) {
     return res.render("restSetUpMenu", {
       layout: "restaurant",
     });
   }
 
-  // Update restaurant info
+  // Put "/bizsetup"
   async putRestInfo(req, res) {
     console.log("restRouter req.user.id: ", req.user.id);
 
@@ -280,7 +291,7 @@ class RestRouter {
       });
   }
 
-  // Add menu
+  // Add menu (moved to app.js)
   // async postRestMenu(req, res) {
   //   console.log("Receiving rest set menu req..");
   //   try {

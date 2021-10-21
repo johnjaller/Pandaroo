@@ -77,6 +77,7 @@ $("#userSetUpForm").submit((event) => {
   });
 });
 
+// Shopping cart
 $(document).on("click", ".userInfoSubmit", () => {
   let username = $(".username").val();
   let firstname = $(".firstname").val();

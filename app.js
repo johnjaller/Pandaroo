@@ -62,13 +62,17 @@ app.use(passportFunction.session());
 
 // Set up middleware to check login status
 function restLogIn(req, res, next) {
+  console.log("REST: ", req.user);
+  console.log("SESSION PASSPORT USER: ", req.session.passport.user);
+  console.log("REST ID: ", req.user.id);
   if (req.isAuthenticated()) {
-    console.log("REST ID: ", req.user.id);
     return next();
+  } else {
+    console.log("app.js restLogIn failed");
+    res.redirect("/bizlogin");
   }
-  console.log("app.js restLogIn failed");
-  res.redirect("/bizlogin");
 }
+
 function userLogIn(req, res, next) {
   if (req.isAuthenticated()) {
     console.log(req.cookies);
@@ -240,6 +244,11 @@ app.get("/setup", userLogIn, (req, res) => {
 // Route for restaurants
 app.use("/biz", restLogIn, restRouter.router());
 
+// app.get("/bizinit", restLogIn, (req, res) => {
+//   console.log("First login from a restaurant user");
+//   res.render("restSetUp", { layout: "restaurant" });
+// });
+
 // Upload restaurant menu pic
 app.post("/bizaddmenu", upload.single("uploadedPhoto"), async (req, res) => {
   console.log("Receiving rest set menu req..");
@@ -287,7 +296,7 @@ app.post("/bizsetuppropic", upload.single("uploadedFile"), async (req, res) => {
         console.log("Inserting path done");
       });
     await unlinkFile(file.path);
-    res.redirect("/biz/bizsetup");
+    res.redirect("/biz/bizinit");
   } catch (err) {
     throw new Error(err);
   }
@@ -300,6 +309,7 @@ app.get("/image/:key", (req, res) => {
   readStream.pipe(res);
 });
 
+// Stripe
 app.post("/checkout", stripePayment);
 const endPointSecret = "whsec_G2nJNMFVmpCn275FSbScXynzCytZxtJX";
 
@@ -342,20 +352,6 @@ app.get("/cancel", (req, res) => {
   res.render("paymentFailed", { layout: "user" });
 });
 
-// Route for local login & signup
-app.get("/login", (req, res) => {
-  res.render("userLogin");
-});
-
-app.get("/bizlogin", (req, res) => {
-  res.render("restLogin");
-});
-
-app.get("/logout", (req, res) => {
-  req.logout();
-  res.render("userLogin");
-});
-
 app.post("/discount", (req, res) => {
   console.log(req.body.code);
   let discountCode = req.body.code;
@@ -374,7 +370,22 @@ app.post("/discount", (req, res) => {
       }
     });
 });
-// Sher: Post route for testing local strategy
+
+// Route for local login & signup
+app.get("/login", (req, res) => {
+  res.render("userLogin");
+});
+
+app.get("/bizlogin", (req, res) => {
+  res.render("restLogin");
+});
+
+app.get("/logout", (req, res) => {
+  req.logout();
+  res.render("userLogin");
+});
+
+// Post route for local strategy
 app.post(
   "/login",
   passportFunction.authenticate("local-login", {
@@ -405,7 +416,7 @@ app.post(
 app.post(
   "/bizsignup",
   passportFunction.authenticate("local-signup", {
-    successRedirect: "/biz/bizsetup",
+    successRedirect: "/biz/bizinit",
     failureRedirect: "/bizlogin",
   })
 );
