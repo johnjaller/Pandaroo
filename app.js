@@ -229,13 +229,14 @@ app.post('/webhook', async(request, response) => {
    }
   
    console.log(products)
-   let deliveryId=await knex('delivery').insert({rest_id:restId,account_id:userId,order_status:'Preparing',special_request:specialRequest,amount:totalAmount}).returning('id')
-   console.log(deliveryId)
-   for(let i=0;i<products.length;i++)
-   {
-
-     return knex('order_detail').insert({delivery_id:deliveryId[0],menu_id:products[i].menu_id,quantity:products[i].quantity})
-   }
+   knex('delivery').insert({rest_id:restId,account_id:userId,order_status:'Preparing',special_request:specialRequest,amount:totalAmount}).returning('id').then(async(deliveryId)=>{
+     console.log(deliveryId)
+     for(let i=0;i<products.length;i++)
+     {
+      await knex('order_detail').insert({delivery_id:deliveryId[0],menu_id:products[i].menu_id,quantity:products[i].quantity})
+     }
+   })
+   
   
       
     
