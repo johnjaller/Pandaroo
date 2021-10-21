@@ -14,7 +14,7 @@ exports.up = function(knex) {
       table.integer('seats')
       table.text('description')
       table.boolean('delivery')
-      table.string('discount_code')
+      table.string('code').unique()
       table.decimal('discount')
       table.timestamps(false,true)
   })

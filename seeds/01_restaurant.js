@@ -19,7 +19,7 @@ exports.seed = function (knex) {
           description: "A vegetarian restaurant",
           seats: 40,
           delivery: true,
-          discount_code:"BIBEK",
+          code:"happy",
           discount:0.5
         },
         {
@@ -35,7 +35,7 @@ exports.seed = function (knex) {
           description: "A middle-class japanese sushi restaurant",
           seats: 50,
           delivery: true,
-          discount_code:"BIBEK",
+          code:"SAMO",
           discount:0.5
         },
         {
@@ -52,7 +52,7 @@ exports.seed = function (knex) {
           description: "A very problematic steak house",
           seats: 40,
           delivery: true,
-          discount_code:"BIBEK",
+          code:"COCON2021",
           discount:0.5
         },
       ]);

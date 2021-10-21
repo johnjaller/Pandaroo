@@ -142,7 +142,7 @@ app.get('/order/:restID',async(req,res)=>{
  
     let restDetail=await  knex('restaurant').select().where('restaurant.id',req.params.restID)
     
-  let dish=await knex('restaurant').select().join('menu','restaurant.id','menu.rest_id').where({'restaurant.id':req.params.restID,'category':"soup n salad"})
+  let dish=await knex('restaurant').select().join('menu','restaurant.id','menu.rest_id').where({'restaurant.id':req.params.restID,'category':"soup & salad"})
     console.log(dish)
     let dishItems=[]
     dish.forEach(i => {
@@ -200,10 +200,7 @@ app.get("/ordershistory", (req, res) => {
   res.render("restOrderHistory", { layout: "restaurant" });
 
 });
-//stripe checkout test route
-app.get('/checkout',(req,res)=>{
-    res.render('checkout',{layout:'user'})
-})
+//stripe checkout
 
 app.post('/checkout',stripePayment);
 const endPointSecret='whsec_G2nJNMFVmpCn275FSbScXynzCytZxtJX'
@@ -287,7 +284,7 @@ app.get("/logout", (req, res) => {
 app.post('/discount',(req,res)=>{
   console.log(req.body.code)
   let discountCode=req.body.code
-  knex('restaurant').select('discount').where('discount_code',discountCode).then((data)=>{
+  knex('restaurant').select('discount').where('code',discountCode).then((data)=>{
   if(data.length===0)
   {
     console.log("there is no such coupon")
