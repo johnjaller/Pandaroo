@@ -147,34 +147,38 @@ class RestService {
       .orderBy("delivery.id");
     return query.then((data) => {
       console.log("Order list", data);
-
-      let result = [];
-      let last = 0;
-      for (let i = 1; i < data.length; i++) {
-        if (data[i].id !== data[i - 1].id) {
-          result.push(data.slice(last, i));
-          last = i;
+      if (data.length > 0) {
+        let result = [];
+        let last = 0;
+        for (let i = 1; i < data.length; i++) {
+          if (data[i].id !== data[i - 1].id) {
+            result.push(data.slice(last, i));
+            last = i;
+          }
         }
-      }
-      result.push(data.slice(last));
+        result.push(data.slice(last));
 
-      let orderList = [];
-      for (let i = 0; i < result.length; i++) {
-        let eachOrder = {
-          id: result[i][0].id,
-          created_at: result[i][0].created_at,
-          total_amount: result[i][0].total_amount,
-          order_status: result[i][0].order_status,
-          special_request: result[i][0].special_request,
-          items: [],
-        };
-        result[i].map((dish) => {
-          let food = { item: dish.item, quantity: dish.quantity };
-          eachOrder.items.push(food);
-        });
-        orderList.push(eachOrder);
+        let orderList = [];
+        for (let i = 0; i < result.length; i++) {
+          let eachOrder = {
+            id: result[i][0].id,
+            created_at: result[i][0].created_at,
+            total_amount: result[i][0].total_amount,
+            order_status: result[i][0].order_status,
+            special_request: result[i][0].special_request,
+            items: [],
+          };
+          result[i].map((dish) => {
+            let food = { item: dish.item, quantity: dish.quantity };
+            eachOrder.items.push(food);
+          });
+          orderList.push(eachOrder);
+        }
+        return orderList;
+      } else {
+        let orderList = [];
+        return orderList;
       }
-      return orderList;
     });
   }
 
@@ -201,34 +205,38 @@ class RestService {
       .orderBy("delivery.id");
     return query.then((data) => {
       console.log("Order list", data);
-
-      let result = [];
-      let last = 0;
-      for (let i = 1; i < data.length; i++) {
-        if (data[i].id !== data[i - 1].id) {
-          result.push(data.slice(last, i));
-          last = i;
+      if (data.length > 0) {
+        let result = [];
+        let last = 0;
+        for (let i = 1; i < data.length; i++) {
+          if (data[i].id !== data[i - 1].id) {
+            result.push(data.slice(last, i));
+            last = i;
+          }
         }
-      }
-      result.push(data.slice(last));
+        result.push(data.slice(last));
 
-      let orderList = [];
-      for (let i = 0; i < result.length; i++) {
-        let eachOrder = {
-          id: result[i][0].id,
-          created_at: result[i][0].created_at,
-          total_amount: result[i][0].total_amount,
-          order_status: result[i][0].order_status,
-          special_request: result[i][0].special_request,
-          items: [],
-        };
-        result[i].map((dish) => {
-          let food = { item: dish.item, quantity: dish.quantity };
-          eachOrder.items.push(food);
-        });
-        orderList.push(eachOrder);
+        let orderList = [];
+        for (let i = 0; i < result.length; i++) {
+          let eachOrder = {
+            id: result[i][0].id,
+            created_at: result[i][0].created_at,
+            total_amount: result[i][0].total_amount,
+            order_status: result[i][0].order_status,
+            special_request: result[i][0].special_request,
+            items: [],
+          };
+          result[i].map((dish) => {
+            let food = { item: dish.item, quantity: dish.quantity };
+            eachOrder.items.push(food);
+          });
+          orderList.push(eachOrder);
+        }
+        return orderList;
+      } else {
+        let orderList = [];
+        return orderList;
       }
-      return orderList;
     });
   }
 
