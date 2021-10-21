@@ -99,36 +99,36 @@ input {
 #rest-login-signup {
   background-color: #ffffff;
   min-height: 50vh;
-  max-width: 40vw;
+  max-width: 50vw;
 }
 
 #rest-title {
   font-family: "Bungee", cursive;
   color: #ffffff;
   font-size: 80px;
-  /* text-align: center; */
   letter-spacing: -6px;
   -webkit-text-stroke: 6px #4b8494;
 }
 
 /* Rest-page buttons */
 .btn-success {
-  background-color: #4b8494;
+  background-color: #ffffff;
   border: 3px solid #4b8494;
   height: 105px;
   font-size: 20px;
+  color: #4b8494;
 }
 
 .btn-success:hover {
-  background-color: #ffffff;
+  background-color: #4b8494;
   border-color: #4b8494;
-  color: #4b8494;
+  color: #ffffff;
 }
 
 .btn-danger {
   background-color: #4b8494;
   border: 3px solid #4b8494;
-  height: 50px;
+  height: 105px;
   font-size: 20px;
   color: #ffffff;
 }
