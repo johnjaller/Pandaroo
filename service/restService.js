@@ -3,6 +3,7 @@ class RestService {
     this.knex = knex;
   }
 
+  // Get rest homepage "/info"
   getRestInfo(restId) {
     return this.knex
       .select(
@@ -21,14 +22,15 @@ class RestService {
       .where("id", restId);
   }
 
+  // Get rest setup info (with tag) "/bizsetup"
   getRestSetUpInfo(restId) {
-    try {
-      console.log("restService restId: ", restId);
-      return this.knex("restaurant")
-        .join("tag_rest_join", "restaurant.id", "tag_rest_join.rest_id")
-        .join("tag", "tag_rest_join.tag_id", "tag.id")
+    console.log("restService restId: ", restId);
+    return (
+      this.knex("restaurant")
+        // .join("tag_rest_join", "restaurant.id", "tag_rest_join.rest_id")
+        // .join("tag", "tag_rest_join.tag_id", "tag.id")
         .select(
-          "profile_path",
+          // "profile_path",
           "name",
           "description",
           "address",
@@ -40,11 +42,37 @@ class RestService {
           "delivery",
           "code",
           "discount",
-          "description",
-          this.knex.raw("ARRAY_AGG(tag.tag_name) as tag")
+          "description"
+          // this.knex.raw("ARRAY_AGG(tag.tag_name) as tag")
         )
-        .whereRaw("restaurant.id = ?", [restId])
-        .groupBy("restaurant.id", restId);
+        .where("restaurant.id", restId)
+      // .whereRaw("restaurant.id = ?", [restId])
+      // .groupBy("restaurant.id", restId)
+    );
+  }
+
+  async postRestInit(restId) {
+    try {
+      console.log("restService restId: ", restId);
+      return await this.knex("restaurant")
+        .where("id", restId)
+        // .join("tag_rest_join", "restaurant.id", "tag_rest_join.rest_id")
+        // .join("tag", "tag_rest_join.tag_id", "tag.id")
+        .update({
+          name: null,
+          description: null,
+          address: null,
+          district: null,
+          phone_no: null,
+          opening_time: null,
+          closing_time: null,
+          seats: null,
+          delivery: null,
+          code: null,
+          discount: null,
+          description: null,
+          // this.knex.raw("ARRAY_AGG(tag.tag_name) as tag")
+        });
     } catch (err) {
       console.log(err);
     }
@@ -226,7 +254,7 @@ class RestService {
       .where("id", orderId);
   }
 
-  // Update restaurant info
+  // Edit rest setup info (with tag) "/bizsetup"
   async updateRestInfo(restId, data) {
     try {
       console.log(restId);
@@ -290,6 +318,7 @@ class RestService {
     }
   }
 
+  // Post rest menu "/bizsetupmenu"
   async addRestMenu(restId, data, result) {
     try {
       await this.knex("menu")

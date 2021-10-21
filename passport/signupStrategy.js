@@ -32,11 +32,13 @@ module.exports = new LocalStrategy(async (username, password, done) => {
       // get user id and update the newuser object
       let userID = await knex("account").insert(newUser).returning("id");
       newUser.id = userID[0];
+      newUser.type='user'
       console.log("New user: ", newUser);
       done(null, newUser);
     } else {
       let restID = await knex("restaurant").insert(newUser).returning("id");
       newUser.id = restID[0];
+      newUser.type= 'rest'
       console.log("New restaurant: ", newUser);
       done(null, newUser);
     }

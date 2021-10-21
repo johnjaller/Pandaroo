@@ -2,7 +2,6 @@ const development = require("../knexfile").development;
 const knex = require("knex")(development);
 const user = "account";
 
-// Set up gmail login
 function getGmailById(gmailID) {
   return knex(user).select().where("gmail_id", gmailID);
 }
@@ -18,7 +17,6 @@ function postGmail(email, gmailID, givenName, familyName) {
     .returning("id");
 }
 
-// Set up facebook login
 function getByFacebookId(facebookId) {
   return knex("account").where("facebook_id", facebookId);
 }
