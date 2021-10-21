@@ -332,6 +332,7 @@ class RestRouter {
   // Get "/bizsetupmenu"
   async getSetUpMenu(req, res) {
     let dishInfo = await this.restService.getMenu(req.user.id, "soup&salad");
+    console.log(dishInfo);
     return res.render("restSetUpMenu", {
       layout: "restaurant",
       dishInfo: dishInfo,

@@ -78,13 +78,7 @@
     </div>
 
     <div class="restMenu col-9">
-      <div class="d-flex justify-content-between">
-        <h4>Menu</h4>
-        <a href="/biz/info"><button
-            type="submit"
-            class="mb-2 border-0 rounded btn-restSubmit"
-          >Submit ></button></a>
-      </div>
+      <h4>Menu</h4>
       <table class="table table-bordered">
         <thead>
           <tr class="text-center">
@@ -117,19 +111,32 @@
       </table>
 
       <div class="d-flex flex-wrap justify-content-start">
-        {{! #each dishes }}
-        <div class="card me-3 rest-dishes" style="width: 19rem;">
-          <img
-            src="/assets/panna-cotta.png"
-            class="card-img-top mx-auto"
-            alt="dishes pic"
-          />
-          <div class="card-body">
-            <p class="card-text">Apple pie</p>
-            <p class="card-text">HKD 12.50</p>
+        {{#each dishInfo}}
+          <div class="card me-3 rest-dishes" style="width: 19rem;">
+            <img
+              src="/image/{{this.photo_path}}"
+              class="card-img-top mx-auto"
+              alt="dishes pic"
+            />
+            <div class="card-body">
+              <p class="card-text">{{this.item}}</p>
+              <p class="card-text">HKD{{this.price}}</p>
+            </div>
+            <div class="d-flex justify-content-around">
+              <div>
+              <a href="/biz/info"><button
+                  type="submit"
+                  class="mb-2 border-0 rounded btn-restSubmit"
+                >Edit</button></a>
+                </div>
+                <div>
+              <a href="/biz/info"><button
+                  type="submit"
+                  class="mb-2 border-0 rounded btn-restSubmit"
+                >Delete</button></a>
+                </div>
           </div>
-        </div>
-        {{! /each dishes }}
+        {{/each}}
       </div>
     </div>
 
