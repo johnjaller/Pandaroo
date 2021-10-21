@@ -4,11 +4,12 @@
       <div class="col-3">
         {{#each info}}
           <h2 class="mt-5 userInfoTitle">Your<br />Information</h2>
-          <p class="my-4 userInfoContent">First name:{{this.firstname}}</p>
-          <p class="my-4 userInfoContent">Last name: {{this.surname}}</p>
-          <p class="my-4 userInfoContent">Email: {{this.username}}</p>
-          <p class="my-4 userInfoContent">Address: {{this.address}}</p>
-          <p class="my-4 userInfoContent">Tel: {{this.phone_no}}</p>
+          <p class="my-4 userInfoContent userFirstname">First name: <span>{{this.firstname}}</span></p>
+          <p class="my-4 userInfoContent userLastname">Last name: <span>{{this.surname}}</span></p>
+          <p class="my-4 userInfoContent userUsername">Email: <span>{{this.username}}</span></p>
+          <p class="my-4 userInfoContent userAddress">Address: <span>{{this.address}}</span></p>
+          <p class="my-4 userInfoContent userDistrict">District: <span>{{this.district}}</span></p>
+          <p class="my-4 userInfoContent userPhone">Tel: <span>{{this.phone_no}}</span></p>
         {{/each}}
         <button class="btn-userlogout me-4 border-0 rounded" data-bs-toggle="modal" data-bs-target="#edit">Edit my profile</button>
       </div>
@@ -193,10 +194,10 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+        <form class="userInfo-edit"></form>
         {{#each info}}
-        <label for="username">Email</label>
         <br>
-        <input class="username" type="email" value="{{this.username}}">
+        <input class="username" name="username" type="email" value="{{this.username}}">
         <br>
         <label for="firstname">First Name</label>
         <br>
@@ -232,11 +233,14 @@
               <option value="Sai Kung">Sai Kung</option>
               <option value="Islands">Islands</option>
             </select>
+             <label for="phone">Telephone number</label>
+        <br>
+        <input class="phone" type="number" value="{{this.phone_no}}">
         {{/each}}
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary userInfoSubmit">Submit</button>
+        <button type="submit" class="btn btn-primary userInfoSubmit" data-bs-dismiss="modal">Submit</button>
       </div>
     </div>
   </div>

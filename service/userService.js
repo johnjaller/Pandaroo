@@ -2,7 +2,6 @@ class UserService {
   constructor(knex) {
     this.knex = knex;
   }
-
   getUserInfo(userId) {
     return this.knex
       .select(
@@ -56,6 +55,28 @@ class UserService {
 
   getRestTag() {
     return this.knex("tag").select("tag_name", "id");
+  }
+
+  putUserInfo(
+    userID,
+    email,
+    givenName,
+    familyName,
+    LivingAddress,
+    livingDistrict,
+    phone
+  ) {
+    console.log(typeof phone);
+    return this.knex("account")
+      .update({
+        username: email,
+        firstname: givenName,
+        surname: familyName,
+        address: LivingAddress,
+        district: livingDistrict,
+        phone_no: parseInt(phone),
+      })
+      .where("id", userID);
   }
 }
 

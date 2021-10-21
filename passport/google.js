@@ -5,7 +5,6 @@ const googleConfig = {
   clientSecret: process.env.GOOGLE_SECRET,
   callbackURL: "https://localhost:8080/auth/google/callback",
 };
-
 function googleCallback(accessToken, refreshToken, profile, done) {
   console.log(profile);
   const user = { username: profile.emails[0].value };
@@ -13,7 +12,7 @@ function googleCallback(accessToken, refreshToken, profile, done) {
     .getGmailById(profile.id)
     .then((queryData) => {
       if (queryData.length === 0) {
-        userQueries
+        return userQueries
           .postGmail(
             user.username,
             profile.id,
@@ -37,7 +36,6 @@ function googleCallback(accessToken, refreshToken, profile, done) {
       throw e;
     });
 }
-
 const google = new GoogleStrategy(googleConfig, googleCallback);
 
 module.exports = { google: google };

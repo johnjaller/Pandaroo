@@ -34,8 +34,8 @@ function postFacebook(username, facebookId, givenName, familyName) {
     .returning("id");
 }
 
-function getById(id) {
-  return knex("account").select("id", "username").where("id", id);
+function getById(userId) {
+  return knex("account").select("id", "username").where("id", userId);
 }
 
 module.exports = {
