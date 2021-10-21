@@ -244,11 +244,6 @@ app.get("/setup", userLogIn, (req, res) => {
 // Route for restaurants
 app.use("/biz", restLogIn, restRouter.router());
 
-// app.get("/bizinit", restLogIn, (req, res) => {
-//   console.log("First login from a restaurant user");
-//   res.render("restSetUp", { layout: "restaurant" });
-// });
-
 // Upload restaurant menu pic
 app.post("/bizaddmenu", upload.single("uploadedPhoto"), async (req, res) => {
   console.log("Receiving rest set menu req..");

@@ -279,12 +279,13 @@ class RestRouter {
     await this.restService.updateRestInfo(req.user.id, req.body);
 
     console.log("restRouter: Updating restaurant tag");
+
     await this.restService
       .deleteRestTag(req.user.id)
       .then(() => {
         console.log("Deleted restaurant tag");
         this.restService.insertRestTag(req.user.id, req.body);
-        res.status(200);
+        res.redirect("/biz/info");
       })
       .catch((err) => {
         res.status(500).json(err);

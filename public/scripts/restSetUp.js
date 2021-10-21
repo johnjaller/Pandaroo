@@ -42,10 +42,11 @@ $("#restSetUpSubmit").click((event) => {
       type: "PUT",
       data: restInfo,
       // success: function () {
-      //   window.location.replace("https://localhost:8080/biz/bizsetupmenu");
+      //   window.location.replace("https://localhost:8080/biz/info");
       // },
     }).then(() => {
-      alert("Successfully updated!");
+      // window.location.replace("https://localhost:8080/biz/info");
+      // console.log("Successfully updated!");
     });
   } else {
     console.log("Incorrect phone number");

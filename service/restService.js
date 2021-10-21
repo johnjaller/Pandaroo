@@ -54,25 +54,20 @@ class RestService {
   async postRestInit(restId) {
     try {
       console.log("restService restId: ", restId);
-      return await this.knex("restaurant")
-        .where("id", restId)
-        // .join("tag_rest_join", "restaurant.id", "tag_rest_join.rest_id")
-        // .join("tag", "tag_rest_join.tag_id", "tag.id")
-        .update({
-          name: null,
-          description: null,
-          address: null,
-          district: null,
-          phone_no: null,
-          opening_time: null,
-          closing_time: null,
-          seats: null,
-          delivery: null,
-          code: null,
-          discount: null,
-          description: null,
-          // this.knex.raw("ARRAY_AGG(tag.tag_name) as tag")
-        });
+      return await this.knex("restaurant").where("id", restId).update({
+        name: null,
+        description: null,
+        address: null,
+        district: null,
+        phone_no: null,
+        opening_time: null,
+        closing_time: null,
+        seats: null,
+        delivery: null,
+        code: null,
+        discount: null,
+        description: null,
+      });
     } catch (err) {
       console.log(err);
     }
