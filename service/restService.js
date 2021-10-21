@@ -83,9 +83,17 @@ class RestService {
         "booking.no_of_ppl",
         "booking.booking_date",
         "booking.booking_time",
-        "booking.special_request"
+        "booking.special_request",
+        "booking.booking_status"
       )
-      .where("rest_id", restId);
+      .where(function () {
+        this.whereNot("booking.booking_status", "Completed").andWhereNot(
+          "booking.booking_status",
+          "Cancelled"
+        );
+      })
+      .andWhere("booking.rest_id", restId)
+      .orderBy("booking.id");
   }
 
   getRestBookingHistory(restId) {
@@ -102,16 +110,17 @@ class RestService {
         "booking.booking_status"
       )
       .where(function () {
-        this.where("booking_status", "Completed").orWhere(
-          "booking_status",
+        this.where("booking.booking_status", "Completed").orWhere(
+          "booking.booking_status",
           "Cancelled"
         );
       })
-      .andWhere("rest_id", restId);
+      .andWhere("booking.rest_id", restId)
+      .orderBy("booking.id");
   }
 
   getRestCurrentOrder(restId) {
-    return this.knex("delivery")
+    let query = this.knex("delivery")
       .join("order_detail", "delivery_id", "delivery.id")
       .join("menu", "menu.id", "menu_id")
       .select(
@@ -119,13 +128,57 @@ class RestService {
         "delivery.created_at",
         "menu.item",
         "order_detail.quantity",
-        "delivery.special_request"
+        "delivery.total_amount",
+        "delivery.special_request",
+        "delivery.order_status"
       )
-      .where("delivery.rest_id", restId);
-  }
+      .where(function () {
+        this.whereNot("order_status", "Delivered").andWhereNot(
+          "order_status",
+          "Cancelled"
+        );
+      })
+      .andWhere("delivery.rest_id", restId)
+      .orderBy("delivery.id");
+    return query.then((data) => {
+      console.log("Order list", data);
+      if (data.length > 0) {
+      let result = [];
+      let last = 0;
+      for (let i = 1; i < data.length; i++) {
+        if (data[i].id !== data[i - 1].id) {
+          result.push(data.slice(last, i));
+          last = i;
+        }
+      }
+      result.push(data.slice(last));
 
+      let orderList = [];
+      for (let i = 0; i < result.length; i++) {
+        let eachOrder = {
+          id: result[i][0].id,
+          created_at: result[i][0].created_at,
+          total_amount: result[i][0].total_amount,
+          order_status: result[i][0].order_status,
+          special_request: result[i][0].special_request,
+          items: [],
+        };
+        result[i].map((dish) => {
+          let food = { item: dish.item, quantity: dish.quantity };
+          eachOrder.items.push(food);
+        });
+        orderList.push(eachOrder);
+      }
+      return orderList;
+    } else {
+      let orderList = [];
+      return orderList;
+      }
+    });
+  }
+//
   getRestOrderHistory(restId) {
-    return this.knex("delivery")
+    let query = this.knex("delivery")
       .join("order_detail", "delivery.id", "delivery_id")
       .join("menu", "menu_id", "menu.id")
       .select(
@@ -133,6 +186,7 @@ class RestService {
         "delivery.created_at",
         "menu.item",
         "order_detail.quantity",
+        "delivery.total_amount",
         "delivery.special_request",
         "delivery.order_status"
       )
@@ -142,7 +196,65 @@ class RestService {
           "Cancelled"
         );
       })
-      .andWhere("delivery.rest_id", restId);
+      .andWhere("delivery.rest_id", restId)
+      .orderBy("delivery.id");
+    return query.then((data) => {
+      console.log("Order list", data);
+      if (data.length > 0) {
+      let result = [];
+      let last = 0;
+      for (let i = 1; i < data.length; i++) {
+        if (data[i].id !== data[i - 1].id) {
+          result.push(data.slice(last, i));
+          last = i;
+        }
+      }
+      result.push(data.slice(last));
+
+      let orderList = [];
+      for (let i = 0; i < result.length; i++) {
+        let eachOrder = {
+          id: result[i][0].id,
+          created_at: result[i][0].created_at,
+          total_amount: result[i][0].total_amount,
+          order_status: result[i][0].order_status,
+          special_request: result[i][0].special_request,
+          items: [],
+        };
+        result[i].map((dish) => {
+          let food = { item: dish.item, quantity: dish.quantity };
+          eachOrder.items.push(food);
+        });
+        orderList.push(eachOrder);
+      }
+      return orderList;
+    } else {
+      let orderList = [];
+      return orderList;
+      }
+    });
+  }
+
+  getMenu(restId, category) {
+    return this.knex("menu")
+      .join("restaurant", "restaurant.id", "menu.rest_id")
+      .select("menu.item", "menu.price", "menu.photo_path")
+      .where("restaurant.id", restId)
+      .andWhere("category", category);
+  }
+
+  updateBookingStatus(bookingId, bookingStatus) {
+    return this.knex("booking")
+      .update("booking_status", bookingStatus)
+      .orderBy("id")
+      .where("id", bookingId);
+  }
+
+  updateOrderStatus(orderId, orderStatus) {
+    return this.knex("delivery")
+      .update("order_status", orderStatus)
+      .orderBy("id")
+      .where("id", orderId);
   }
 
   // Edit rest setup info (with tag) "/bizsetup"

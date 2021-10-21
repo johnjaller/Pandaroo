@@ -14,6 +14,14 @@
   color: #fff;
 }
 
+.btn-restSubmitBooking,
+.btn-restSubmitOrder {
+  font-family: "Bungee", cursive;
+  background-color: #ff6b62;
+  color: #fff;
+  padding: 5px 10px;
+}
+
 /* Pagination
 ---------------------------------------------- */
 .page-link {
@@ -24,7 +32,8 @@
   color: #4b8494;
 }
 
-.active > a {
-  background-color: #ff6b62;
+.pagination > .active > a {
+  background-color: #ff6b62 !important;
   color: #fff;
+  border: 1px solid #ff6b62 !important;
 }

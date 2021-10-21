@@ -15,6 +15,7 @@ class UserService {
       .from("account")
       .where("id", userId);
   }
+
   getUserBooking(userId) {
     return this.knex("booking")
       .join("account", "account_id", "account.id")
@@ -30,6 +31,7 @@ class UserService {
       )
       .where({ account_id: userId });
   }
+
   getUserOrder(userId) {
     return this.knex("delivery")
       .join("account", "account_id", "account.id")
@@ -37,6 +39,7 @@ class UserService {
       .select("restaurant.name", "restaurant.address")
       .where({ account_id: userId });
   }
+
   getUserBookmark(userId) {
     return this.knex("bookmark")
       .join("account", "account_id", "account.id")
@@ -49,9 +52,11 @@ class UserService {
       )
       .where({ account_id: userId });
   }
+
   getRestTag() {
     return this.knex("tag").select("tag_name", "id");
   }
+
   putUserInfo(
     userID,
     email,
@@ -74,4 +79,5 @@ class UserService {
       .where("id", userID);
   }
 }
+
 module.exports = UserService;

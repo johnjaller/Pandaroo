@@ -3,6 +3,7 @@ class UserRouter {
   constructor(userService) {
     this.userService = userService;
   }
+
   route() {
     let router = express.Router();
     router.get("/", this.getBooking.bind(this));
@@ -11,6 +12,7 @@ class UserRouter {
     router.put("/info", this.putUserInfo.bind(this));
     return router;
   }
+
   async getBooking(req, res) {
     try {
       console.log(req.cookies);
@@ -32,6 +34,7 @@ class UserRouter {
       console.log(error);
     }
   }
+
   async getOrder(req, res) {
     try {
       let userInfo = await this.userService.getUserInfo(req.user.id || 1);
@@ -46,6 +49,7 @@ class UserRouter {
       console.log(error);
     }
   }
+
   async getBookmark(req, res) {
     try {
       let userInfo = await this.userService.getUserInfo(req.user.id || 1);
@@ -61,6 +65,7 @@ class UserRouter {
       console.log(error);
     }
   }
+
   putUserInfo(req, res) {
     console.log(req.body);
     return this.userService
