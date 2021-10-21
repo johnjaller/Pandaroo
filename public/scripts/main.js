@@ -117,8 +117,7 @@ $(document).ready(function () {
       shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"));
     }
     console.log(shoppingCart);
-
-<<<<<<< HEAD
+    requestId = window.location.pathname.replace(/[^\d]/g, "");
   
   console.log(requestId)
   if(shoppingCart.hasOwnProperty(requestId))
@@ -142,9 +141,7 @@ $(document).ready(function () {
       $('.totalPrice').html(`HKD ${price}`)
     
     $('#specialRequest').val(shoppingCart[requestId].specialRequest)
-=======
     requestId = window.location.pathname.replace(/[^\d]/g, "");
->>>>>>> master
 
     console.log(requestId);
     if (shoppingCart.hasOwnProperty(requestId)) {
@@ -180,7 +177,6 @@ $(document).ready(function () {
   } else {
     return false;
   }
-<<<<<<< HEAD
 
 }else if(window.location.pathname.includes('/success/'))
 {
@@ -191,8 +187,6 @@ localStorage.setItem('shoppingCart',JSON.stringify(shoppingCart))
 else{
   return false;
 }
-=======
->>>>>>> master
 });
 
 $(".addToCart").on("click", (event) => {
@@ -271,7 +265,6 @@ $(".addToCart").on("click", (event) => {
   $(".totalPrice").html(`HKD ${price}`);
   localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
 });
-<<<<<<< HEAD
 $('#userOrderForm').submit(function () { 
   let request=$('.specialRequest').val()
   shoppingCart[requestId]['specialRequest']=request
@@ -291,6 +284,7 @@ $('#userOrderForm').submit(function () {
     quantity: dish.amount,
   }))
   $('.userRest').val(requestId)
+  console.log(  $('.userRest').val())
   $('.userOrder').val(JSON.stringify(order))
   if(Object.keys(shoppingCart[requestId].discount).length>0)
   {
@@ -300,42 +294,6 @@ $('#userOrderForm').submit(function () {
     $('#discount').val(JSON.stringify({}))
   }
   return true
-=======
-$("#specialRequest").on("change", function () {
-  console.log($(this).val());
-  let request = $(this).val();
-  shoppingCart[requestId]["specialRequest"] = request;
-  localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
-});
-$("#userOrderForm").submit(function () {
-  let request = $(".specialRequest").val();
-  shoppingCart[requestId]["specialRequest"] = request;
-  localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
-  order = [];
-  console.log("running checkout");
-
-  shoppingCart[requestId].item.forEach((dish) =>
-    order.push({
-      price_data: {
-        currency: "hkd",
-        product_data: {
-          name: dish.name,
-        },
-        unit_amount: dish.price * 100,
-      },
-      quantity: dish.amount,
-    })
-  );
-  let discount = shoppingCart[requestId].discount.percent_off * 100;
-  $(".userOrder").val(JSON.stringify(order));
-  $("#discount").val(
-    JSON.stringify({
-      name: shoppingCart[requestId].discount.discountCode,
-      percent_off: discount,
-    })
-  );
-  return true;
->>>>>>> master
 });
 
 $(".couponCheck").on("click", function (event) {
@@ -348,7 +306,6 @@ $(".couponCheck").on("click", function (event) {
     data: { code: couponCode },
     dataType: "json",
     success: function (response) {
-<<<<<<< HEAD
       console.log(response)
       if(response.percent_off===null)
       {
@@ -361,27 +318,6 @@ $(".couponCheck").on("click", function (event) {
         $('.discountList').append(`<tr class="dish text-center"><td>Discount: '${couponCode}'</td><td></td><td>-${discount}%</td></tr>`)
 let price=shoppingCart[requestId].item.map(i=>i.price*i.amount).reduce((a,b)=>a+b)
 price=Number((price*(1-shoppingCart[requestId].discount.percent_off)).toFixed(1))
-=======
-      console.log(response);
-      if (response.percent_off === null) {
-        return alert(`There is no such coupon for "${couponCode}"`);
-      } else {
-        $("#discountCode").prop("disabled", "disabled");
-        $(event.target).addClass("disabled");
-        let discount = response.percent_off * 100;
-        shoppingCart[requestId].discount = response;
-        $(".orderList").append(
-          `<tr class="dish text-center"><td>Discount: '${couponCode}'</td><td></td><td>-${discount}%</td></tr>`
-        );
-        let price = shoppingCart[requestId].item
-          .map((i) => i.price * i.amount)
-          .reduce((a, b) => a + b);
-        price = Number(
-          (price * (1 - shoppingCart[requestId].discount.percent_off)).toFixed(
-            1
-          )
-        );
->>>>>>> master
 
         $(".totalPrice").html(`HKD ${price}`);
 
@@ -394,7 +330,6 @@ $(".userLogout").on("click", function () {
   localStorage.clear();
 });
 
-<<<<<<< HEAD
 $('.bookmark').on('click',(event)=>{
   let restId=$(event.target).parent().attr('id')
   let icon=$(event.target)
@@ -409,8 +344,6 @@ $('.bookmark').on('click',(event)=>{
     }
   });
 })
-=======
->>>>>>> master
 // // User login Ajax POST req
 // $("#user-login-form").submit((event) => {
 //   event.preventDefault();

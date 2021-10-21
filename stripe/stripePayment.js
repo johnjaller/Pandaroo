@@ -21,7 +21,7 @@ async function stripePayment (req,res)
         payment_method_types: ['card'],
         line_items: userItem,
         discounts: discountItem,
-        metadata:{user_id:userId,specialRequest:req.body.specialRequest,rest_id:req.body.restaurant},
+        metadata:{user_id:userId,specialRequest:req.body.specialRequest,rest_id:Number(req.body.restaurant)},
         mode: 'payment',
         success_url: `https://localhost:8080/success/${req.body.restaurant}`,
         cancel_url: 'https://localhost:8080/cancel',
@@ -31,4 +31,4 @@ async function stripePayment (req,res)
 
 }
 
-module.exports=stripePayment
+module.exports = stripePayment;

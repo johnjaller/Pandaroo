@@ -43,17 +43,17 @@ const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 const { uploadFile, downloadFile } = require("./s3Bucket/s3");
 
-// Set up user service and router
-const UserService = require("./service/userService");
-const UserRouter = require("./router/userRouter");
-const userService = new UserService(knex);
-const userRouter = new UserRouter(userService);
+// // Set up user service and router
+// const UserService = require("./service/userService");
+// const UserRouter = require("./router/userRouter");
+// const userService = new UserService(knex);
+// const userRouter = new UserRouter(userService);
 
-// Set up restaurant service and router
-const RestService = require("./service/restService");
-const RestRouter = require("./router/restRouter");
-const restService = new RestService(knex);
-const restRouter = new RestRouter(restService);
+// // Set up restaurant service and router
+// const RestService = require("./service/restService");
+// const RestRouter = require("./router/restRouter");
+// const restService = new RestService(knex);
+// const restRouter = new RestRouter(restService);
 
 // Set up passport authentication
 const passportFunction = require("./passport/passport");
@@ -108,7 +108,7 @@ const userRouter = new UserRouter(userService);
 // Set up restaurant service and router
 const RestService = require("./service/restService");
 const RestRouter = require("./router/restRouter");
-const stripe = require("stripe");
+const stripe=require('stripe')(process.env.stripe_secret)
 const path = require("path");
 const restService = new RestService(knex);
 const restRouter = new RestRouter(restService);
@@ -130,6 +130,7 @@ app.get(
 app.use("/user", userRouter.route());
 
 app.get("/", userLogIn);
+
 app.get("/", async (req, res) => {
   let restTag = await userService.getRestTag();
   let user = await knex("account")
@@ -188,7 +189,7 @@ app.get('/order/:restID',async(req,res)=>{
  
     let restDetail=await  knex('restaurant').select().where('restaurant.id',req.params.restID)
     
-  let dish=await knex('restaurant').select().join('menu','restaurant.id','menu.rest_id').where({'restaurant.id':req.params.restID,'category':"soup & salad"})
+  let dish=await knex('restaurant').select().join('menu','restaurant.id','menu.rest_id').where({'restaurant.id':req.params.restID,'category':"soup&salad"})
     console.log(dish)
     let dishItems=[]
     dish.forEach(i => {
@@ -204,9 +205,13 @@ app.get('/order/:restID/:category',async(req,res)=>{
   let dish=await knex('restaurant').select().join('menu','restaurant.id','menu.rest_id').where({'restaurant.id':req.params.restID,'category':req.params.category})
     console.log(dish)
     let dishItems=[]
-    dish.forEach(i => {
-      dishItems.push({id:i.id,name:i.item,price:i.price,photoPath:i.photo_path})
-    })
+    for(let i=0;i<dish.length;i++)
+    {
+      dishItems.push({id:dish[i].id,name:dish[i].item,price:dish[i].price,photoPath:dish[i].photo_path})
+
+    }
+  
+    console.log(dishItems)
     return res.render('userOrder',{layout:'user',restaurant:restDetail[0],dish:dishItems
 })
 })
@@ -328,7 +333,7 @@ app.post('/webhook', async(request, response) => {
    {
      let menuId=await knex('menu').select('id').where('item',lineItems.data[i].description)
      console.log(menuId)
-     products.push({quantity:lineItems.data[i].quantity,menu_id:menuId[0].id})
+     products.push({quantity:lineItems.data[i].quantity,menu_id:menuId[i].id})
 
    }
   
@@ -373,7 +378,7 @@ app.post("/discount", (req, res) => {
   let discountCode = req.body.code;
   knex("restaurant")
     .select("discount")
-    .where("discount_code", discountCode)
+    .where("code", discountCode)
     .then((data) => {
       if (data.length === 0) {
         console.log("there is no such coupon");
