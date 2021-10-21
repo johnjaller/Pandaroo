@@ -1,9 +1,11 @@
 const development = require("../knexfile").development;
 const knex = require("knex")(development);
 const user = "account";
+
 function getGmailById(gmailID) {
   return knex(user).select().where("gmail_id", gmailID);
 }
+
 function postGmail(email, gmailID, givenName, familyName) {
   return knex(user)
     .insert({

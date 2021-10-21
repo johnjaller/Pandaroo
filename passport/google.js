@@ -20,8 +20,8 @@ function googleCallback(accessToken, refreshToken, profile, done) {
             profile.name.familyName
           )
           .then((data) => {
-            user.id = data[0];
-            console.log(user);
+            user.id = data[0].id;
+            console.log("user", user);
             return done(null, user);
           })
           .catch((e) => {
@@ -37,4 +37,5 @@ function googleCallback(accessToken, refreshToken, profile, done) {
     });
 }
 const google = new GoogleStrategy(googleConfig, googleCallback);
+
 module.exports = { google: google };

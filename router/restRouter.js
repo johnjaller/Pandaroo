@@ -9,10 +9,13 @@ class RestRouter {
     let router = express.Router();
 
     router.get("/info", this.get.bind(this));
+    router.get("/info/:category", this.getCategory.bind(this));
     router.get("/bookings", this.getBooking.bind(this));
     router.get("/orders", this.getOrder.bind(this));
     router.get("/bookingshistory", this.getBookingHistory.bind(this));
     router.get("/ordershistory", this.getOrderHistory.bind(this));
+    router.put("/bookings/:bookingID", this.updateBookingStatus.bind(this));
+    router.put("/orders/:orderID", this.updateOrderStatus.bind(this));
 
     // Submit signup form > redirect to this route
     router.get("/bizinit", this.getRestInitialSetUp.bind(this));
@@ -23,6 +26,10 @@ class RestRouter {
 
     // Click edit menu > redirect to this route
     router.get("/bizsetupmenu", this.getSetUpMenu.bind(this));
+    router.get(
+      "/bizsetupmenu/:category",
+      this.getSetUpMenuWithCategory.bind(this)
+    );
 
     return router;
   }
@@ -32,15 +39,44 @@ class RestRouter {
     console.log("Get restaurant info");
     try {
       let restInfo = await this.restService.getRestInfo(req.user.id);
+      let dishInfo = await this.restService.getMenu(req.user.id, "soup&salad");
       if (restInfo[0]["delivery"]) {
         restInfo[0]["delivery"] = "Yes";
       } else {
         restInfo[0]["delivery"] = "No";
       }
       console.log("Rest info", restInfo);
+      console.log("Dish info", dishInfo);
       return res.render("restInfo", {
         layout: "restaurant",
         restInfo: restInfo,
+        dishInfo: dishInfo,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async getCategory(req, res) {
+    console.log(req.params.category);
+    console.log("Get restaurant menu");
+    try {
+      let restInfo = await this.restService.getRestInfo(req.user.id);
+      let dishInfo = await this.restService.getMenu(
+        req.user.id,
+        req.params.category
+      );
+      if (restInfo[0]["delivery"]) {
+        restInfo[0]["delivery"] = "Yes";
+      } else {
+        restInfo[0]["delivery"] = "No";
+      }
+      console.log("Rest info", restInfo);
+      console.log("Dish info", dishInfo);
+      return res.render("restInfo", {
+        layout: "restaurant",
+        restInfo: restInfo,
+        dishInfo: dishInfo,
       });
     } catch (error) {
       throw new Error(error);
@@ -51,7 +87,7 @@ class RestRouter {
     console.log("Get restaurant current booking");
     try {
       const page = parseInt(req.query.page) || 1;
-      const limit = 2;
+      const limit = 10;
       const startIndex = (page - 1) * limit;
       const endIndex = page * limit;
 
@@ -87,11 +123,12 @@ class RestRouter {
     console.log("Get restaurant current order");
     try {
       const page = parseInt(req.query.page) || 1;
-      const limit = 3;
+      const limit = 10;
       const startIndex = (page - 1) * limit;
       const endIndex = page * limit;
 
       let restOrder = await this.restService.getRestCurrentOrder(req.user.id);
+      console.log("Rest order", restOrder);
       let totalRecords = restOrder.length;
       console.log("Total order records", totalRecords);
       const totalPage = Math.ceil(totalRecords / limit);
@@ -99,7 +136,7 @@ class RestRouter {
       const hasNextPage = totalPage > 1 && page !== totalPage ? true : false;
 
       const restOrderResult = restOrder.slice(startIndex, endIndex);
-      console.log("Rest order", restOrderResult);
+      console.log("Rest order result", restOrderResult);
 
       return res.render("restOrder", {
         layout: "restaurant",
@@ -113,6 +150,7 @@ class RestRouter {
         lastPage: page - 1,
       });
     } catch (error) {
+      console.log(error);
       throw new Error(error);
     }
   }
@@ -121,7 +159,7 @@ class RestRouter {
     console.log("Get restaurant booking history");
     try {
       const page = parseInt(req.query.page) || 1;
-      const limit = 3;
+      const limit = 10;
       const startIndex = (page - 1) * limit;
       const endIndex = page * limit;
 
@@ -158,9 +196,10 @@ class RestRouter {
 
   async getOrderHistory(req, res) {
     console.log("Get restaurant order history");
+    console.log("Req user", req.user.id);
     try {
       const page = parseInt(req.query.page) || 1;
-      const limit = 3;
+      const limit = 10;
       const startIndex = (page - 1) * limit;
       const endIndex = page * limit;
 
@@ -190,6 +229,32 @@ class RestRouter {
         nextPage: page + 1,
         lastPage: page - 1,
       });
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  updateBookingStatus(req, res) {
+    console.log("Update booking status");
+    try {
+      return this.restService
+        .updateBookingStatus(req.body.bookingId, req.body.bookingStatus)
+        .then(() => {
+          res.send("DONE");
+        });
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  updateOrderStatus(req, res) {
+    console.log("Update order status");
+    try {
+      return this.restService
+        .updateOrderStatus(req.body.orderId, req.body.orderStatus)
+        .then(() => {
+          res.send("DONE");
+        });
     } catch (error) {
       throw new Error(error);
     }
@@ -266,9 +331,30 @@ class RestRouter {
 
   // Get "/bizsetupmenu"
   async getSetUpMenu(req, res) {
+    let dishInfo = await this.restService.getMenu(req.user.id, "soup&salad");
+    console.log(dishInfo);
     return res.render("restSetUpMenu", {
       layout: "restaurant",
+      dishInfo: dishInfo,
     });
+  }
+
+  async getSetUpMenuWithCategory(req, res) {
+    console.log(req.params.category);
+    console.log("Get restaurant menu in setup");
+    try {
+      let dishInfo = await this.restService.getMenu(
+        req.user.id,
+        req.params.category
+      );
+      console.log("Dish info", dishInfo);
+      return res.render("restSetUpMenu", {
+        layout: "restaurant",
+        dishInfo: dishInfo,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   // Put "/bizsetup"

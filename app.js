@@ -116,6 +116,7 @@ app.get(
 app.use("/user", userRouter.route());
 
 app.get("/", userLogIn);
+
 app.get("/", async (req, res) => {
   let restTag = await userService.getRestTag();
   let user = await knex("account")
