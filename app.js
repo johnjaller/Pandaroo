@@ -171,6 +171,12 @@ app.post('/bookmark/:id',(req,res)=>{
     }).catch((e)=> console.log(e))
 })
 
+app.delete('/bookmark/:id',(req,res)=>{
+  return knex('bookmark').delete().where({account_id:req.user.id,rest_id:req.params.id}).then(()=>{
+      res.send('success')
+  }).catch((e)=> console.log(e))
+})
+
 app.get("/userorder", (req, res) => {
   res.render("userOrder", { layout: "user" });
 });
@@ -248,7 +254,7 @@ app.post('/webhook', async(request, response) => {
   }
 });
 
-  app.get('/success',(req,res)=>{
+  app.get('/success/:restId',(req,res)=>{
       res.render('paymentSuccess',{layout:'user',})
   })
   app.get('/cancel',(req,res)=>{

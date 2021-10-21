@@ -78,7 +78,13 @@ $(document).ready(function () {
     console.log('There is nothing in the cart')
   }
 
-}else{
+}else if(window.location.pathname.includes('/success/'))
+{
+  let deleteId=window.location.pathname.replace(/[^\d]/g,'')
+  delete shoppingCart[deleteId]
+localStorage.setItem('shoppingCart',JSON.stringify(shoppingCart))
+}
+else{
   return false;
 }
 });

@@ -23,7 +23,7 @@ async function stripePayment (req,res)
         discounts: discountItem,
         metadata:{user_id:userId,specialRequest:req.body.specialRequest,rest_id:req.body.restaurant},
         mode: 'payment',
-        success_url: 'https://localhost:8080/success',
+        success_url: `https://localhost:8080/success/${req.body.restaurant}`,
         cancel_url: 'https://localhost:8080/cancel',
         locale:'en'
       });
