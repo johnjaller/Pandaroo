@@ -7,7 +7,6 @@ exports.up = function (knex) {
     table.decimal("price");
     table.string("photo_path");
     table.string("category");
-    table.string("photo_path");
   });
 };
 

@@ -28,6 +28,10 @@ class RestRouter {
     router.get("/bizsetup", this.getRestSetUp.bind(this));
     router.put("/bizsetup", this.putRestInfo.bind(this));
     router.get("/bizsetupmenu", this.getSetUpMenu.bind(this));
+    router.get(
+      "/bizsetupmenu/:category",
+      this.getSetUpMenuWithCategory.bind(this)
+    );
     // router.post("/bizaddmenu"),
     //   upload.single("uploadedPhoto"),
     //   this.postRestMenu.bind(this);
@@ -196,6 +200,7 @@ class RestRouter {
 
   async getOrderHistory(req, res) {
     console.log("Get restaurant order history");
+    console.log("Req user", req.user.id);
     try {
       const page = parseInt(req.query.page) || 1;
       const limit = 10;
@@ -314,9 +319,29 @@ class RestRouter {
   }
 
   async getSetUpMenu(req, res) {
+    let dishInfo = await this.restService.getMenu(req.user.id, "soup&salad");
     return res.render("restSetUpMenu", {
       layout: "restaurant",
+      dishInfo: dishInfo,
     });
+  }
+
+  async getSetUpMenuWithCategory(req, res) {
+    console.log(req.params.category);
+    console.log("Get restaurant menu in setup");
+    try {
+      let dishInfo = await this.restService.getMenu(
+        req.user.id,
+        req.params.category
+      );
+      console.log("Dish info", dishInfo);
+      return res.render("restSetUpMenu", {
+        layout: "restaurant",
+        dishInfo: dishInfo,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   // Update restaurant info

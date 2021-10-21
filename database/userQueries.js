@@ -38,10 +38,27 @@ function getById(userId) {
   return knex("account").select("id", "username").where("id", userId);
 }
 
+function getByRestId(restId) {
+  return knex("restaurant").select("id", "username").where("id", restId);
+}
+
+function getByUsername(userName) {
+  return knex("account").select("id", "username").where("username", userName);
+}
+
+function getByRestUsername(restName) {
+  return knex("restaurant")
+    .select("id", "username")
+    .where("username", restName);
+}
+
 module.exports = {
   getByFacebookId: getByFacebookId,
   postFacebook: postFacebook,
+  getById: getById,
+  getByRestId: getByRestId,
+  getByUsername: getByUsername,
+  getByRestUsername: getByRestUsername,
   getGmailById: getGmailById,
   postGmail: postGmail,
-  getById: getById,
 };
