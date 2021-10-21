@@ -181,7 +181,7 @@ class RestService {
       }
     });
   }
-
+  //
   getRestOrderHistory(restId) {
     let query = this.knex("delivery")
       .join("order_detail", "delivery.id", "delivery_id")
