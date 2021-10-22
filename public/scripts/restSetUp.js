@@ -1,3 +1,5 @@
+import { checkInputs } from "./dataValidation.js";
+
 // Restaurant setup PUT req
 $("#restSetUpSubmit").click(async (event) => {
   event.preventDefault();
@@ -6,19 +8,6 @@ $("#restSetUpSubmit").click(async (event) => {
   $("*").removeClass("success");
   $("*").removeClass("error");
 
-  checkInputs();
-
-  // $.ajax({
-  //   url: "/biz/bizsetup",
-  //   type: "PUT",
-  //   data: restInfo,
-  //   success: function () {
-  //     window.location.replace("https://localhost:8080/biz/info");
-  //   },
-  // });
-});
-
-function checkInputs() {
   // Converting phone data from string into number
   let phoneData = parseInt($("#restPhone").val());
   console.log("main.js phoneData: ", phoneData);
@@ -53,106 +42,19 @@ function checkInputs() {
   };
   console.log("Rest Info: ", restInfo);
 
-  // Validate the data
-  console.log("restSetUp.js restName: ", restInfo.restName);
-  if (restInfo.restName === "") {
-    setMessage($("#restName"), "Restaurant name must not be blank");
-    $("#restName").addClass("error");
-  } else {
-    setMessage($("#restName"), "OK!");
-    $("#restName").addClass("success");
-  }
+  await checkInputs(restInfo);
 
-  if (/^\d{8}$/.test(restInfo.restPhone) === false) {
-    setMessage($("#restPhone"), "Phone number must be 8-digit integer");
-    $("#restPhone").addClass("error");
+  if ($(".error")[0]) {
+    return;
   } else {
-    setMessage($("#restPhone"), "OK!");
-    $("#restPhone").addClass("success");
+    $.ajax({
+      url: "/biz/bizsetup",
+      type: "PUT",
+      data: restInfo,
+      success: function () {
+        alert("Successfully updated!");
+        window.location.replace("https://localhost:8080/biz/info");
+      },
+    });
   }
-
-  if (restInfo.restDistrict === "") {
-    setMessage($("#restDistrict"), "District must not be blank");
-    $("#restDistrict").addClass("error");
-  } else {
-    setMessage($("#restDistrict"), "OK!");
-    $("#restDistrict").addClass("success");
-  }
-
-  if (restInfo.restAddress === "") {
-    setMessage($("#restAddress"), "Address must not be blank");
-    $("#restAddress").addClass("error");
-  } else {
-    setMessage($("#restAddress"), "OK!");
-    $("#restAddress").addClass("success");
-  }
-
-  if (restInfo.restOpening === "") {
-    setMessage($("#restOpening"), "Opening time must not be blank");
-    $("#restOpening").addClass("error");
-  } else {
-    setMessage($("#restOpening"), "OK!");
-    $("#restOpening").addClass("success");
-  }
-
-  if (restInfo.restClosing === "") {
-    setMessage($("#restClosing"), "Closing time must not be blank");
-    $("#restClosing").addClass("error");
-  } else {
-    setMessage($("#restClosing"), "OK!");
-    $("#restClosing").addClass("success");
-  }
-
-  if (restInfo.restSeat === "") {
-    setMessage($("#restSeat"), "No. of seats must not be blank");
-    $("#restSeat").addClass("error");
-  } else {
-    setMessage($("#restSeat"), "OK!");
-    $("#restSeat").addClass("success");
-  }
-
-  if (restInfo.restDelivery === "") {
-    setMessage($("#restDelivery"), "Delivery service must not be blank");
-    $("#restDelivery").addClass("error");
-  } else {
-    setMessage($("#restDelivery"), "OK!");
-    $("#restDelivery").addClass("success");
-  }
-
-  if (restInfo.restDiscountCode !== "") {
-    if (restInfo.restDiscount === "") {
-      setMessage($("#restDiscountCode"), "OK!");
-      setMessage(
-        $("#restDiscount"),
-        "Please set a discount for your discount code"
-      );
-      $("#restDiscountCode").addClass("success");
-      $("#restDiscount").addClass("error");
-    } else {
-      if (restInfo.restDiscount !== "") {
-        setMessage(
-          $("#restDiscountCode"),
-          "Please set a discount code for your discount"
-        );
-        setMessage($("#restDiscount"), "OK!");
-        $("#restDiscountCode").addClass("error");
-        $("#restDiscount").addClass("success");
-      } else {
-        setMessage($("#restDiscountCode"), "OK!");
-        setMessage($("#restDelivery"), "OK!");
-        $("#restDiscountCode").addClass("success");
-        $("#restDiscount").addClass("success");
-      }
-    }
-  }
-}
-
-function setMessage(input, message) {
-  if (message === "OK!") {
-    $(".v-msg").css("color", "#06bb06");
-  } else {
-    $(".v-msg").css("color", "#e45151");
-  }
-  input.siblings(".v-msg").html(message);
-  console.log("Input: ", input, "Message: ", message);
-}
+});

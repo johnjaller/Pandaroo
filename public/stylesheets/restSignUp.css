@@ -14,3 +14,8 @@
   color: #fff;
   padding: 5px 80px;
 }
+
+.btn-restGo:disabled {
+  background-color: #b6b4b4;
+  color: #fcfafa;
+}

@@ -468,6 +468,7 @@ app.post(
   passportFunction.authenticate("local-login", {
     successRedirect: "/",
     failureRedirect: "/login",
+    failureFlash: true,
   })
 );
 
@@ -477,6 +478,7 @@ app.post(
   passportFunction.authenticate("local-signup", {
     successRedirect: "/setup",
     failureRedirect: "/login",
+    failureFlash: true,
   })
 );
 
@@ -486,6 +488,7 @@ app.post(
   passportFunction.authenticate("local-login", {
     successRedirect: "/biz/info",
     failureRedirect: "/bizlogin",
+    failureFlash: true,
   })
 );
 
@@ -495,6 +498,7 @@ app.post(
   passportFunction.authenticate("local-signup", {
     successRedirect: "/biz/bizsetup",
     failureRedirect: "/bizlogin",
+    failureFlash: true,
   })
 );
 
