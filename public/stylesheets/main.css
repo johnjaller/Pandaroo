@@ -98,7 +98,7 @@ input {
 
 #rest-login-signup {
   background-color: #ffffff;
-  min-height: 50vh;
+  min-height: 40vh;
   max-width: 50vw;
 }
 
@@ -145,4 +145,13 @@ input {
 
 #to-user-login:hover {
   color: #4b8494;
+}
+
+.err-msg,
+#validation-msg {
+  margin-left: 5px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: #ff3333;
 }

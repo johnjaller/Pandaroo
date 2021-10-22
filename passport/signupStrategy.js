@@ -17,7 +17,7 @@ module.exports = new LocalStrategy(async (username, password, done) => {
 
     if (matchedUser.length > 0 || matchedRest.length > 0) {
       console.log("User already exist.");
-      return done(null, false, { message: "User already exist!" });
+      return done(null, false, { message: "User already exist" });
     }
 
     // If user does not exit, hash the pw & create new user object

@@ -81,6 +81,8 @@
       </div>
     </div>
     <div class="py-4 px-4 text-end">
+      <div id="validation-msg" class="mx-3 text-center"></div>
+      {{#if messages}}<p class="err-msg text-center">{{messages.error}}</p>{{/if}}
       <a href="/bizlogin" class="text-decoration-none"><span
           id="to-business-login"
         >Business user ></span></a>

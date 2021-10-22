@@ -4,8 +4,6 @@ $("#user-signup-form").submit((event) => {
   let passwordInput = $(event.target).find("input[name=password]").val();
   console.log(`USERNAME: ${usernameInput}, PASSWORD: ${passwordInput}`);
 
-  userEmailCheck(usernameInput);
-
   if (!/^\w{3,20}$/.test(passwordInput)) {
     console.log("Password length must be 3-20");
     $("#validation-msg").empty();

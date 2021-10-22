@@ -80,7 +80,8 @@
         </form>
       </div>
     </div>
-    <div id="validation-msg" class="mx-3"></div>
+    <div id="validation-msg" class="mx-3 text-center"></div>
+    {{#if messages}}<p class="err-msg text-center">{{messages.error}}</p>{{/if}}
     <div class="py-4 px-4 text-end">
       <a href="/login" class="text-decoration-none"><span
           id="to-user-login"

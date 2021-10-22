@@ -48,7 +48,7 @@ module.exports = new LocalStrategy(async (username, password, done) => {
         return done(null, rest);
       } else {
         console.log("Wrong password");
-        return done(null, false);
+        return done(null, false, { message: "Incorrect password" });
       }
     }
 

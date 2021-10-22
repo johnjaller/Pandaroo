@@ -2,6 +2,7 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
+const flash = require("express-flash");
 const cors = require("cors");
 const fs = require("fs");
 const util = require("util");
@@ -23,6 +24,7 @@ const session = require("express-session");
 app.use(session({ secret: "secret", resave: false, saveUninitialized: true }));
 
 // Set up public files and middleware
+app.use(flash());
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
