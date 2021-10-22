@@ -260,7 +260,7 @@ class RestRouter {
     }
   }
 
-  // Get "/restinit"
+  // Get "/bizinit"
   async getRestInitialSetUp(req, res) {
     console.log("First login from a restaurant user");
     try {
@@ -321,7 +321,7 @@ class RestRouter {
       }
       console.log("restInfo", restInfo);
       return res.render("restSetUp", {
-        layout: "restaurant",
+        layout: "restSetUpLayout",
         restInfo: restInfo,
       });
     } catch (err) {
@@ -366,16 +366,12 @@ class RestRouter {
 
     console.log("restRouter: Updating restaurant tag");
 
-    await this.restService
-      .deleteRestTag(req.user.id)
-      .then(() => {
-        console.log("Deleted restaurant tag");
-        this.restService.insertRestTag(req.user.id, req.body);
-        res.redirect("/biz/info");
-      })
-      .catch((err) => {
-        res.status(500).json(err);
-      });
+    await this.restService.deleteRestTag(req.user.id);
+    console.log("Deleted restaurant tag");
+
+    await this.restService.insertRestTag(req.user.id, req.body);
+    console.log("Inserted restaurant tag");
+    return res.send(200);
   }
 
   // Add menu (moved to app.js)

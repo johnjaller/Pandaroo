@@ -108,7 +108,7 @@ const userRouter = new UserRouter(userService);
 // Set up restaurant service and router
 const RestService = require("./service/restService");
 const RestRouter = require("./router/restRouter");
-const stripe=require('stripe')(process.env.stripe_secret)
+const stripe = require("stripe")(process.env.stripe_secret);
 const path = require("path");
 const restService = new RestService(knex);
 const restRouter = new RestRouter(restService);
@@ -183,38 +183,63 @@ app.get("/userbooking", (req, res) => {
   res.render("userBooking", { layout: "user" });
 });
 
-app.get('/order/:restID',async(req,res)=>{
+app.get("/order/:restID", async (req, res) => {
+  console.log(req.params.restID, "rest id how many times?");
 
-    console.log(req.params.restID, 'rest id how many times?')
- 
-    let restDetail=await  knex('restaurant').select().where('restaurant.id',req.params.restID)
-    
-  let dish=await knex('restaurant').select().join('menu','restaurant.id','menu.rest_id').where({'restaurant.id':req.params.restID,'category':"soup&salad"})
-    console.log(dish)
-    let dishItems=[]
-    dish.forEach(i => {
-      dishItems.push({id:i.id,name:i.item,price:i.price,photoPath:i.photo_path})
-    })
-    return res.render('userOrder',{layout:'user',restaurant:restDetail[0],dish:dishItems
-})
-  
-})
+  let restDetail = await knex("restaurant")
+    .select()
+    .where("restaurant.id", req.params.restID);
 
-app.get('/order/:restID/:category',async(req,res)=>{
-  let restDetail=await  knex('restaurant').select().where('restaurant.id',req.params.restID)
-  let dish=await knex('restaurant').select().join('menu','restaurant.id','menu.rest_id').where({'restaurant.id':req.params.restID,'category':req.params.category})
-    console.log(dish)
-    let dishItems=[]
-    for(let i=0;i<dish.length;i++)
-    {
-      dishItems.push({id:dish[i].id,name:dish[i].item,price:dish[i].price,photoPath:dish[i].photo_path})
+  let dish = await knex("restaurant")
+    .select()
+    .join("menu", "restaurant.id", "menu.rest_id")
+    .where({ "restaurant.id": req.params.restID, category: "soup&salad" });
+  console.log(dish);
+  let dishItems = [];
+  dish.forEach((i) => {
+    dishItems.push({
+      id: i.id,
+      name: i.item,
+      price: i.price,
+      photoPath: i.photo_path,
+    });
+  });
+  return res.render("userOrder", {
+    layout: "user",
+    restaurant: restDetail[0],
+    dish: dishItems,
+  });
+});
 
-    }
-  
-    console.log(dishItems)
-    return res.render('userOrder',{layout:'user',restaurant:restDetail[0],dish:dishItems
-})
-})
+app.get("/order/:restID/:category", async (req, res) => {
+  let restDetail = await knex("restaurant")
+    .select()
+    .where("restaurant.id", req.params.restID);
+  let dish = await knex("restaurant")
+    .select()
+    .join("menu", "restaurant.id", "menu.rest_id")
+    .where({
+      "restaurant.id": req.params.restID,
+      category: req.params.category,
+    });
+  console.log(dish);
+  let dishItems = [];
+  for (let i = 0; i < dish.length; i++) {
+    dishItems.push({
+      id: dish[i].id,
+      name: dish[i].item,
+      price: dish[i].price,
+      photoPath: dish[i].photo_path,
+    });
+  }
+
+  console.log(dishItems);
+  return res.render("userOrder", {
+    layout: "user",
+    restaurant: restDetail[0],
+    dish: dishItems,
+  });
+});
 
 app.post("/bookmark/:id", (req, res) => {
   return knex("bookmark")
@@ -225,11 +250,15 @@ app.post("/bookmark/:id", (req, res) => {
     .catch((e) => console.log(e));
 });
 
-app.delete('/bookmark/:id',(req,res)=>{
-  return knex('bookmark').delete().where({account_id:req.user.id,rest_id:req.params.id}).then(()=>{
-      res.send('success')
-  }).catch((e)=> console.log(e))
-})
+app.delete("/bookmark/:id", (req, res) => {
+  return knex("bookmark")
+    .delete()
+    .where({ account_id: req.user.id, rest_id: req.params.id })
+    .then(() => {
+      res.send("success");
+    })
+    .catch((e) => console.log(e));
+});
 
 app.get("/userorder", (req, res) => {
   res.render("userOrder", { layout: "user" });
@@ -289,7 +318,7 @@ app.post("/bizsetuppropic", upload.single("uploadedFile"), async (req, res) => {
         console.log("Inserting path done");
       });
     await unlinkFile(file.path);
-    res.redirect("/biz/bizinit");
+    res.redirect("/biz/bizsetup");
   } catch (err) {
     throw new Error(err);
   }
@@ -303,61 +332,72 @@ app.get("/image/:key", (req, res) => {
 });
 //stripe checkout
 
-app.post('/checkout',stripePayment);
-const endPointSecret='whsec_G2nJNMFVmpCn275FSbScXynzCytZxtJX'
+app.post("/checkout", stripePayment);
+const endPointSecret = "whsec_G2nJNMFVmpCn275FSbScXynzCytZxtJX";
 
-app.post('/webhook', async(request, response) => {
-  console.log(request.body)
-  let event=request.body
-  if(event.type==='checkout.session.completed')
-  {
-    console.log('it is a successful payment')
-    console.log(event.data.object.metadata)
-    let specialRequest=event.data.object.metadata.specialRequest
-    let restId=event.data.object.metadata.rest_id
-    let userId=event.data.object.metadata.user_id;
-    let sessionId=event.data.object.id
-    let totalAmount=event.data.object.amount_total/100
-    let products=[]
+app.post("/webhook", async (request, response) => {
+  console.log(request.body);
+  let event = request.body;
+  if (event.type === "checkout.session.completed") {
+    console.log("it is a successful payment");
+    console.log(event.data.object.metadata);
+    let specialRequest = event.data.object.metadata.specialRequest;
+    let restId = event.data.object.metadata.rest_id;
+    let userId = event.data.object.metadata.user_id;
+    let sessionId = event.data.object.id;
+    let totalAmount = event.data.object.amount_total / 100;
+    let products = [];
     stripe.checkout.sessions.listLineItems(
       sessionId,
       { limit: 10 },
-      async function(err, lineItems) {
-   console.log(lineItems)
-   for(let i=0;i<lineItems.data.length;i++)
-   {
-     let menuId=await knex('menu').select('id').where('item',lineItems.data[i].description)
-     console.log(menuId)
-     products.push({quantity:lineItems.data[i].quantity,menu_id:menuId[i].id})
+      async function (err, lineItems) {
+        console.log(lineItems);
+        for (let i = 0; i < lineItems.data.length; i++) {
+          let menuId = await knex("menu")
+            .select("id")
+            .where("item", lineItems.data[i].description);
+          console.log(menuId);
+          products.push({
+            quantity: lineItems.data[i].quantity,
+            menu_id: menuId[i].id,
+          });
+        }
 
-   }
-  
-   console.log(products)
-   knex('delivery').insert({rest_id:restId,account_id:userId,order_status:'Preparing',special_request:specialRequest,total_amount:totalAmount}).returning('id').then(async(deliveryId)=>{
-     console.log(deliveryId)
-     for(let i=0;i<products.length;i++)
-     {
-      await knex('order_detail').insert({delivery_id:deliveryId[0],menu_id:products[i].menu_id,quantity:products[i].quantity})
-     }
-   })
-   
-  
-      
-    
-    //return knex('order_detail').insert({delivery_id:deliveryId,menu_id:,quantity:}))
-  
-  
-  response.status(200);
-})
+        console.log(products);
+        knex("delivery")
+          .insert({
+            rest_id: restId,
+            account_id: userId,
+            order_status: "Preparing",
+            special_request: specialRequest,
+            total_amount: totalAmount,
+          })
+          .returning("id")
+          .then(async (deliveryId) => {
+            console.log(deliveryId);
+            for (let i = 0; i < products.length; i++) {
+              await knex("order_detail").insert({
+                delivery_id: deliveryId[0],
+                menu_id: products[i].menu_id,
+                quantity: products[i].quantity,
+              });
+            }
+          });
+
+        //return knex('order_detail').insert({delivery_id:deliveryId,menu_id:,quantity:}))
+
+        response.status(200);
+      }
+    );
   }
 });
 
-  app.get('/success/:restId',(req,res)=>{
-      res.render('paymentSuccess',{layout:'user',})
-  })
-  app.get('/cancel',(req,res)=>{
-    res.render('paymentFailed',{layout:'user',})
-})
+app.get("/success/:restId", (req, res) => {
+  res.render("paymentSuccess", { layout: "user" });
+});
+app.get("/cancel", (req, res) => {
+  res.render("paymentFailed", { layout: "user" });
+});
 app.get("/bookingshistory", restRouter.router());
 
 app.post("/checkout", stripePayment);
@@ -397,27 +437,31 @@ app.get("/bizlogin", (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-    req.logout();
-    res.render("userLogin");
-  });
+  req.logout();
+  res.render("userLogin");
+});
 // app.get("/logout", (req, res) => {
 //   req.logout();
 //   res.render("/login");
 // });
-app.post('/discount',(req,res)=>{
-  console.log(req.body.code)
-  let discountCode=req.body.code
-  knex('restaurant').select('discount').where('code',discountCode).then((data)=>{
-  if(data.length===0)
-  {
-    console.log("there is no such coupon")
-    res.json({percent_off:null})
-  }else{
-    res.json({discountCode:req.body.code,percent_off:Number(data[0].discount)})
-  }
-}
-  )
-})
+app.post("/discount", (req, res) => {
+  console.log(req.body.code);
+  let discountCode = req.body.code;
+  knex("restaurant")
+    .select("discount")
+    .where("code", discountCode)
+    .then((data) => {
+      if (data.length === 0) {
+        console.log("there is no such coupon");
+        res.json({ percent_off: null });
+      } else {
+        res.json({
+          discountCode: req.body.code,
+          percent_off: Number(data[0].discount),
+        });
+      }
+    });
+});
 // Sher: Post route for testing local strategy
 app.post(
   "/login",
@@ -449,7 +493,7 @@ app.post(
 app.post(
   "/bizsignup",
   passportFunction.authenticate("local-signup", {
-    successRedirect: "/biz/bizinit",
+    successRedirect: "/biz/bizsetup",
     failureRedirect: "/bizlogin",
   })
 );

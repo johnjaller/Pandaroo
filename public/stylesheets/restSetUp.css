@@ -1,0 +1,13 @@
+.error {
+  border-color: #e45151 !important;
+}
+
+.success {
+  border-color: #06bb06 !important;
+}
+
+.v-msg {
+  margin-left: 5px;
+  font-size: 13px;
+  font-family: Arial, Helvetica, sans-serif;
+}
