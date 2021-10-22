@@ -12,8 +12,8 @@
       <i class="fas fa-star"></i>
     </div>
     <div class="col-2 userBooking-bookmark">
-      <button type="button" class="border-0 bg-white"><i
-          class="far fa-bookmark fa-2x"
+    <button type="button" class="border-0 bg-white bookmark" id="{{restaurant.id}}"><i
+          class="{{bookmark}} fa-bookmark fa-2x"
         ></i></button>
     </div>
   </div>
@@ -31,16 +31,15 @@
               <p class="book">Book</p>
             </div>
             <div class="userBookingForm-order">
-              <a href="#" class="text-decoration-none"><p class="order">Order ></p></a>
+              <a href="/order/{{restaurant.id}}" class="text-decoration-none"><p class="order">Order ></p></a>
             </div>
           </div>
           <div class="bg-white">
-            <h4 class="pt-3 ms-3 userBookingForm-restName">Hello World
-              restaurant</h4>
+            <h4 class="pt-3 ms-3 userBookingForm-restName">{{restaurant.name}}</h4>
             <hr class="my-3 mx-auto userBookingForm-hr" />
-            <p class="ms-4">Address:<br />ABC building</p>
-            <p class="ms-4">Tel:<br />1234 5678</p>
-            <p class="ms-4">Business hour:<br />12:00 - 22:00</p>
+            <p class="ms-4">Address:<br />{{restaurant.address}}</p>
+            <p class="ms-4">Tel:<br />{{restaurant.phone_no}}</p>
+            <p class="ms-4">Business hour:<br />{{restaurant.opening_time}} - {{restaurant.opening_time}}</p>
             <hr class="my-3 mx-auto userBookingForm-hr" />
             <br />
           </div>
@@ -87,29 +86,33 @@
       <table class="table table-bordered">
         <thead>
           <tr class="text-center">
-            <th><a href="#" class="text-decoration-none">Soup n Salad</a></th>
-            <th><a href="#" class="text-decoration-none">Starter</a></th>
-            <th><a href="#" class="text-decoration-none">Main</a></th>
-            <th><a href="#" class="text-decoration-none">Dessert</a></th>
-            <th><a href="#" class="text-decoration-none">Drinks</a></th>
-            <th><a href="#" class="text-decoration-none">Others</a></th>
+           <th><a href="/booking/{{restaurant.id}}" class="text-decoration-none">Soup n Salad</a></th>
+            <th><a href="/booking/{{restaurant.id}}/starter" class="text-decoration-none">Starter</a></th>
+            <th><a href="/booking/{{restaurant.id}}/main" class="text-decoration-none">Main</a></th>
+            <th><a href="/booking/{{restaurant.id}}/dessert" class="text-decoration-none">Dessert</a></th>
+            <th><a href="/booking/{{restaurant.id}}/drinks" class="text-decoration-none">Drinks</a></th>
+            <th><a href="/booking/{{restaurant.id}}/others" class="text-decoration-none">Others</a></th>
           </tr>
         </thead>
       </table>
 
       <div class="d-flex flex-wrap justify-content-start">
         {{! each dishes }}
-        <div class="card me-1 user-dishes" style="width: 13rem;">
+         {{#each dish}}
+        <div class="card me-1 text-center user-dishes" style="width: 13rem;">
           <img
-            src="/assets/panna-cotta.png"
+            src="/image/{{this.photoPath}}"
             class="card-img-top mx-auto"
             alt="dishes pic"
           />
           <div class="card-body">
-            <p class="card-text">Apple pie</p>
-            <p class="card-text">HKD 12.50</p>
+            <p class="card-text text-start item-name" id='{{id}}'>{{name}}</p>
+            <p class="card-text text-start item-price">HKD {{price}}</p>
+            <button type="submit" class="border-0 rounded btn-userAddToCart addToBookingCart">Add
+              to cart</button>
           </div>
         </div>
+        {{/each}}
         {{! /each dishes }}
       </div>
     </div>

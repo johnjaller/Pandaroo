@@ -110,6 +110,7 @@ let shoppingCart = {};
 let requestId;
 $(document).ready(function () {
   if (window.location.pathname.includes("/order/")) {
+
     if (!localStorage.hasOwnProperty("shoppingCart")) {
       localStorage.setItem("shoppingCart", "");
       shoppingCart = {};
@@ -118,7 +119,7 @@ $(document).ready(function () {
     }
     console.log(shoppingCart);
     requestId = window.location.pathname.replace(/[^\d]/g, "");
-  
+
   console.log(requestId)
   if(shoppingCart.hasOwnProperty(requestId))
   {
@@ -139,42 +140,9 @@ $(document).ready(function () {
   price=shoppingCart[requestId].item.map(i=>i.price*i.amount).reduce((a,b)=>a+b)
 }
       $('.totalPrice').html(`HKD ${price}`)
+}
     
-    $('#specialRequest').val(shoppingCart[requestId].specialRequest)
-    requestId = window.location.pathname.replace(/[^\d]/g, "");
-
-    console.log(requestId);
-    if (shoppingCart.hasOwnProperty(requestId)) {
-      console.log(shoppingCart[requestId]);
-      shoppingCart[requestId].item.forEach((item) => {
-        $(".orderList").append(
-          `<tr class="dish text-center"><td>${item.name}</td><td>${item.amount}</td><td>HKD ${item.price}</td></tr>`
-        );
-        let coupon = shoppingCart[requestId].discount;
-        let discount = coupon.percent_off * 100;
-        let price = shoppingCart[requestId].item
-          .map((i) => i.price * i.amount)
-          .reduce((a, b) => a + b);
-        if (Object.keys(shoppingCart[requestId].discount).length > 0) {
-          $(".orderList").append(
-            `<tr class="dish text-center"><td>Discount: '${coupon.discountCode}'</td><td></td><td>-${discount}%</td></tr>`
-          );
-          $("#discountCode").prop("disabled", "disabled");
-          $(".couponCheck").addClass("disabled");
-          price = Number(
-            (
-              price *
-              (1 - shoppingCart[requestId].discount.percent_off)
-            ).toFixed(1)
-          );
-        }
-        $(".totalPrice").html(`HKD ${price}`);
-      });
-      $("#specialRequest").val(shoppingCart[requestId].specialRequest);
-    } else {
-      console.log("There is nothing in the cart");
-    }
-  } else {
+    else {
     return false;
   }
 
@@ -333,6 +301,8 @@ $(".userLogout").on("click", function () {
 $('.bookmark').on('click',(event)=>{
   let restId=$(event.target).parent().attr('id')
   let icon=$(event.target)
+  if(icon.hasClass('far'))
+  {
   icon.toggleClass('far fas')
   console.log(restId)
   $.ajax({
@@ -343,6 +313,18 @@ $('.bookmark').on('click',(event)=>{
       
     }
   });
+}else{
+  icon.toggleClass('fas far')
+  console.log(restId)
+  $.ajax({
+    type: "delete",
+    url: `/bookmark/${restId}`,
+    success: function (response) {
+      console.log(response)
+      
+    }
+  });
+}
 })
 // // User login Ajax POST req
 // $("#user-login-form").submit((event) => {
