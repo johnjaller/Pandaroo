@@ -18,7 +18,7 @@ class RestRouter {
     router.put("/orders/:orderID", this.updateOrderStatus.bind(this));
 
     // Submit signup form > redirect to this route
-    router.get("/bizinit", this.getRestInitialSetUp.bind(this));
+    router.get("/biztag", this.getBizTag.bind(this));
 
     // Click edit info on homepage > redirect to this route
     router.get("/bizsetup", this.getRestSetUp.bind(this));
@@ -260,16 +260,18 @@ class RestRouter {
     }
   }
 
-  // Get "/bizinit"
-  async getRestInitialSetUp(req, res) {
-    console.log("First login from a restaurant user");
+  // Get "/biztag"
+  async getBizTag(req, res) {
+    console.log("Get tag");
     try {
-      // await this.restService.postRestInit(req.user.id);
-      let restInfo = await this.restService.getRestInfo(req.user.id);
-      return res.render("restSetUp", {
-        layout: "restaurant",
-        restInfo: restInfo,
-      });
+      let tagInfo = await this.restService.getRestTag(req.user.id);
+      if (tagInfo.length > 0) {
+        res.send({ data: tagInfo });
+        console.log("restRouter getBizTag tagInfo: ", tagInfo);
+      } else {
+        res.sendStatus(200);
+        console.log("restRouter getBizTag No tagInfo")
+      }
     } catch (err) {
       console.log(err);
     }

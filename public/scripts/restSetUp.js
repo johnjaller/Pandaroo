@@ -1,5 +1,23 @@
 import { checkInputs } from "./dataValidation.js";
 
+// Auto check-checkbox
+$(() => {
+  $.get({
+    url: "/biz/biztag",
+    success: function (data) {
+      if (data.data) {
+        console.log("Data: ", data.data);
+        data.data.forEach((tag) => {
+          console.log(tag.tag_name);
+          $(`#${tag.tag_name}`).prop("checked", true);
+        });
+      } else {
+        console.log("No data");
+      }
+    },
+  });
+});
+
 // Restaurant setup PUT req
 $("#restSetUpSubmit").click(async (event) => {
   event.preventDefault();
@@ -53,7 +71,7 @@ $("#restSetUpSubmit").click(async (event) => {
       data: restInfo,
       success: function () {
         alert("Successfully updated!");
-        window.location.replace("https://localhost:8080/biz/info");
+        // window.location.replace("https://localhost:8080/biz/info");
       },
     });
   }

@@ -51,25 +51,17 @@ class RestService {
     );
   }
 
-  async postRestInit(restId) {
-    try {
-      console.log("restService restId: ", restId);
-      return await this.knex("restaurant").where("id", restId).update({
-        name: null,
-        description: null,
-        address: null,
-        district: null,
-        phone_no: null,
-        opening_time: null,
-        closing_time: null,
-        seats: null,
-        delivery: null,
-        code: null,
-        discount: null,
-        description: null,
-      });
-    } catch (err) {
-      console.log(err);
+  async getRestTag(restId) {
+    console.log("restService restId: ", restId);
+    let tagQuery = await this.knex("tag_rest_join")
+      .join("tag", "tag_rest_join.tag_id", "tag.id")
+      .select("tag.tag_name")
+      .where("tag_rest_join.rest_id", restId);
+    console.log(tagQuery);
+    if (tagQuery) {
+      return tagQuery;
+    } else {
+      return { message: "Tag not found" };
     }
   }
 
@@ -143,40 +135,40 @@ class RestService {
     return query.then((data) => {
       console.log("Order list", data);
       if (data.length > 0) {
-      let result = [];
-      let last = 0;
-      for (let i = 1; i < data.length; i++) {
-        if (data[i].id !== data[i - 1].id) {
-          result.push(data.slice(last, i));
-          last = i;
+        let result = [];
+        let last = 0;
+        for (let i = 1; i < data.length; i++) {
+          if (data[i].id !== data[i - 1].id) {
+            result.push(data.slice(last, i));
+            last = i;
+          }
         }
-      }
-      result.push(data.slice(last));
+        result.push(data.slice(last));
 
-      let orderList = [];
-      for (let i = 0; i < result.length; i++) {
-        let eachOrder = {
-          id: result[i][0].id,
-          created_at: result[i][0].created_at,
-          total_amount: result[i][0].total_amount,
-          order_status: result[i][0].order_status,
-          special_request: result[i][0].special_request,
-          items: [],
-        };
-        result[i].map((dish) => {
-          let food = { item: dish.item, quantity: dish.quantity };
-          eachOrder.items.push(food);
-        });
-        orderList.push(eachOrder);
-      }
-      return orderList;
-    } else {
-      let orderList = [];
-      return orderList;
+        let orderList = [];
+        for (let i = 0; i < result.length; i++) {
+          let eachOrder = {
+            id: result[i][0].id,
+            created_at: result[i][0].created_at,
+            total_amount: result[i][0].total_amount,
+            order_status: result[i][0].order_status,
+            special_request: result[i][0].special_request,
+            items: [],
+          };
+          result[i].map((dish) => {
+            let food = { item: dish.item, quantity: dish.quantity };
+            eachOrder.items.push(food);
+          });
+          orderList.push(eachOrder);
+        }
+        return orderList;
+      } else {
+        let orderList = [];
+        return orderList;
       }
     });
   }
-//
+  //
   getRestOrderHistory(restId) {
     let query = this.knex("delivery")
       .join("order_detail", "delivery.id", "delivery_id")
@@ -201,36 +193,36 @@ class RestService {
     return query.then((data) => {
       console.log("Order list", data);
       if (data.length > 0) {
-      let result = [];
-      let last = 0;
-      for (let i = 1; i < data.length; i++) {
-        if (data[i].id !== data[i - 1].id) {
-          result.push(data.slice(last, i));
-          last = i;
+        let result = [];
+        let last = 0;
+        for (let i = 1; i < data.length; i++) {
+          if (data[i].id !== data[i - 1].id) {
+            result.push(data.slice(last, i));
+            last = i;
+          }
         }
-      }
-      result.push(data.slice(last));
+        result.push(data.slice(last));
 
-      let orderList = [];
-      for (let i = 0; i < result.length; i++) {
-        let eachOrder = {
-          id: result[i][0].id,
-          created_at: result[i][0].created_at,
-          total_amount: result[i][0].total_amount,
-          order_status: result[i][0].order_status,
-          special_request: result[i][0].special_request,
-          items: [],
-        };
-        result[i].map((dish) => {
-          let food = { item: dish.item, quantity: dish.quantity };
-          eachOrder.items.push(food);
-        });
-        orderList.push(eachOrder);
-      }
-      return orderList;
-    } else {
-      let orderList = [];
-      return orderList;
+        let orderList = [];
+        for (let i = 0; i < result.length; i++) {
+          let eachOrder = {
+            id: result[i][0].id,
+            created_at: result[i][0].created_at,
+            total_amount: result[i][0].total_amount,
+            order_status: result[i][0].order_status,
+            special_request: result[i][0].special_request,
+            items: [],
+          };
+          result[i].map((dish) => {
+            let food = { item: dish.item, quantity: dish.quantity };
+            eachOrder.items.push(food);
+          });
+          orderList.push(eachOrder);
+        }
+        return orderList;
+      } else {
+        let orderList = [];
+        return orderList;
       }
     });
   }
@@ -296,24 +288,39 @@ class RestService {
 
   async insertRestTag(restId, data) {
     try {
-      console.log("158 restService", data["restTag[]"]);
+      console.log("restService insertRestTag data: ", data);
+      console.log("restService", data["restTag[]"]);
       let tagArr = data["restTag[]"];
-      let tagIdArr = [];
-      for (let i = 0; i < tagArr.length; i++) {
-        let tagId = await this.knex
+      if (Array.isArray(tagArr)) {
+        let tagIdArr = [];
+        for (let i = 0; i < tagArr.length; i++) {
+          let tagId = await this.knex
+            .select("id")
+            .from("tag")
+            .where("tag_name", tagArr[i]);
+          tagIdArr.push(tagId[0].id);
+          console.log("tagId: ", tagId[0].id);
+        }
+        console.log("restService tagIdArr: ", tagIdArr);
+        for (let j = 0; j < tagIdArr.length; j++) {
+          console.log("Adding into joint table");
+          await this.knex("tag_rest_join").insert({
+            rest_id: restId,
+            tag_id: tagIdArr[j],
+          });
+        }
+      } else if (typeof tagArr === "string") {
+        let tagIdQuery = await this.knex
           .select("id")
           .from("tag")
-          .where("tag_name", tagArr[i]);
-        tagIdArr.push(tagId[0].id);
-        console.log("167 tagId: ", tagId[0].id);
-      }
-      console.log("167 restService tagIdArr: ", tagIdArr);
-      for (let j = 0; j < tagIdArr.length; j++) {
-        console.log("Adding into joint table");
-        await this.knex("tag_rest_join").insert({
-          rest_id: restId,
-          tag_id: tagIdArr[j],
-        });
+          .where("tag_name", tagArr);
+        console.log("insertRestTag tagIdQuery: ", tagIdQuery[0]);
+        if (tagIdQuery[0]) {
+          await this.knex("tag_rest_join").insert({
+            rest_id: restId,
+            tag_id: tagIdQuery[0].id,
+          });
+        }
       }
     } catch (err) {
       console.log(err);
