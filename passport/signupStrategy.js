@@ -29,7 +29,6 @@ module.exports = new LocalStrategy(async (username, password, done) => {
 
     // Insert new user / restaurant into database correspondingly
     if (username.includes("@")) {
-      // get user id and update the newuser object
       let userID = await knex("account").insert(newUser).returning("id");
       newUser.id = userID[0];
       newUser.type = "user";

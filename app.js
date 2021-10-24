@@ -1,4 +1,4 @@
-//import package
+// Import package
 require("dotenv").config();
 const express = require("express");
 const app = express();
@@ -107,6 +107,19 @@ app.get(
   })
 );
 
+// Set up google authentication
+app.get(
+  "/auth/google",
+  passportFunction.authenticate("google", { scope: ["email", "profile"] })
+);
+app.get(
+  "/auth/google/callback",
+  passportFunction.authenticate("google", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+  })
+);
+
 // Set up user service and router
 const UserService = require("./service/userService");
 const UserRouter = require("./router/userRouter");
@@ -120,19 +133,6 @@ const stripe = require("stripe")(process.env.stripe_secret);
 const path = require("path");
 const restService = new RestService(knex);
 const restRouter = new RestRouter(restService);
-
-// Set up google authentication
-app.get(
-  "/auth/google",
-  passportFunction.authenticate("google", { scope: ["email", "profile"] })
-);
-app.get(
-  "/auth/google/callback",
-  passportFunction.authenticate("google", {
-    successRedirect: "/",
-    failureRedirect: "/login",
-  })
-);
 
 // Route for users
 app.use("/user", userRouter.route());
@@ -445,26 +445,6 @@ app.get("/logout", (req, res) => {
   res.render("userLogin");
 });
 
-app.post("/discount", (req, res) => {
-  console.log(req.body.code);
-  let discountCode = req.body.code;
-  knex("restaurant")
-    .select("discount")
-    .where("code", discountCode)
-    .then((data) => {
-      if (data.length === 0) {
-        console.log("there is no such coupon");
-        res.json({ percent_off: null });
-      } else {
-        res.json({
-          discountCode: req.body.code,
-          percent_off: Number(data[0].discount),
-        });
-      }
-    });
-});
-
-// Sher: Post route for local strategy
 app.post(
   "/login",
   passportFunction.authenticate("local-login", {
@@ -474,7 +454,6 @@ app.post(
   })
 );
 
-// Submit user signup form
 app.post(
   "/signup",
   passportFunction.authenticate("local-signup", {
@@ -484,7 +463,6 @@ app.post(
   })
 );
 
-// Submit rest login form
 app.post(
   "/bizlogin",
   passportFunction.authenticate("local-login", {
@@ -494,7 +472,6 @@ app.post(
   })
 );
 
-// Submit rest signup form
 app.post(
   "/bizsignup",
   passportFunction.authenticate("local-signup", {
@@ -504,7 +481,7 @@ app.post(
   })
 );
 
-// Set up 404 error page
+// Handle 404 error
 app.use("*", (req, res) => {
   if (!req.user) {
     res.status(404).render("error404", { layout: "userSimple", guest: true });
@@ -515,6 +492,12 @@ app.use("*", (req, res) => {
       .status(404)
       .render("error404", { layout: "restaurant", restaurant: true });
   }
+});
+
+// Handle 500 server error
+app.use("*", (error, req, res, next) => {
+  console.error(error.stack);
+  res.status(500).render("error500", { layout: "userSimple" });
 });
 
 // Set up port

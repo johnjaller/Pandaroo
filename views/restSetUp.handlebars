@@ -1,6 +1,6 @@
 <section class="container pb-5">
-  <div class="container d-flex justify-content-center row">
-    {{! Upload restaurant profile pic }}
+  {{! Upload restaurant profile pic }}
+  <div class="d-flex justify-content-center row">
     <div class="col-8 pb-3">
       <form class="restPropicForm" action="/bizsetuppropic" method="POST" enctype="multipart/form-data">
         <h2 class="restSignUpTitle">Sign Up</h2>
@@ -10,7 +10,7 @@
           Please choose your restaurant profile picture
         </label>
         <input class="form-control" type="file" name="uploadedFile" id="formFile" onchange="readURL(this);"/>
-        <button class="mt-2 border-0 rounded btn-restGo" type="submit" name="submit">Set ></button>
+        <button class="mt-2 rounded btn-restGo" type="submit" name="submit">Set ></button>
       </form>
     </div>
   </div>
@@ -256,8 +256,9 @@
       <div class="col-12 text-center">
         <button type="submit" value="submit" form="restSignUpForm" class="mt-2 mx-2 rounded btn-restGo" id="restSetUpSubmit">
           Submit ></button>
-        <button value="setmenu" class="mt-2 mx-2 rounded btn-restGo" id="restSetUpSubmit"><a href="/biz/bizsetupmenu"></a>
-          Set Menu ></button>
+        <a href="/biz/bizsetupmenu">
+          <button value="setmenu" class="mt-2 mx-2 rounded btn-restGo" id="restSetUpSubmit">Set Menu ></button>
+        </a>
       </div>
     </div>
   </div>

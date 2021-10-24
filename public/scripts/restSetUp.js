@@ -1,6 +1,6 @@
 import { checkRestInputs } from "./dataValidation.js";
 
-// Auto-check tag-checkbox
+// "Auto-check" tag-checkbox
 $(() => {
   $.get({
     url: "/biz/biztag",

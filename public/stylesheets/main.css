@@ -19,7 +19,6 @@
   font-family: "Bungee", cursive;
   color: #ffffff;
   font-size: 80px;
-  /* text-align: center; */
   letter-spacing: -6px;
   -webkit-text-stroke: 6px #ff6b62;
 }
@@ -110,7 +109,6 @@ input {
   -webkit-text-stroke: 6px #4b8494;
 }
 
-/* Rest-page buttons */
 .btn-success {
   background-color: #ffffff !important;
   border: 3px solid #4b8494 !important;
