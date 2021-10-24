@@ -1,4 +1,48 @@
-export function checkInputs(restInfo) {
+// User setup checking
+export function checkUserInputs(userInfo) {
+  if (userInfo.fname === "") {
+    setMessage($("#userFirstName"), "First name must not be blank");
+    $("#userFirstName").addClass("error");
+  } else {
+    setMessage($("#userFirstName"), "OK!");
+    $("#userFirstName").addClass("success");
+  }
+
+  if (userInfo.lname === "") {
+    setMessage($("#userLastName"), "Last name must not be blank");
+    $("#userLastName").addClass("error");
+  } else {
+    setMessage($("#userLastName"), "OK!");
+    $("#userLastName").addClass("success");
+  }
+
+  if (/^\d{8}$/.test(userInfo.phone) === false) {
+    setMessage($("#userPhone"), "Phone number must be 8-digit integer");
+    $("#userPhone").addClass("error");
+  } else {
+    setMessage($("#userPhone"), "OK!");
+    $("#userPhone").addClass("success");
+  }
+
+  if (userInfo.district === "") {
+    setMessage($("#userDistrict"), "District must not be blank");
+    $("#userDistrict").addClass("error");
+  } else {
+    setMessage($("#userDistrict"), "OK!");
+    $("#userDistrict").addClass("success");
+  }
+
+  if (userInfo.address === "") {
+    setMessage($("#userAddress"), "Address must not be blank");
+    $("#userAddress").addClass("error");
+  } else {
+    setMessage($("#userAddress"), "OK!");
+    $("#userAddress").addClass("success");
+  }
+}
+
+// Restaurant setup checking
+export function checkRestInputs(restInfo) {
   // Validate the data
   console.log("restSetUp.js restName: ", restInfo.restName);
   if (restInfo.restName === "") {

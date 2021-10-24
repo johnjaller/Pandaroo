@@ -1,6 +1,6 @@
-import { checkInputs } from "./dataValidation.js";
+import { checkRestInputs } from "./dataValidation.js";
 
-// Auto check-checkbox
+// Auto-check tag-checkbox
 $(() => {
   $.get({
     url: "/biz/biztag",
@@ -19,16 +19,14 @@ $(() => {
 });
 
 // Restaurant setup PUT req
-$("#restSetUpSubmit").click(async (event) => {
+$("#restSetUpSubmit").click((event) => {
   event.preventDefault();
-  $(".invalid-feedback").hide();
-  $(".valid-feedback").hide();
   $("*").removeClass("success");
   $("*").removeClass("error");
 
   // Converting phone data from string into number
   let phoneData = parseInt($("#restPhone").val());
-  console.log("main.js phoneData: ", phoneData);
+  console.log("restSetUp.js phoneData: ", phoneData);
   // Converting delivery data from string to boolean
   let deliveryData = true;
   if ($("#restDelivery option:selected").val() === "False") {
@@ -36,7 +34,7 @@ $("#restSetUpSubmit").click(async (event) => {
   }
   // Converting discount data from string to decimal
   let discountData = (100 - parseInt($("#restDiscount").val())) / 100;
-  console.log("main.js discountData: ", discountData);
+  console.log("restSetUp.js discountData: ", discountData);
   // Converting tag checkbox data to an array
   let checkboxData = [];
   $.each($(".form-check-input:checked"), function () {
@@ -60,7 +58,7 @@ $("#restSetUpSubmit").click(async (event) => {
   };
   console.log("Rest Info: ", restInfo);
 
-  await checkInputs(restInfo);
+  checkRestInputs(restInfo);
 
   if ($(".error")[0]) {
     return;
@@ -71,7 +69,7 @@ $("#restSetUpSubmit").click(async (event) => {
       data: restInfo,
       success: function () {
         alert("Successfully updated!");
-        // window.location.replace("https://localhost:8080/biz/info");
+        window.location.replace("https://localhost:8080/biz/info");
       },
     });
   }

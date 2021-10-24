@@ -1,30 +1,3 @@
-// User setup POST req
-$("#userSetUpForm").submit((event) => {
-  event.preventDefault();
-  let fnameInput = $("input[name=fname]").val();
-  let lnameInput = $("input[name=lname]").val();
-  let phoneInput = $("input[name=phone]").val();
-  let districtInput = $("#userDistrict option:selected").text();
-  let addressInput = $("input[name=address]").val();
-  console.log(
-    `FirstName: ${fnameInput}, LastName: ${lnameInput}, Phone: ${phoneInput}, District: ${districtInput}, Address: ${addressInput}`
-  );
-  $.ajax({
-    url: "/setup",
-    type: "PUT",
-    data: {
-      fname: fnameInput,
-      lname: lnameInput,
-      phone: phoneInput,
-      district: districtInput,
-      address: addressInput,
-    },
-    success: function () {
-      window.location.replace("https://localhost:8080/");
-    },
-  });
-});
-
 // Shopping cart
 $(document).ready(function () {
   if (window.location.pathname.includes("/order/")) {

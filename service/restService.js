@@ -25,30 +25,22 @@ class RestService {
   // Get rest setup info (with tag) "/bizsetup"
   getRestSetUpInfo(restId) {
     console.log("restService restId: ", restId);
-    return (
-      this.knex("restaurant")
-        // .join("tag_rest_join", "restaurant.id", "tag_rest_join.rest_id")
-        // .join("tag", "tag_rest_join.tag_id", "tag.id")
-        .select(
-          // "profile_path",
-          "name",
-          "description",
-          "address",
-          "district",
-          "phone_no",
-          "opening_time",
-          "closing_time",
-          "seats",
-          "delivery",
-          "code",
-          "discount",
-          "description"
-          // this.knex.raw("ARRAY_AGG(tag.tag_name) as tag")
-        )
-        .where("restaurant.id", restId)
-      // .whereRaw("restaurant.id = ?", [restId])
-      // .groupBy("restaurant.id", restId)
-    );
+    return this.knex("restaurant")
+      .select(
+        "name",
+        "description",
+        "address",
+        "district",
+        "phone_no",
+        "opening_time",
+        "closing_time",
+        "seats",
+        "delivery",
+        "code",
+        "discount",
+        "description"
+      )
+      .where("restaurant.id", restId);
   }
 
   async getRestTag(restId) {

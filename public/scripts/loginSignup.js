@@ -1,5 +1,6 @@
 // User signup password validation
 $("#user-signup-form").submit((event) => {
+  $(".err-msg").empty();
   let usernameInput = $(event.target).find("input[name=username]").val();
   let passwordInput = $(event.target).find("input[name=password]").val();
   console.log(`USERNAME: ${usernameInput}, PASSWORD: ${passwordInput}`);
@@ -16,6 +17,7 @@ $("#user-signup-form").submit((event) => {
 
 // Restaurant signup username & password validation
 $("#rest-signup-form").submit((event) => {
+  $(".err-msg").empty();
   let usernameInput = $(event.target).find("input[name=username]").val();
   let passwordInput = $(event.target).find("input[name=password]").val();
   console.log(`USERNAME: ${usernameInput}, PASSWORD: ${passwordInput}`);
@@ -39,6 +41,7 @@ $("#rest-signup-form").submit((event) => {
 
 // Restaurant login username validation
 $("#rest-login-form").submit((event) => {
+  $(".err-msg").empty();
   let usernameInput = $(event.target).find("input[name=username]").val();
   console.log(`USERNAME: ${usernameInput}`);
   if (!/[A-Za-z0-9]/.test(usernameInput)) {

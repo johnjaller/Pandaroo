@@ -21,7 +21,13 @@ const io = require("socket.io")(https);
 
 // Set up express session
 const session = require("express-session");
-app.use(session({ secret: "secret", resave: false, saveUninitialized: true }));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 // Set up public files and middleware
 app.use(flash());
@@ -266,10 +272,6 @@ app.get("/userorder", (req, res) => {
   res.render("userOrder", { layout: "user" });
 });
 
-app.get("/setup", userLogIn, (req, res) => {
-  res.render("userSetUp", { layout: "user" });
-});
-
 // Route for restaurants
 app.use("/biz", restLogIn, restRouter.router());
 
@@ -332,8 +334,8 @@ app.get("/image/:key", (req, res) => {
   const readStream = downloadFile(key);
   readStream.pipe(res);
 });
-//stripe checkout
 
+//stripe checkout
 app.post("/checkout", stripePayment);
 const endPointSecret = "whsec_G2nJNMFVmpCn275FSbScXynzCytZxtJX";
 
@@ -442,10 +444,7 @@ app.get("/logout", (req, res) => {
   req.logout();
   res.render("userLogin");
 });
-// app.get("/logout", (req, res) => {
-//   req.logout();
-//   res.render("/login");
-// });
+
 app.post("/discount", (req, res) => {
   console.log(req.body.code);
   let discountCode = req.body.code;
@@ -464,7 +463,8 @@ app.post("/discount", (req, res) => {
       }
     });
 });
-// Sher: Post route for testing local strategy
+
+// Sher: Post route for local strategy
 app.post(
   "/login",
   passportFunction.authenticate("local-login", {
@@ -478,7 +478,7 @@ app.post(
 app.post(
   "/signup",
   passportFunction.authenticate("local-signup", {
-    successRedirect: "/setup",
+    successRedirect: "/user/setup",
     failureRedirect: "/login",
     failureFlash: true,
   })
@@ -504,20 +504,17 @@ app.post(
   })
 );
 
-// Submit user info setup form
-app.put("/setup", userLogIn, async (req, res) => {
-  console.log("app.js 281 ID: ", req.user.id);
-  knex("account")
-    .where("id", req.user.id)
-    .update({
-      firstname: req.body.fname,
-      surname: req.body.lname,
-      address: req.body.address,
-      district: req.body.district,
-      phone_no: req.body.phone,
-    })
-    .catch((e) => console.log(e));
-  res.send("OKAY");
+// Set up 404 error page
+app.use("*", (req, res) => {
+  if (!req.user) {
+    res.status(404).render("error404", { layout: "userSimple", guest: true });
+  } else if (req.user.username.includes("@")) {
+    res.status(404).render("error404", { layout: "user", user: true });
+  } else {
+    res
+      .status(404)
+      .render("error404", { layout: "restaurant", restaurant: true });
+  }
 });
 
 // Set up port

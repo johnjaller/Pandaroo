@@ -30,43 +30,43 @@ h2 {
 }
 
 .btn-dark {
-  background-color: #ff6b62;
-  border: 3px solid #ff6b62;
+  background-color: #ff6b62 !important;
+  border: 3px solid #ff6b62 !important;
   height: 60px;
   font-size: 20px;
 }
 
 .btn-dark:hover {
-  background-color: #ffffff;
-  border-color: #ff6b62;
-  color: #ff6b62;
+  background-color: #ffffff !important;
+  border-color: #ff6b62 !important;
+  color: #ff6b62 !important;
 }
 
 .btn-primary {
-  background-color: #ff6b62;
-  border: 3px solid #ff6b62;
+  background-color: #ff6b62 !important;
+  border: 3px solid #ff6b62 !important;
   height: 105px;
   font-size: 20px;
 }
 
 .btn-primary:hover {
-  background-color: #ffffff;
-  border-color: #ff6b62;
-  color: #ff6b62;
+  background-color: #ffffff !important;
+  border-color: #ff6b62 !important;
+  color: #ff6b62 !important;
 }
 
 .btn-info {
-  background-color: #ffffff;
-  border: 3px solid #ff6b62;
+  background-color: #ffffff !important;
+  border: 3px solid #ff6b62 !important;
   height: 105px;
   font-size: 20px;
-  color: #ff6b62;
+  color: #ff6b62 !important;
 }
 
 .btn-info:hover {
-  background-color: #ff6b62;
-  border-color: #ff6b62;
-  color: #ffffff;
+  background-color: #ff6b62 !important;
+  border-color: #ff6b62 !important;
+  color: #ffffff !important;
 }
 
 p,
@@ -112,31 +112,31 @@ input {
 
 /* Rest-page buttons */
 .btn-success {
-  background-color: #ffffff;
-  border: 3px solid #4b8494;
+  background-color: #ffffff !important;
+  border: 3px solid #4b8494 !important;
   height: 105px;
   font-size: 20px;
-  color: #4b8494;
+  color: #4b8494 !important;
 }
 
 .btn-success:hover {
-  background-color: #4b8494;
-  border-color: #4b8494;
-  color: #ffffff;
+  background-color: #4b8494 !important;
+  border-color: #4b8494 !important;
+  color: #ffffff !important;
 }
 
 .btn-danger {
-  background-color: #4b8494;
-  border: 3px solid #4b8494;
+  background-color: #4b8494 !important;
+  border: 3px solid #4b8494 !important;
   height: 105px;
   font-size: 20px;
-  color: #ffffff;
+  color: #ffffff !important;
 }
 
 .btn-danger:hover {
-  background-color: #ffffff;
-  border-color: #4b8494;
-  color: #4b8494;
+  background-color: #ffffff !important;
+  border-color: #4b8494 !important;
+  color: #4b8494 !important;
 }
 
 #to-user-login {
@@ -154,4 +154,9 @@ input {
   font-weight: 600;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   color: #ff3333;
+}
+
+.btn:focus {
+  outline: none;
+  box-shadow: none;
 }

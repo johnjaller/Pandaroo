@@ -10,6 +10,7 @@ class RestRouter {
 
     router.get("/info", this.get.bind(this));
     router.get("/info/:category", this.getCategory.bind(this));
+
     router.get("/bookings", this.getBooking.bind(this));
     router.get("/orders", this.getOrder.bind(this));
     router.get("/bookingshistory", this.getBookingHistory.bind(this));
@@ -17,14 +18,10 @@ class RestRouter {
     router.put("/bookings/:bookingID", this.updateBookingStatus.bind(this));
     router.put("/orders/:orderID", this.updateOrderStatus.bind(this));
 
-    // Submit signup form > redirect to this route
-    router.get("/biztag", this.getBizTag.bind(this));
-
-    // Click edit info on homepage > redirect to this route
     router.get("/bizsetup", this.getRestSetUp.bind(this));
     router.put("/bizsetup", this.putRestInfo.bind(this));
+    router.use("/biztag", this.getBizTag.bind(this));
 
-    // Click edit menu > redirect to this route
     router.get("/bizsetupmenu", this.getSetUpMenu.bind(this));
     router.get(
       "/bizsetupmenu/:category",
@@ -270,7 +267,7 @@ class RestRouter {
         console.log("restRouter getBizTag tagInfo: ", tagInfo);
       } else {
         res.sendStatus(200);
-        console.log("restRouter getBizTag No tagInfo")
+        console.log("restRouter getBizTag No tagInfo");
       }
     } catch (err) {
       console.log(err);
@@ -373,7 +370,7 @@ class RestRouter {
 
     await this.restService.insertRestTag(req.user.id, req.body);
     console.log("Inserted restaurant tag");
-    return res.send(200);
+    return res.sendStatus(200);
   }
 
   // Add menu (moved to app.js)
