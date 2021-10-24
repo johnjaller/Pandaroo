@@ -50,7 +50,7 @@ class RestService {
       // .groupBy("restaurant.id", restId)
     );
   }
-//
+
   async postRestInit(restId) {
     try {
       console.log("restService restId: ", restId);

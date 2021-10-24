@@ -35,7 +35,7 @@
           <div class="container">
             <div class="row d-flex justify-content-center align-items-center">
               <div class="col-2 rest-profile-pic">
-                <img src="/assets/panna-cotta.png" alt="restaurant profile pic" />
+                <img src="/image/{{this.profile_path}}" alt="restaurant profile pic" />
               </div>
               <div class="col-8 align-self-center">
                 <p>{{this.name}}</p>
@@ -67,22 +67,34 @@
           <div class="container">
             <div class="row d-flex justify-content-center align-items-center">
               <div class="col-2 rest-profile-pic">
-                <img src="/assets/panna-cotta.png" alt="restaurant profile pic" />
+                <img src="/image/{{this.profile_path}}" alt="restaurant profile pic" />
               </div>
               <div class="col-8">
                 <p>{{this.name}}</p>
                 <p><i class="fas fa-map-marker-alt userNavbarIcon"></i>&nbsp;{{this.address}}
                 </p>
-                <p>Order details</p>
+                <p>Order details:</p>
+                <table>
+                {{#each order_detail}}
+                <tr>
+                <td>{{this.item}}&nbsp;</td>
+                <td>x{{this.quantity}}</td>
+                </tr>
+                {{/each}}
+                </table>
+                <p>Total Amount: HKD {{this.total_amount}}</p>
+                <p>Special request:</p>
+                <p>{{this.special_request}}</p>
               </div>
               <div class="col-2">
+                <label for="">Status:</label>
                 <button
                   type="button"
-                  class="border-0 rounded my-3 btn-userStatus"
-                >Status</button>
+                  class="border-0 rounded my-3 btn-userStatus orderStatus"
+                >{{this.order_status}}</button>
                 <button
                   type="button"
-                  class="border-0 rounded my-3 btn-userCancel" data-bs-toggle="modal" data-bs-target="#delete"
+                  class="border-0 rounded my-3 btn-userCancel" data-bs-toggle="modal" data-bs-target="#deleteOrder"
                 >Cancel</button>
               </div>
             </div>
@@ -97,18 +109,27 @@
               <div class="row d-flex justify-content-center align-items-center">
                 <div class="col-2 rest-profile-pic">
                   <img
-                    src="/assets/panna-cotta.png"
+                    src="/image/{{this.profile_path}}"
                     alt="restaurant profile pic"
                   />
                 </div>
                 <div class="col-10">
-                  <p>ABC restaurant</p>
+                  <p>{{this.name}}</p>
                   <p><i
                       class="fas fa-map-marker-alt userNavbarIcon"
-                    ></i>&nbsp;ABC building, Tsim Sha Tsui, Kowloon, Hong Kong
+                    ></i>&nbsp;{{this.address}}
                   </p>
                   <p>Tag</p>
+                  {{#each tag_name}}
+                  <span>{{this}}</span>
+                  {{/each}}
                 </div>
+              <div class="col-2">
+                <button
+                  type="button"
+                  class="border-0 rounded my-3 btn-userCancel" 
+                >unbookmark</button>
+              </div>  
               </div>
             </div>
           </div>
@@ -157,7 +178,7 @@
 <br />
 <br />
 
-{{!-- delete modal --}}
+{{!-- delete booking modal --}}
 <div class="modal fade" id="delete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -179,7 +200,35 @@
           class="btn btn-secondary"
           data-bs-dismiss="modal"
         >Close</button>
-        <button type="button" class="btn btn-danger">Cancel</button>
+        <button type="button" class="btn btn-danger cancelBooking">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{!-- delete order modal --}}
+<div class="modal fade" id="deleteOrder" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Cancel order</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        Are you sure to cancel the order?
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary "
+          data-bs-dismiss="modal"
+        >Close</button>
+        <button type="button" class="btn btn-danger cancelOrder">Cancel</button>
       </div>
     </div>
   </div>

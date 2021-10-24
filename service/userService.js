@@ -32,25 +32,44 @@ class UserService {
       .where({ account_id: userId });
   }
 
-  getUserOrder(userId) {
-    return this.knex("delivery")
+  async getUserOrder(userId) {
+    let delivery=await this.knex("delivery")
       .join("account", "account_id", "account.id")
       .join("restaurant", "rest_id", "restaurant.id")
-      .select("restaurant.name", "restaurant.address")
+      .select('delivery.id',"restaurant.name", "restaurant.address",'restaurant.profile_path','delivery.order_status','delivery.total_amount','delivery.special_request')
       .where({ account_id: userId });
+      for(let i=0;i<delivery.length;i++)
+      {
+      let deliveryId=delivery[i].id
+      let orderDetail= await this.knex('order_detail').join('delivery','delivery_id','delivery.id').join('menu','menu_id','menu.id').select('menu.item','order_detail.quantity','menu.price').where('delivery_id',deliveryId)
+      console.log(orderDetail)
+      delivery[i]['order_detail']=orderDetail
+      console.log(delivery[i].order_detail)
+      }
+      return delivery
   }
 
-  getUserBookmark(userId) {
-    return this.knex("bookmark")
+  async getUserBookmark(userId) {
+    let bookmark= await this.knex("bookmark")
       .join("account", "account_id", "account.id")
       .join("restaurant", "rest_id", "restaurant.id")
       .select(
+        'restaurant.id',
         "restaurant.name",
         "restaurant.address",
         "opening_time",
-        "closing_time"
+        "closing_time",'restaurant.profile_path',
       )
       .where({ account_id: userId });
+      for(let i=0;i<bookmark.length;i++)
+      {
+      let restId=bookmark[i].id
+      let tagName= await this.knex('tag_rest_join').join('restaurant','tag_rest_join.rest_id','restaurant.id').join('tag','tag_rest_join.tag_id','tag.id').select('tag_name').where('rest_id',restId)
+      console.log(tagName)
+      tagName=tagName.map(item=>item.tag_name)
+        bookmark[i]['tag_name']=tagName
+      }
+      return bookmark
   }
 
   getRestTag() {

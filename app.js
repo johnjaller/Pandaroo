@@ -254,6 +254,16 @@ app.get('/order/:restId',async(req,res)=>{
 }
 })
 
+app.delete('/userOrder/:orderId',(req,res)=>{
+  return knex('order_detail').delete().where('delivery_id',req.params.orderId).then(()=>{
+    knex('delivery').delete().where('delivery.id',req.params.orderId)
+  })
+})
+app.delete('/userBooking/:orderId',(req,res)=>{
+  return knex('order_detail').delete().where('delivery_id',req.params.orderId).then(()=>{
+    knex('delivery').delete().where('delivery.id',req.params.orderId)
+  })
+})
 app.get('/order/:restId/:category',async(req,res)=>{
   let restDetail=await  knex('restaurant').select().where('restaurant.id',req.params.restId)
   let dish=await knex('restaurant').select().join('menu','restaurant.id','menu.rest_id').where({'restaurant.id':req.params.restId,'category':req.params.category})
@@ -485,11 +495,11 @@ app.post('/discount',(req,res)=>{
   )
 })
 
-app.get('/tag/:tagid',(req,res)=>{
-  req.params.tagid
-  return knex('restaurant').select('restaurant.id','restaurant.name','restaurant.address','restaurant.district','restaurant.profile_path','restaurant.phone_no','restaurant.seats').join('tag_rest_join','restaurant.id','tag_rest_join.rest_id').join('tag','tag_rest_join.tag_id','tag.id').where('tag.id',req.params.tagid).then((data)=>{
+app.get('/tag/:tagid',async (req,res)=>{
+  let tagName=await knex('tag').select('tag_name').where('id',req.params.tagid)
+  return  knex('restaurant').select('restaurant.id','restaurant.name','restaurant.address','restaurant.district','restaurant.profile_path','restaurant.phone_no','restaurant.seats').join('tag_rest_join','restaurant.id','tag_rest_join.rest_id').join('tag','tag_rest_join.tag_id','tag.id').where('tag.id',req.params.tagid).then((data)=>{
     console.log(data)
-    res.render('userHome',{layout:'user',rest:data})
+    res.render('userHome',{layout:'user',rest:data,result:'search result: '+tagName[0].tag_name})
   })
 })
 // Sher: Post route for testing local strategy
