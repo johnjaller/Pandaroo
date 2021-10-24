@@ -11,7 +11,7 @@
           <p class="my-4 userInfoContent userDistrict">District: <span>{{this.district}}</span></p>
           <p class="my-4 userInfoContent userPhone">Tel: <span>{{this.phone_no}}</span></p>
         {{/each}}
-        <button class="btn-userlogout me-4 border-0 rounded" data-bs-toggle="modal" data-bs-target="#edit">Edit my profile</button>
+        <button class="btn-userlogout me-4 border-0 rounded" data-bs-toggle="modal"  data-bs-target="#edit">Edit my profile</button>
       </div>
       <div class="col-9">
         <div>
@@ -31,7 +31,7 @@
 
         {{! #User booking }}
         {{#each booking}}
-        <div class="userBooking rounded">
+        <div class="userBooking rounded" id="{{this.id}}">
           <div class="container">
             <div class="row d-flex justify-content-center align-items-center">
               <div class="col-2 rest-profile-pic">
@@ -42,10 +42,23 @@
                 <p><i class="fas fa-map-marker-alt userNavbarIcon"></i>&nbsp;
                   {{this.address}}
                 </p>
+                  <div class="userBooking-star rating">{{this.rating}}</div>
                 <p>{{this.no_of_ppl}} guests</p>
                 <p>{{this.booking_date}}&nbsp;&nbsp;&nbsp;{{this.booking_time}}</p>
+                <p>Your order item:</p>
+                <table>
+                 {{#each booking_detail}}
+                <tr>
+                <td>{{this.item}}&nbsp;</td>
+                <td>x{{this.quantity}}</td>
+                </tr>
+                {{/each}}
+                </table>
+                <p>Special request:</p>
+                <p>{{this.special_request}}</p>
               </div>
               <div class="col-2">
+                <button></button>
                 <button
                   type="button"
                   class="border-0 rounded my-3 btn-userStatus"
@@ -55,9 +68,14 @@
                   class="border-0 rounded my-3 btn-userCancel userCancelBooking"
                   id="{{this.id}}" data-bs-toggle="modal" data-bs-target="#delete"
                 >Cancel</button>
+                  <button
+                  type="button"
+                  class="border-0 rounded my-3 btn-userCancel reviewButton" id="{{this.rest_id}}" data-bs-toggle="modal" data-bs-target="#review"
+                >review</button>
               </div>
             </div>
           </div>
+        </div>
         {{/each}}
         {{! /User booking }}
 
@@ -97,6 +115,10 @@
                   type="button"
                   class="border-0 rounded my-3 btn-userCancel userCancelOrder" data-bs-toggle="modal" data-bs-target="#deleteOrder"
                 >Cancel</button>
+                  <button
+                  type="button"
+                  class="border-0 rounded my-3 btn-userCancel reviewButton" id="{{this.rest_id}}" data-bs-toggle="modal" data-bs-target="#review"
+                >review</button>
               </div>
             </div>
           </div>
@@ -128,6 +150,10 @@
                   {{/each}}
                 </div>
               <div class="col-2">
+                <button
+                  type="button"
+                  class="border-0 rounded my-3 btn-userCancel reviewButton" id="{{this.rest_id}}" data-bs-toggle="modal" data-bs-target="#review"
+                >review</button>
                 <button
                   type="button"
                   class="border-0 rounded my-3 btn-userCancel unbookmark"  
@@ -203,7 +229,7 @@
           class="btn btn-secondary"
           data-bs-dismiss="modal"
         >Close</button>
-        <button type="button" class="btn btn-danger cancelBooking"  data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger confirmCancelBooking"  data-bs-dismiss="modal">Cancel</button>
       </div>
     </div>
   </div>
@@ -293,6 +319,40 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <button type="submit" class="btn btn-primary userInfoSubmit" data-bs-dismiss="modal">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{!-- review modal --}}
+<div class="modal fade" id="review" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Rate the restaurant</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+       Would you recommend this restaurant?
+        <select  class="form-select " id="rating">
+              <option value='5' selected >5 --very likely</option>
+              <option value='4'>4</option>
+              <option value='3'>3</option>
+              <option value='2'>2</option>
+              <option value='1'>1 -- unllikely</option>
+            </select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary review"  data-bs-dismiss="modal">confirmed</button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >Close</button>
       </div>
     </div>
   </div>

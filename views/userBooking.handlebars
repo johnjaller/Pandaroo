@@ -2,15 +2,13 @@
 <div class="container">
   <div class="row d-flex align-items-center">
     <div class="col-6">
-      <h2 class="userBooking-restName mx-5 my-3">Hello World restaurant</h2>
+      <h2 class="userBooking-restName mx-5 my-3">{{restaurant.name}}</h2>
     </div>
-    <div class="col-4 userBooking-star">
-      <i class="fas fa-star"></i>
-      <i class="fas fa-star"></i>
-      <i class="fas fa-star"></i>
-      <i class="fas fa-star"></i>
-      <i class="fas fa-star"></i>
-    </div>
+    <div class="col-4 userBooking-star rating">{{restaurant.rating}}</div>
+                      <button
+                  type="button"
+                  class="border-0 rounded my-3 btn-userCancel reviewButton" data-bs-toggle="modal" data-bs-target="#review"
+                >review</button>
     <div class="col-2 userBooking-bookmark">
     <button type="button" class="border-0 bg-white bookmark" id="{{restaurant.id}}"><i
           class="{{bookmark}} fa-bookmark fa-2x"
@@ -39,31 +37,55 @@
             <hr class="my-3 mx-auto userBookingForm-hr" />
             <p class="ms-4">Address:<br />{{restaurant.address}}</p>
             <p class="ms-4">Tel:<br />{{restaurant.phone_no}}</p>
-            <p class="ms-4">Business hour:<br />{{restaurant.opening_time}} - {{restaurant.opening_time}}</p>
+            <p class="ms-4">Business hour:<br /><span class="opening">{{restaurant.opening_time}}</span> - <span class="closing">{{restaurant.closing_time}}</span></p>
             <hr class="my-3 mx-auto userBookingForm-hr" />
             <br />
+            <table>
+              <tbody class="bookingList">
+              </tbody>
+              </table>
+<div class="d-flex justify-content-between">
+              <p class="ms-3">Total:</p>
+              <p class="me-3 totalPrice">HKD </p>
+            </div>
           </div>
 
-          <form id="userBookingForm" action="/booking/{{restaurant.id}}" method="POST">
+          <form id="userBookingForm" class="needs-validation" action="/booking/{{restaurant.id}}" method="POST" >
+          <input type="text" class="bookingCart d-none" name="bookingCart">
             <div class="d-flex">
-              <div class="mt-3 me-2">Date<br /><input
+              <div class="form-check mt-3 me-2">Date<br /><input
                   type="date"
                   id=""
-                  name="bookingDate"
-                  style="width: 190px;"
-                /></div>
-              <div class="mt-3">Time<br /><input
+                  name="bookingDate" class="form-control"
+                  style="width: 190px;" required
+                /><div class="invalid-feedback">
+      Please enter a Date.
+    </div>
+    <div class="valid-feedback">
+      Looks good!
+    </div>
+                </div>
+                 
+              <div class="form-check mt-3">Time<br /><input
                   type="time"
                   id=""
-                  name="bookingTime"
-                  style="width: 190px;"
-                /></div>
+                  name="bookingTime" class="form-control bookingTime"
+                  style="width: 190px;" required
+                /><div class="invalid-feedback">
+      Please enter a time.
+    </div></div>
             </div>
-            <div class="mt-3">No of guests<br /><input
+            <div class=" mt-3">No of guests<br /><div class="form-control"><input
                 type="number"
                 id=""
-                name="noOfGuest"
-              /></div>
+                name="noOfGuest" required
+              />
+              <div class="invalid-feedback">
+      Please enter the number of guests.
+    </div>
+    <div class="valid-feedback">
+      Looks good!
+    </div></div></div>
             <div class="mt-3">Special request<br /><textarea
                 id=""
                 name="specialRequest"
@@ -71,9 +93,10 @@
                 cols="41"
               ></textarea>
             </div>
+
             <button
                 type="submit"
-                class="mt-3 float-end border-0 rounded btn-userSubmit"
+                class="mt-3 float-end border-0 rounded btn-userSubmit bookingSubmit"
               >Submit ></button>
           </form>
 
@@ -122,3 +145,39 @@
 
 <br />
 <br />
+
+{{!-- review modal --}}
+<div class="modal fade" id="review" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="review" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Rate the restaurant</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+       Would you recommend this restaurant?
+        <select  class="form-select " id="rating">
+              <option value='5' selected >5 --very likely</option>
+              <option value='4'>4</option>
+              <option value='3'>3</option>
+              <option value='2'>2</option>
+              <option value='1'>1 -- unllikely</option>
+            </select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary review"  data-bs-dismiss="modal">confirmed</button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >Close</button>
+      </div>
+    </div>
+  </div>
+</div>

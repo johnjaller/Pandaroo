@@ -1,7 +1,9 @@
 let shoppingCart = {};
 let requestId;
+let bookingCart={}
 //shoppingCart setup
 $(document).ready(function () {
+
     let ratingArr=$('.rating')
     console.log(ratingArr.length)
     for(let i=0;i<ratingArr.length;i++)
@@ -11,35 +13,61 @@ $(document).ready(function () {
         switch(rating)
         {
         case '1'||1:
-        $('.rating').eq(i).html('')
-        console.log( $('.rating').eq(i).html())
-      $('.rating').eq(i).append('<i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>');
+      $('.rating').eq(i).html('<i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>');
+        break
+        case '1.5'||1.5:
+      $('.rating').eq(i).html('<i class="fas fa-star"><i class="fas fa-star-half-alt"></i></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>');
         break
         case '2'||2:
-        $('.rating').eq(i).html('')
-        $('.rating').eq(i).append('<i class="fas fa-star"><i class="fas fa-star"><i class="far fa-star"><i class="far fa-star"><i class="far fa-star">');
+        $('.rating').eq(i).html('<i class="fas fa-star"><i class="fas fa-star"><i class="far fa-star"><i class="far fa-star"><i class="far fa-star">');
+        break
+        case '2.5'||2.5:
+        $('.rating').eq(i).html('<i class="fas fa-star"><i class="fas fa-star"><i class="fas fa-star-half-alt"></i><i class="far fa-star"><i class="far fa-star">');
         break
         case '3'||3:
-        $('.rating').eq(i).html('')
-        $('.rating').eq(i).append(`<i class="fas fa-star"><i class="fas fa-star"><i class="fas fa-star"><i class="far fa-star"><i class="far fa-star">`);
+        $('.rating').eq(i).html(`<i class="fas fa-star"><i class="fas fa-star"><i class="fas fa-star"><i class="far fa-star"><i class="far fa-star">`);
+        break
+        case '3.5'||3.5:
+        $('.rating').eq(i).html(`<i class="fas fa-star"><i class="fas fa-star"><i class="fas fa-star"><i class="fas fa-star-half-alt"></i><i class="far fa-star">`);
         break
         case '4'||4:
-        $('.rating').eq(i).html('')
         $('.rating').eq(i).html(`<i class="fas fa-star"><i class="fas fa-star"><i class="fas fa-star"><i class="fas fa-star"><i class="far fa-star">`);
         break
+        case '4.5'||4.5:
+        $('.rating').eq(i).html(`<i class="fas fa-star"><i class="fas fa-star"><i class="fas fa-star"><i class="fas fa-star"><i class="fas fa-star-half-alt"></i>`);
+        break
         case '5'||5:
-        $('.rating').eq(i).html('')
         $('.rating').eq(i).html(`<i class="fas fa-star"><i class="fas fa-star"><i class="fas fa-star"><i class="fas fa-star"><i class="fas fa-star">`);
         break;
         default:
-            $('.rating').eq(i).html('')
             $('.rating').eq(i).html(`<i class="far fa-star"><i class="far fa-star"><i class="far fa-star"><i class="far fa-star"><i class="far fa-star">`);
         break
         }
     }
 
     if (window.location.pathname.includes("/order/")) {
-  
+        let currentTime=new Date()
+        console.log(currentTime)
+        let opening=$('.opening').html().split(":");
+        let closing=$('.closing').html().split(":");
+        let openingTime=new Date().setHours(opening[0],opening[1],opening[2])
+        let closingTime=new Date().setHours(closing[0],closing[1],closing[2])
+        console.log(currentTime<openingTime)
+        console.log(currentTime>closingTime)
+       
+        if(currentTime<openingTime||currentTime>closingTime)
+        {
+            $('.checkout').attr('disabled', true);
+            $('.couponCheck').attr('disabled', true);
+            $('.discountCode').attr('disabled', true);
+            $('.specialRequest').attr('disabled', true);
+            $('.addToCart').attr('disabled', true);
+            $('.alert').html('The restaurant is closed. Please order at opening hours. You still can book a table from restaurant');
+            $('.alert').show();
+            
+            
+
+        }
       if (!localStorage.hasOwnProperty("shoppingCart")) {
         localStorage.setItem("shoppingCart", "");
         shoppingCart = {};
@@ -75,7 +103,39 @@ $(document).ready(function () {
       return false;
     }
   
-  }else if(window.location.pathname.includes('/success/'))
+  }else if(window.location.pathname.includes('/booking/'))
+  {
+    const forms = document.querySelectorAll('.needs-validation');
+
+  
+  if (!localStorage.hasOwnProperty("bookingCart")) {
+    localStorage.setItem("bookingCart", "");
+    bookingCart = {};
+  } else {
+    bookingCart = JSON.parse(localStorage.getItem("bookingCart"));
+  }
+  console.log(bookingCart);
+  requestId = window.location.pathname.replace(/[^\d]/g, "");
+
+console.log(requestId)
+if(bookingCart.hasOwnProperty(requestId))
+{
+  console.log(bookingCart[requestId])
+  bookingCart[requestId].item.forEach(item=>{
+    $('.bookingList').append(`<tr class="dish text-center"><td>${item.name}</td><td>${item.amount}</td><td>HKD ${item.price}</td></tr>`)
+  })
+    let price
+price=bookingCart[requestId].item.map(i=>i.price*i.amount).reduce((a,b)=>a+b)
+    $('.totalPrice').html(`HKD ${price}`)
+
+}
+  else {
+  return false;
+}
+
+}
+
+  else if(window.location.pathname.includes('/success/'))
   {
     let deleteId=window.location.pathname.replace(/[^\d]/g,'')
     delete shoppingCart[deleteId]
@@ -286,7 +346,26 @@ $('.confirmCancelOrder').on('click', (event)=> {
     });
 });
 //cancel booking
-
+$('.userCancelBooking').on('click', (event)=> {
+    let cancelId=$(event.target).parents().closest('.userBooking').attr('id')
+    $('.confirmCancelBooking').attr('id', cancelId);
+});
+$('.confirmCancelBooking').on('click', (event)=> {
+    let canelId=$(event.target).attr('id')
+    $(event.target).removeAttr('id');
+    console.log(canelId)
+    $.ajax({
+        type: "DELETE",
+        url: "/userBooking/"+canelId,
+        success: function (response) {
+            console.log(response)
+            if(response==='success')
+            {
+                $(`.userBooking#${canelId}`).remove();
+            }
+        }
+    });
+});
 //unbookmark
 $('.unbookmark').on('click', function (e) {
     let unbookmarkId=$(e.target).parents().closest('.userBookmark').attr('id')
@@ -299,6 +378,131 @@ $('.unbookmark').on('click', function (e) {
             {
                 $(`.userBookmark#${unbookmarkId}`).remove();
             }
+        }
+    });
+});
+//booking cart
+$(".addToBookingCart").on("click", (event) => {
+    console.log($(event.target).parent().find(".item-name").html());
+    let dishAmount;
+    let dishPrice;
+    let dishName;
+    let dishMenuId;
+    dishName = $(event.target).parent().find(".item-name").html();
+    if (bookingCart.hasOwnProperty(requestId)) {
+      let cart = bookingCart[requestId].item;
+      console.log(dishName);
+      let cartItemList = cart.map((item) => item.name);
+      if (cartItemList.includes(dishName)) {
+        dishPrice = cart[cartItemList.indexOf(dishName)].price;
+        console.log(shoppingCart);
+        cart[cartItemList.indexOf(dishName)].amount++;
+        dishAmount = cart[cartItemList.indexOf(dishName)].amount;
+        let item = $(".bookingList")
+          .find("tr")
+          .find(`td:contains(${dishName})`)
+          .parent();
+        $(item).html(
+          `<td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td>`
+        );
+      } else {
+        dishAmount = 1;
+        dishPrice = Number(
+          $(event.target).parent().find(".item-price").html().replace("HKD ", "")
+        );
+        console.log(dishPrice);
+        dishMenuId = Number(
+          $(event.target).parent().find(".item-name").attr("id")
+        );
+        console.log(dishMenuId);
+        let dishItem = {
+          name: dishName,
+          price: dishPrice,
+          amount: dishAmount,
+          menuId: dishMenuId,
+        };
+        cart.push(dishItem);
+        $(".bookingList").append(
+          `<tr class="dish text-center"><td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td></tr>`
+        );
+      }
+    } else {
+      bookingCart[requestId] = { item: [], specialRequest: "", discount: {} };
+      let cart = bookingCart[requestId].item;
+      dishAmount = 1;
+      dishPrice = Number(
+        $(event.target).parent().find(".item-price").html().replace("HKD ", "")
+      );
+      console.log(dishPrice);
+      dishMenuId = Number($(event.target).parent().find(".item-name").attr("id"));
+      let dishItem = {
+        name: dishName,
+        price: dishPrice,
+        amount: dishAmount,
+        menuId: dishMenuId,
+      };
+      cart.push(dishItem);
+      $(".bookingList").append(
+        `<tr class="dish text-center"><td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td></tr>`
+      );
+    }
+    console.log(dishPrice);
+    let price = bookingCart[requestId].item
+      .map((i) => i.price * i.amount)
+      .reduce((a, b) => a + b);
+    $(".totalPrice").html(`HKD ${price}`);
+    localStorage.setItem("bookingCart", JSON.stringify(bookingCart));
+  });
+  //bookingSubmit
+$('#userBookingForm').submit(function (event) { 
+    
+    let bookingTime=$('.bookingTime').val().split(":");
+    console.log(bookingTime)
+    let opening=$('.opening').html().split(":");
+        let closing=$('.closing').html().split(":");
+        let openingTime=new Date().setHours(opening[0],opening[1],opening[2])
+        let closingTime=new Date().setHours(closing[0],closing[1],closing[2])
+    bookingTime=new Date().setHours(bookingTime[0],bookingTime[1])
+    $('.bookingCart').val(JSON.stringify(bookingCart[requestId]));
+    if(bookingTime>openingTime&&bookingTime<closingTime)
+    {
+        return true
+    }else{
+        alert("You cannot book table outside of opening hour")
+        return false
+    }
+
+});
+//review
+$('.reviewButton').on('click', function (event) {
+    let restId
+    if(window.location.pathname.includes("/order/")||window.location.pathname.includes("/order/"))
+    {
+  restId=window.location.pathname.replace(/[^\d]/g, "");
+  
+    }else{
+        restId=$(event.target).attr('id')
+    }
+    console.log(restId)
+    $('.review').attr('id',restId)
+});
+$('.review').on('click', function (event) {
+    let restId=$(event.target).attr('id')
+    console.log(restId)
+    let ratingVal=$('#rating').val()
+    $('.review').removeAttr('id')
+    $.ajax({
+        type: "POST",
+        url: "/review/"+restId,
+        data: {rating:Number(ratingVal)},
+        dataType: "json",
+        success: function (response) {
+            if(response==='success')
+            {
+                alert('Thank you for your review')
+            }
+
+            
         }
     });
 });

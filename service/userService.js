@@ -16,20 +16,42 @@ class UserService {
       .where("id", userId);
   }
 
-  getUserBooking(userId) {
-    return this.knex("booking")
+  async getUserBooking(userId) {
+    let booking=await this.knex("booking")
       .join("account", "account_id", "account.id")
       .join("restaurant", "rest_id", "restaurant.id")
       .select(
-        "restaurant.name",
-        "restaurant.address",
+        "restaurant.name",'restaurant.profile_path',
+        "restaurant.address",'booking.rest_id',
         "booking.id",
         "no_of_ppl",
         "booking_date",
         "booking_time",
-        "booking_status"
+        "booking_status","special_request"
       )
       .where({ account_id: userId });
+      for(let i=0;i<booking.length;i++)
+      {
+        let bookingId=booking[i].id
+        let restId=booking[i].rest_id
+      let rating
+      rating=await this.knex('review').where('rest_id',restId).select('rating')
+      if(rating.length!=0)
+      {
+      rating=Math.round(rating.map(item=>Number(item.rating)).reduce((a,b)=>a+b)/rating.length*2)/2
+      console.log(rating)
+  
+      }
+      else{
+        rating=0
+      }
+      booking[i]['rating']=rating
+      let bookingDetail= await this.knex('booking_detail').join('booking','booking_id','booking.id').join('menu','menu_id','menu.id').select('menu.item','booking_detail.quantity','menu.price').where('booking_id',bookingId)
+      console.log(bookingDetail)
+      booking[i]['booking_detail']=bookingDetail
+      console.log(booking[i].booking_detail)
+      }
+      return booking
   }
 
   async getUserOrder(userId) {
@@ -68,7 +90,7 @@ class UserService {
       .join("restaurant", "rest_id", "restaurant.id")
       .select(
         'restaurant.id',
-        "restaurant.name",
+        "restaurant.name",'bookmark.rest_id',
         "restaurant.address",
         "opening_time",
         "closing_time",'restaurant.profile_path',
