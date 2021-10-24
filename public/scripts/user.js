@@ -1,5 +1,43 @@
+let shoppingCart = {};
+let requestId;
 //shoppingCart setup
 $(document).ready(function () {
+    let ratingArr=$('.rating')
+    console.log(ratingArr.length)
+    for(let i=0;i<ratingArr.length;i++)
+    {
+        let rating=$('.rating').eq(i).html()
+        console.log(rating)
+        switch(rating)
+        {
+        case '1'||1:
+        $('.rating').eq(i).html('')
+        console.log( $('.rating').eq(i).html())
+      $('.rating').eq(i).append('<i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>');
+        break
+        case '2'||2:
+        $('.rating').eq(i).html('')
+        $('.rating').eq(i).append('<i class="fas fa-star"><i class="fas fa-star"><i class="far fa-star"><i class="far fa-star"><i class="far fa-star">');
+        break
+        case '3'||3:
+        $('.rating').eq(i).html('')
+        $('.rating').eq(i).append(`<i class="fas fa-star"><i class="fas fa-star"><i class="fas fa-star"><i class="far fa-star"><i class="far fa-star">`);
+        break
+        case '4'||4:
+        $('.rating').eq(i).html('')
+        $('.rating').eq(i).html(`<i class="fas fa-star"><i class="fas fa-star"><i class="fas fa-star"><i class="fas fa-star"><i class="far fa-star">`);
+        break
+        case '5'||5:
+        $('.rating').eq(i).html('')
+        $('.rating').eq(i).html(`<i class="fas fa-star"><i class="fas fa-star"><i class="fas fa-star"><i class="fas fa-star"><i class="fas fa-star">`);
+        break;
+        default:
+            $('.rating').eq(i).html('')
+            $('.rating').eq(i).html(`<i class="far fa-star"><i class="far fa-star"><i class="far fa-star"><i class="far fa-star"><i class="far fa-star">`);
+        break
+        }
+    }
+
     if (window.location.pathname.includes("/order/")) {
   
       if (!localStorage.hasOwnProperty("shoppingCart")) {
@@ -226,3 +264,41 @@ $(".addToCart").on("click", (event) => {
     });
   }
   })
+//Cancel order
+$('.userCancelOrder').on('click', (event)=> {
+    let cancelId=$(event.target).parents().closest('.userOrder').attr('id')
+    $('.confirmCancelOrder').attr('id', cancelId);
+});
+$('.confirmCancelOrder').on('click', (event)=> {
+    let canelId=$(event.target).attr('id')
+    $(event.target).removeAttr('id');
+    console.log(canelId)
+    $.ajax({
+        type: "DELETE",
+        url: "/userOrder/"+canelId,
+        success: function (response) {
+            console.log(response)
+            if(response==='success')
+            {
+                $(`.userOrder#${canelId}`).remove();
+            }
+        }
+    });
+});
+//cancel booking
+
+//unbookmark
+$('.unbookmark').on('click', function (e) {
+    let unbookmarkId=$(e.target).parents().closest('.userBookmark').attr('id')
+   console.log(unbookmarkId) 
+    $.ajax({
+        type: "DELETE",
+        url: "/bookmark/"+unbookmarkId,
+        success: function (response) {
+            if(response==='success')
+            {
+                $(`.userBookmark#${unbookmarkId}`).remove();
+            }
+        }
+    });
+});

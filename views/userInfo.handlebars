@@ -52,7 +52,7 @@
                 >{{this.booking_status}}</button>
                 <button
                   type="button"
-                  class="border-0 rounded my-3 btn-userCancel"
+                  class="border-0 rounded my-3 btn-userCancel userCancelBooking"
                   id="{{this.id}}" data-bs-toggle="modal" data-bs-target="#delete"
                 >Cancel</button>
               </div>
@@ -63,7 +63,7 @@
 
         {{! #User order }}
         {{#each order}}
-        <div class="userOrder rounded">
+        <div class="userOrder rounded" id="{{this.id}}" >
           <div class="container">
             <div class="row d-flex justify-content-center align-items-center">
               <div class="col-2 rest-profile-pic">
@@ -71,6 +71,7 @@
               </div>
               <div class="col-8">
                 <p>{{this.name}}</p>
+                  <div class="userBooking-star rating">{{this.rating}}</div>
                 <p><i class="fas fa-map-marker-alt userNavbarIcon"></i>&nbsp;{{this.address}}
                 </p>
                 <p>Order details:</p>
@@ -94,17 +95,18 @@
                 >{{this.order_status}}</button>
                 <button
                   type="button"
-                  class="border-0 rounded my-3 btn-userCancel" data-bs-toggle="modal" data-bs-target="#deleteOrder"
+                  class="border-0 rounded my-3 btn-userCancel userCancelOrder" data-bs-toggle="modal" data-bs-target="#deleteOrder"
                 >Cancel</button>
               </div>
             </div>
+          </div>
           </div>
         {{/each}}
         {{! /user order }}
 
         {{! #User bookmark }}
         {{#each bookmark}}
-          <div class="userBookmark rounded">
+          <div class="userBookmark rounded" id="{{this.id}}">
             <div class="container">
               <div class="row d-flex justify-content-center align-items-center">
                 <div class="col-2 rest-profile-pic">
@@ -115,6 +117,7 @@
                 </div>
                 <div class="col-10">
                   <p>{{this.name}}</p>
+                  <div class="userBooking-star rating">{{this.rating}}</div>
                   <p><i
                       class="fas fa-map-marker-alt userNavbarIcon"
                     ></i>&nbsp;{{this.address}}
@@ -127,7 +130,7 @@
               <div class="col-2">
                 <button
                   type="button"
-                  class="border-0 rounded my-3 btn-userCancel" 
+                  class="border-0 rounded my-3 btn-userCancel unbookmark"  
                 >unbookmark</button>
               </div>  
               </div>
@@ -200,7 +203,7 @@
           class="btn btn-secondary"
           data-bs-dismiss="modal"
         >Close</button>
-        <button type="button" class="btn btn-danger cancelBooking">Cancel</button>
+        <button type="button" class="btn btn-danger cancelBooking"  data-bs-dismiss="modal">Cancel</button>
       </div>
     </div>
   </div>
@@ -228,7 +231,7 @@
           class="btn btn-secondary "
           data-bs-dismiss="modal"
         >Close</button>
-        <button type="button" class="btn btn-danger cancelOrder">Cancel</button>
+        <button type="button" class="btn btn-danger confirmCancelOrder" data-bs-dismiss="modal">Cancel</button>
       </div>
     </div>
   </div>

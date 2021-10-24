@@ -105,8 +105,7 @@ $(document).on("click", ".userInfoSubmit", () => {
   $(".userPhone").find("span").html(phone);
 });
 
-let shoppingCart = {};
-let requestId;
+
 
 
 

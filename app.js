@@ -138,11 +138,43 @@ app.get("/", async (req, res) => {
     .where("id", req.user.id);
   console.log(user[0].district);
   let featuredRest = await knex("restaurant").select();
+  for(let i=0;i<featuredRest.length;i++)
+  {
+    let rating
+    rating=await knex('review').where('rest_id',featuredRest[i].id).select('rating')
+    if(rating.length!=0)
+    {
+    rating=Math.round(rating.map(item=>Number(item.rating)).reduce((a,b)=>a+b)/rating.length*2)/2
+    console.log(rating)
+
+    }
+    else{
+      rating=0
+    }
+ 
+    featuredRest[i]['rating']=rating
+  }
   let locationRecommendation;
   if (user[0].district != undefined) {
     locationRecommendation = await knex("restaurant")
       .select()
       .where("district", user[0].district);
+      for(let i=0;i<locationRecommendation.length;i++)
+      {
+        let rating
+        rating=await knex('review').where('rest_id',locationRecommendation[i].id).select('rating')
+        if(rating.length!=0)
+        {
+        rating=Math.round(rating.map(item=>Number(item.rating)).reduce((a,b)=>a+b)/rating.length*2)/2
+        console.log(rating)
+    
+        }
+        else{
+          rating=0
+        }
+     
+        locationRecommendation[i]['rating']=rating
+      }
   } else {
     locationRecommendation = [];
   }
@@ -171,6 +203,22 @@ app.get("/search", async (req, res) => {
       )
     );
   console.log(queryResult);
+  for(let i=0;i<queryResult.length;i++)
+  {
+    let rating
+    rating=await knex('review').where('rest_id',queryResult[i].id).select('rating')
+    if(rating.length!=0)
+    {
+    rating=Math.round(rating.map(item=>Number(item.rating)).reduce((a,b)=>a+b)/rating.length*2)/2
+    console.log(rating)
+
+    }
+    else{
+      rating=0
+    }
+ 
+    queryResult[i]['rating']=rating
+  }
   res.render("userHome", {
     layout: "user",
     result: "Search result:",
@@ -230,16 +278,26 @@ app.get('/order/:restId',async(req,res)=>{
   if(deliverySwitch[0].delivery===true)
   {
     console.log(req.params.restId, 'rest id how many times?')
- 
+    let rating=await knex('review').where('rest_id',req.params.restId)
+    if(rating.length!=0)
+    {
+    rating=Math.round(rating.map(item=>Number(item.rating)).reduce((a,b)=>a+b)/rating.length*2)/2
+    console.log(rating)
+
+    }
+    else{
+      rating=0
+    }
     let restDetail=await  knex('restaurant').select().where('restaurant.id',req.params.restId)
+    restDetail[0]['rating']=rating.toString()
     let bookmark=await knex('bookmark').select().where({account_id:req.user.id,rest_id:req.params.restId})
     let bookmarkClass
-  let dish=await knex('restaurant').select().join('menu','restaurant.id','menu.rest_id').where({'restaurant.id':req.params.restId,'category':"soup&salad"})
+    let dish=await knex('restaurant').select().join('menu','restaurant.id','menu.rest_id').where({'restaurant.id':req.params.restId,'category':"soup&salad"})
     console.log(dish)
     console.log(bookmark)
     if(bookmark.length!=0)
     {
-  bookmarkClass='fas'
+      bookmarkClass='fas'
     }else{
       bookmarkClass='far'
     }
@@ -247,6 +305,7 @@ app.get('/order/:restId',async(req,res)=>{
     dish.forEach(i => {
       dishItems.push({id:i.id,name:i.item,price:i.price,photoPath:i.photo_path})
     })
+    console.log(restDetail)
     return res.render('userOrder',{layout:'user',restaurant:restDetail[0],dish:dishItems,bookmark:bookmarkClass
 })
 }else{
@@ -256,7 +315,10 @@ app.get('/order/:restId',async(req,res)=>{
 
 app.delete('/userOrder/:orderId',(req,res)=>{
   return knex('order_detail').delete().where('delivery_id',req.params.orderId).then(()=>{
-    knex('delivery').delete().where('delivery.id',req.params.orderId)
+    knex('delivery').delete().where('delivery.id',req.params.orderId).then(()=>{
+      res.send('success')
+    })
+
   })
 })
 app.delete('/userBooking/:orderId',(req,res)=>{
@@ -406,8 +468,9 @@ app.post('/webhook', async(request, response) => {
    for(let i=0;i<lineItems.data.length;i++)
    {
      let menuId=await knex('menu').select('id').where('item',lineItems.data[i].description)
+     menuId=menuId[0].id
      console.log(menuId)
-     products.push({quantity:lineItems.data[i].quantity,menu_id:menuId[i].id})
+     products.push({quantity:lineItems.data[i].quantity,menu_id:menuId})
 
    }
   
@@ -497,8 +560,24 @@ app.post('/discount',(req,res)=>{
 
 app.get('/tag/:tagid',async (req,res)=>{
   let tagName=await knex('tag').select('tag_name').where('id',req.params.tagid)
-  return  knex('restaurant').select('restaurant.id','restaurant.name','restaurant.address','restaurant.district','restaurant.profile_path','restaurant.phone_no','restaurant.seats').join('tag_rest_join','restaurant.id','tag_rest_join.rest_id').join('tag','tag_rest_join.tag_id','tag.id').where('tag.id',req.params.tagid).then((data)=>{
+  return  knex('restaurant').select('restaurant.id','restaurant.name','restaurant.address','restaurant.district','restaurant.profile_path','restaurant.phone_no','restaurant.seats').join('tag_rest_join','restaurant.id','tag_rest_join.rest_id').join('tag','tag_rest_join.tag_id','tag.id').where('tag.id',req.params.tagid).then(async(data)=>{
     console.log(data)
+    for(let i=0;i<data.length;i++)
+    {
+      let rating
+      rating=await knex('review').where('rest_id',data[i].id).select('rating')
+      if(rating.length!=0)
+      {
+      rating=Math.round(rating.map(item=>Number(item.rating)).reduce((a,b)=>a+b)/rating.length*2)/2
+      console.log(rating)
+  
+      }
+      else{
+        rating=0
+      }
+   
+      data[i]['rating']=rating
+    }
     res.render('userHome',{layout:'user',rest:data,result:'search result: '+tagName[0].tag_name})
   })
 })

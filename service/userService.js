@@ -36,11 +36,24 @@ class UserService {
     let delivery=await this.knex("delivery")
       .join("account", "account_id", "account.id")
       .join("restaurant", "rest_id", "restaurant.id")
-      .select('delivery.id',"restaurant.name", "restaurant.address",'restaurant.profile_path','delivery.order_status','delivery.total_amount','delivery.special_request')
+      .select('delivery.id',"restaurant.name",'delivery.rest_id', "restaurant.address",'restaurant.profile_path','delivery.order_status','delivery.total_amount','delivery.special_request')
       .where({ account_id: userId });
       for(let i=0;i<delivery.length;i++)
       {
-      let deliveryId=delivery[i].id
+        let deliveryId=delivery[i].id
+        let restId=delivery[i].rest_id
+      let rating
+      rating=await this.knex('review').where('rest_id',restId).select('rating')
+      if(rating.length!=0)
+      {
+      rating=Math.round(rating.map(item=>Number(item.rating)).reduce((a,b)=>a+b)/rating.length*2)/2
+      console.log(rating)
+  
+      }
+      else{
+        rating=0
+      }
+      delivery[i]['rating']=rating
       let orderDetail= await this.knex('order_detail').join('delivery','delivery_id','delivery.id').join('menu','menu_id','menu.id').select('menu.item','order_detail.quantity','menu.price').where('delivery_id',deliveryId)
       console.log(orderDetail)
       delivery[i]['order_detail']=orderDetail
@@ -64,6 +77,19 @@ class UserService {
       for(let i=0;i<bookmark.length;i++)
       {
       let restId=bookmark[i].id
+      let rating
+      rating=await this.knex('review').where('rest_id',bookmark[i].id).select('rating')
+      if(rating.length!=0)
+      {
+      rating=Math.round(rating.map(item=>Number(item.rating)).reduce((a,b)=>a+b)/rating.length*2)/2
+      console.log(rating)
+  
+      }
+      else{
+        rating=0
+      }
+   
+      bookmark[i]['rating']=rating
       let tagName= await this.knex('tag_rest_join').join('restaurant','tag_rest_join.rest_id','restaurant.id').join('tag','tag_rest_join.tag_id','tag.id').select('tag_name').where('rest_id',restId)
       console.log(tagName)
       tagName=tagName.map(item=>item.tag_name)
