@@ -6,14 +6,10 @@
       <h2 class="userBooking-restName mx-5 my-3">{{restaurant.name}}</h2>
     </div>
     <div class="col-4 userBooking-star rating">{{restaurant.rating}}</div>
-                      <button
-                  type="button"
-                  class="border-0 rounded my-3 btn-userCancel reviewButton" data-bs-toggle="modal" data-bs-target="#review"
-                >review</button>
+      <button type="button" class="border-0 rounded my-3 btn-userCancel reviewButton" data-bs-toggle="modal" data-bs-target="#review">review</button>
     <div class="col-2 userBooking-bookmark">
-     <button type="button" class="border-0 bg-white bookmark" id="{{restaurant.id}}"><i
-          class="{{bookmark}}  fa-bookmark fa-2x"
-        ></i></button>
+      <button type="button" class="border-0 bg-white bookmark" id="{{restaurant.id}}">
+        <i class="{{bookmark}} fa-bookmark fa-2x"></i></button>
     </div>
   </div>
 </div>
