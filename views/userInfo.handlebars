@@ -25,93 +25,134 @@
 
         {{!-- User booking --}}
         {{#each booking}}
-        <div class="userBooking rounded">
+        <div class="userBooking rounded" id="{{this.id}}">
           <div class="container">
             <div class="row d-flex justify-content-center align-items-center">
               <div class="col-2 rest-profile-pic">
-                <img src="/assets/panna-cotta.png" alt="restaurant profile pic" />
+                <img src="/image/{{this.profile_path}}" alt="restaurant profile pic" />
               </div>
               <div class="col-8 align-self-center">
                 <p>{{this.name}}</p>
                 <p><i class="fas fa-map-marker-alt userNavbarIcon"></i>&nbsp;
                   {{this.address}}
                 </p>
+                  <div class="userBooking-star rating">{{this.rating}}</div>
                 <p>{{this.no_of_ppl}} guests</p>
                 <p>{{this.booking_date}}&nbsp;&nbsp;&nbsp;{{this.booking_time}}</p>
+                <p>Your order item:</p>
+                <table>
+                 {{#each booking_detail}}
+                <tr>
+                <td>{{this.item}}&nbsp;</td>
+                <td>x{{this.quantity}}</td>
+                </tr>
+                {{/each}}
+                </table>
+                <p>Special request:</p>
+                <p>{{this.special_request}}</p>
               </div>
               <div class="col-2">
-                <button type="button" class="border-0 rounded my-3 btn-userStatus">{{this.booking_status}}</button>
-                <button type="button" class="border-0 rounded my-3 btn-userCancel" id="{{this.id}}"
-                  data-bs-toggle="modal" data-bs-target="#delete">Cancel</button>
+                <button
+                  type="button"
+                  class="border-0 rounded my-3 btn-userStatus"
+                >{{this.booking_status}}</button>
+                <button
+                  type="button"
+                  class="border-0 rounded my-3 btn-userCancel userCancelBooking"
+                  id="{{this.id}}" data-bs-toggle="modal" data-bs-target="#delete"
+                >Cancel</button>
+                  <button
+                  type="button"
+                  class="border-0 rounded my-3 btn-userCancel reviewButton" id="{{this.rest_id}}" data-bs-toggle="modal" data-bs-target="#review"
+                >review</button>
               </div>
             </div>
           </div>
-          {{/each}}
+        </div>
+        {{/each}}
+        {{! /User booking }}
 
-          {{!-- User order --}}
-          {{#each order}}
-          <div class="userOrder rounded">
+        {{! #User order }}
+        {{#each order}}
+        <div class="userOrder rounded" id="{{this.id}}" >
+          <div class="container">
+            <div class="row d-flex justify-content-center align-items-center">
+              <div class="col-2 rest-profile-pic">
+                <img src="/image/{{this.profile_path}}" alt="restaurant profile pic" />
+              </div>
+              <div class="col-8">
+                <p>{{this.name}}</p>
+                  <div class="userBooking-star rating">{{this.rating}}</div>
+                <p><i class="fas fa-map-marker-alt userNavbarIcon"></i>&nbsp;{{this.address}}
+                </p>
+                <p>Order details:</p>
+                <table>
+                {{#each order_detail}}
+                <tr>
+                <td>{{this.item}}&nbsp;</td>
+                <td>x{{this.quantity}}</td>
+                </tr>
+                {{/each}}
+                </table>
+                <p>Total Amount: HKD {{this.total_amount}}</p>
+                <p>Special request:</p>
+                <p>{{this.special_request}}</p>
+              </div>
+              <div class="col-2">
+                <label for="">Status:</label>
+                <button
+                  type="button"
+                  class="border-0 rounded my-3 btn-userStatus orderStatus"
+                >{{this.order_status}}</button>
+                <button
+                  type="button"
+                  class="border-0 rounded my-3 btn-userCancel userCancelOrder" data-bs-toggle="modal" data-bs-target="#deleteOrder"
+                >Cancel</button>
+                  <button
+                  type="button"
+                  class="border-0 rounded my-3 btn-userCancel reviewButton" id="{{this.rest_id}}" data-bs-toggle="modal" data-bs-target="#review"
+                >review</button>
+              </div>
+            </div>
+          </div>
+          </div>
+        {{/each}}
+        {{! /user order }}
+
+        {{! #User bookmark }}
+        {{#each bookmark}}
+          <div class="userBookmark rounded" id="{{this.id}}">
             <div class="container">
               <div class="row d-flex justify-content-center align-items-center">
                 <div class="col-2 rest-profile-pic">
-                  <img src="/assets/panna-cotta.png" alt="restaurant profile pic" />
+                  <img
+                    src="/image/{{this.profile_path}}"
+                    alt="restaurant profile pic"
+                  />
                 </div>
-                <div class="col-8">
+                <div class="col-10">
                   <p>{{this.name}}</p>
-                  <p><i class="fas fa-map-marker-alt userNavbarIcon"></i>&nbsp;{{this.address}}
+                  <div class="userBooking-star rating">{{this.rating}}</div>
+                  <p><i
+                      class="fas fa-map-marker-alt userNavbarIcon"
+                    ></i>&nbsp;{{this.address}}
                   </p>
-                  <p>Order details</p>
-                </div>
-                <div class="col-2">
-                  <button type="button" class="border-0 rounded my-3 btn-userStatus">Status</button>
-                  <button type="button" class="border-0 rounded my-3 btn-userCancel" data-bs-toggle="modal"
-                    data-bs-target="#delete">Cancel</button>
-                </div>
-              </div>
-            </div>
-            {{/each}}
-
-            {{!-- User bookmark --}}
-            {{#each bookmark}}
-            <div class="userBookmark rounded">
-              <div class="container">
-                <div class="row d-flex justify-content-center align-items-center">
-                  <div class="col-2 rest-profile-pic">
-                    <img src="/assets/panna-cotta.png" alt="restaurant profile pic" />
-                  </div>
-                  <div class="col-10">
-                    <p>ABC restaurant</p>
-                    <p><i class="fas fa-map-marker-alt userNavbarIcon"></i>&nbsp;ABC building, Tsim Sha Tsui, Kowloon,
-                      Hong Kong
-                    </p>
-                    <p>Tag</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {{/each}}
-          </div>
-        </div>
-      </div>
-
-      {{!-- Delete model --}}
-      <div class="modal fade" id="delete" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h4 class="modal-title">Cancel booking</h4>
-              <button type=" button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              Are you sure to cancel the booking?
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn-userClose" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn-userCancel">Cancel</button>
+                  <p>Tag</p>
+                  {{#each tag_name}}
+                  <span>{{this}}</span>
+                  {{/each}}
+                <button type="button" class="border-0 rounded my-3 btn-userStatus unbookmark">unbookmark</button>
+                
             </div>
           </div>
-        </div>
-      </div>
+          </div>
+          </div>
+          {{/each}}
+
+          
+
+          
+     
 
       {{!-- Edit profile model --}}
       <div class="modal fade" id="edit" tabindex="-1" aria-hidden="true">
@@ -178,3 +219,157 @@
       </div>
 
 </section>
+
+<br />
+<br />
+
+{{!-- delete booking modal --}}
+<div class="modal fade" id="delete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Cancel booking</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        Are you sure to cancel the booking?
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >Close</button>
+        <button type="button" class="btn btn-danger confirmCancelBooking"  data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{!-- delete order modal --}}
+<div class="modal fade" id="deleteOrder" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Cancel order</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        Are you sure to cancel the order?
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary "
+          data-bs-dismiss="modal"
+        >Close</button>
+        <button type="button" class="btn btn-danger confirmCancelOrder" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{!-- edit profile --}}
+<div class="modal fade" id="edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit your info</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="userInfo-edit"></form>
+        {{#each info}}
+        <br>
+        <input class="username" name="username" type="email" value="{{this.username}}">
+        <br>
+        <label for="firstname">First Name</label>
+        <br>
+        <input class="firstname" type="text" value="{{this.firstname}}">
+        <br>
+        <label for="surname">Surname</label>
+        <br>
+        <input class="surname" type="text" value="{{this.surname}}">
+         <br>
+        <label for="address">Address</label>
+        <br>
+        <input class="address" type="text" value="{{this.address}}">
+        <br>
+         <label for="userDistrict" class="form-label">District</label>
+            <select  class="form-select district" id="userDistrict">
+              <option value="{{this.district}}" selected hidden>{{this.district}}</option>
+              <option value="Central and Western">Central and Western</option>
+              <option value="Eastern">Eastern</option>
+              <option value="Southern">Southern</option>
+              <option value="Wai Chai">Wai Chai</option>
+              <option value="Kowloon City">Kowloon City</option>
+              <option value="Kwun Tong">Kwun Tong</option>
+              <option value="Sham Shui Po">Sham Shui Po</option>
+              <option value="Wong Tai Sin">Wong Tai Sin</option>
+              <option value="Yau Tsim Mong">Yau Tsim Mong</option>
+              <option value="Tsuen Wan">Tsuen Wan</option>
+              <option value="Kwai Tsing">Kwai Tsing</option>
+              <option value="Shatin">Shatin</option>
+              <option value="North">North</option>
+              <option value="Tai Po">Tai Po</option>
+              <option value="Tuen Mun">Tuen Mun</option>
+              <option value="Yuen Long">Yuen Long</option>
+              <option value="Sai Kung">Sai Kung</option>
+              <option value="Islands">Islands</option>
+            </select>
+             <label for="phone">Telephone number</label>
+        <br>
+        <input class="phone" type="number" value="{{this.phone_no}}">
+        {{/each}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary userInfoSubmit" data-bs-dismiss="modal">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{!-- review modal --}}
+<div class="modal fade" id="review" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Rate the restaurant</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+       Would you recommend this restaurant?
+        <select  class="form-select " id="rating">
+              <option value='5' selected >5 --very likely</option>
+              <option value='4'>4</option>
+              <option value='3'>3</option>
+              <option value='2'>2</option>
+              <option value='1'>1 -- unllikely</option>
+            </select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary review"  data-bs-dismiss="modal">confirmed</button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >Close</button>
+      </div>
+    </div>
+  </div>
+</div>

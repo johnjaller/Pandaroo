@@ -96,6 +96,12 @@ app.get(
   })
 );
 
+// Set up user service and router
+const searchQuery=require('./database/searchQueries').searchQuery
+
+
+
+
 // Set up google authentication
 app.get(
   "/auth/google",
@@ -122,15 +128,43 @@ const RestRouter = require("./router/restRouter");
 const restService = new RestService(knex);
 const restRouter = new RestRouter(restService);
 
-// Set up stripe
-const stripe = require("stripe")(process.env.stripe_secret);
-const path = require("path");
+
 
 // Route for users
 app.use("/user", userRouter.route());
 
 app.get("/", userLogIn);
 
+app.get("/search", searchQuery);
+const BookingService=require('./service/bookingService')
+const BookingRouter=require('./router/bookingRouter')
+const bookingService=new BookingService(knex)
+const bookingRouter=new BookingRouter(bookingService)
+app.use('/booking',bookingRouter.route())
+
+//orderService
+const OrderRouter=require('./router/orderRouter')
+const OrderService=require('./service/orderService')
+const orderService=new OrderService(knex)
+const orderRouter=new OrderRouter(orderService)
+app.use('/order',orderRouter.route())
+//delete order
+
+const CheckoutService=require('./service/checkoutService')
+const CheckoutRouter=require('./router/checkoutRouter')
+const checkoutService=new CheckoutService(knex)
+const checkoutRouter=new CheckoutRouter(checkoutService)
+
+
+app.post('/review/:restId',(req,res)=>{
+  console.log(req.body)
+  return knex("review")
+    .insert({ account_id: req.user.id, rest_id: req.params.restId,rating:req.body.rating })
+    .then(() => {
+      res.send("success");
+    })
+    .catch((e) => console.log(e));
+})
 app.get("/", async (req, res) => {
   let restTag = await userService.getRestTag();
   for (let i = 0; i < restTag.length; i++) {
@@ -165,18 +199,50 @@ app.get("/", async (req, res) => {
   }
   console.log("restTag", restTag);
   let user = await knex("account")
-    .select("district", "firstname")
-    .where("id", req.user.id);
-  console.log(user[0].district);
-  let featuredRest = await knex("restaurant").select();
-  let locationRecommendation;
-  if (user[0].district != undefined) {
-    locationRecommendation = await knex("restaurant")
-      .select()
-      .where("district", user[0].district);
-  } else {
-    locationRecommendation = [];
-  }
+      .select("district", "firstname")
+      .where("id", req.user.id);
+    console.log(user[0].district);
+    let featuredRest = await knex("restaurant").select();
+    for(let i=0;i<featuredRest.length;i++)
+    {
+      let rating
+      rating=await knex('review').where('rest_id',featuredRest[i].id).select('rating')
+      if(rating.length!=0)
+      {
+      rating=Math.round(rating.map(item=>Number(item.rating)).reduce((a,b)=>a+b)/rating.length*2)/2
+      console.log(rating)
+  
+      }
+      else{
+        rating=0
+      }
+   
+      featuredRest[i]['rating']=rating
+    }
+    let locationRecommendation;
+    if (user[0].district != undefined) {
+      locationRecommendation = await knex("restaurant")
+        .select()
+        .where("district", user[0].district);
+        for(let i=0;i<locationRecommendation.length;i++)
+        {
+          let rating
+          rating=await knex('review').where('rest_id',locationRecommendation[i].id).select('rating')
+          if(rating.length!=0)
+          {
+          rating=Math.round(rating.map(item=>Number(item.rating)).reduce((a,b)=>a+b)/rating.length*2)/2
+          console.log(rating)
+      
+          }
+          else{
+            rating=0
+          }
+       
+          locationRecommendation[i]['rating']=rating
+        }
+    } else {
+      locationRecommendation = [];
+    }
 
   console.log(locationRecommendation, "loaded info");
   res.render("userHome", {
@@ -189,88 +255,6 @@ app.get("/", async (req, res) => {
   });
 });
 
-app.get("/search", async (req, res) => {
-  console.log(req.query.q, "this is a query");
-  let query = req.query.q.split(" ").join("|");
-  let queryResult = await knex("restaurant")
-    .select()
-    .join("tag_rest_join", "restaurant.id", "tag_rest_join.rest_id")
-    .join("tag", "tag.id", "tag_rest_join.tag_id")
-    .where(
-      knex.raw(
-        `to_tsvector(concat_ws(' ',name,address,district,description,tag.tag_name)::text) @@ to_tsquery('${query}:*')`
-      )
-    );
-  console.log(queryResult);
-  res.render("userHome", {
-    layout: "user",
-    result: "Search result:",
-    queryString: req.query.q,
-    rest: queryResult,
-  });
-});
-
-app.get("/userbooking", (req, res) => {
-  res.render("userBooking", { layout: "user" });
-});
-
-app.get("/order/:restID", async (req, res) => {
-  console.log(req.params.restID, "rest id how many times?");
-
-  let restDetail = await knex("restaurant")
-    .select()
-    .where("restaurant.id", req.params.restID);
-
-  let dish = await knex("restaurant")
-    .select()
-    .join("menu", "restaurant.id", "menu.rest_id")
-    .where({ "restaurant.id": req.params.restID, category: "soup&salad" });
-  console.log(dish);
-  let dishItems = [];
-  dish.forEach((i) => {
-    dishItems.push({
-      id: i.id,
-      name: i.item,
-      price: i.price,
-      photoPath: i.photo_path,
-    });
-  });
-  return res.render("userOrder", {
-    layout: "user",
-    restaurant: restDetail[0],
-    dish: dishItems,
-  });
-});
-
-app.get("/order/:restID/:category", async (req, res) => {
-  let restDetail = await knex("restaurant")
-    .select()
-    .where("restaurant.id", req.params.restID);
-  let dish = await knex("restaurant")
-    .select()
-    .join("menu", "restaurant.id", "menu.rest_id")
-    .where({
-      "restaurant.id": req.params.restID,
-      category: req.params.category,
-    });
-  console.log(dish);
-  let dishItems = [];
-  for (let i = 0; i < dish.length; i++) {
-    dishItems.push({
-      id: dish[i].id,
-      name: dish[i].item,
-      price: dish[i].price,
-      photoPath: dish[i].photo_path,
-    });
-  }
-
-  console.log(dishItems);
-  return res.render("userOrder", {
-    layout: "user",
-    restaurant: restDetail[0],
-    dish: dishItems,
-  });
-});
 
 app.post("/bookmark/:id", (req, res) => {
   return knex("bookmark")
@@ -291,9 +275,6 @@ app.delete("/bookmark/:id", (req, res) => {
     .catch((e) => console.log(e));
 });
 
-app.get("/userorder", (req, res) => {
-  res.render("userOrder", { layout: "user" });
-});
 
 // Route for restaurants
 app.use("/biz", restLogIn, restRouter.router());
@@ -357,75 +338,17 @@ app.get("/image/:key", (req, res) => {
   const readStream = downloadFile(key);
   readStream.pipe(res);
 });
-
 //stripe checkout
-app.post("/checkout", stripePayment);
-const endPointSecret = "whsec_G2nJNMFVmpCn275FSbScXynzCytZxtJX";
+app.use('/checkout',checkoutRouter.route())
 
-app.post("/webhook", async (request, response) => {
-  console.log(request.body);
-  let event = request.body;
-  if (event.type === "checkout.session.completed") {
-    console.log("it is a successful payment");
-    console.log(event.data.object.metadata);
-    let specialRequest = event.data.object.metadata.specialRequest;
-    let restId = event.data.object.metadata.rest_id;
-    let userId = event.data.object.metadata.user_id;
-    let sessionId = event.data.object.id;
-    let totalAmount = event.data.object.amount_total / 100;
-    let products = [];
-    stripe.checkout.sessions.listLineItems(
-      sessionId,
-      { limit: 10 },
-      async function (err, lineItems) {
-        console.log(lineItems);
-        for (let i = 0; i < lineItems.data.length; i++) {
-          let menuId = await knex("menu")
-            .select("id")
-            .where("item", lineItems.data[i].description);
-          console.log(menuId);
-          products.push({
-            quantity: lineItems.data[i].quantity,
-            menu_id: menuId[i].id,
-          });
-        }
 
-        console.log(products);
-        knex("delivery")
-          .insert({
-            rest_id: restId,
-            account_id: userId,
-            order_status: "Preparing",
-            special_request: specialRequest,
-            total_amount: totalAmount,
-          })
-          .returning("id")
-          .then(async (deliveryId) => {
-            console.log(deliveryId);
-            for (let i = 0; i < products.length; i++) {
-              await knex("order_detail").insert({
-                delivery_id: deliveryId[0],
-                menu_id: products[i].menu_id,
-                quantity: products[i].quantity,
-              });
-            }
-          });
 
-        //return knex('order_detail').insert({delivery_id:deliveryId,menu_id:,quantity:}))
+  app.get('/success/:restId',(req,res)=>{
+      res.render('paymentSuccess',{layout:'user',})
+  })
 
-        response.status(200);
-      }
-    );
-  }
-});
+app.get("/bookingshistory", restRouter.router());
 
-app.get("/success/:restId", (req, res) => {
-  res.render("paymentSuccess", { layout: "user" });
-});
-
-app.get("/cancel", (req, res) => {
-  res.render("paymentFailed", { layout: "user" });
-});
 
 app.post("/checkout", stripePayment);
 
@@ -462,10 +385,49 @@ app.get("/bizlogin", (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-  req.logout();
-  res.render("userLogin");
-});
+    req.logout();
+    res.render("userLogin");
+  });
 
+app.post('/discount',(req,res)=>{
+  console.log(req.body.code)
+  let discountCode=req.body.code
+  knex('restaurant').select('discount').where('code',discountCode).then((data)=>{
+  if(data.length===0)
+  {
+    console.log("there is no such coupon")
+    res.json({percent_off:null})
+  }else{
+    res.json({discountCode:req.body.code,percent_off:Number(data[0].discount)})
+  }
+}
+  )
+})
+
+app.get('/tag/:tagid',async (req,res)=>{
+  let tagName=await knex('tag').select('tag_name').where('id',req.params.tagid)
+  return  knex('restaurant').select('restaurant.id','restaurant.name','restaurant.address','restaurant.district','restaurant.profile_path','restaurant.phone_no','restaurant.seats').join('tag_rest_join','restaurant.id','tag_rest_join.rest_id').join('tag','tag_rest_join.tag_id','tag.id').where('tag.id',req.params.tagid).then(async(data)=>{
+    console.log(data)
+    for(let i=0;i<data.length;i++)
+    {
+      let rating
+      rating=await knex('review').where('rest_id',data[i].id).select('rating')
+      if(rating.length!=0)
+      {
+      rating=Math.round(rating.map(item=>Number(item.rating)).reduce((a,b)=>a+b)/rating.length*2)/2
+      console.log(rating)
+  
+      }
+      else{
+        rating=0
+      }
+   
+      data[i]['rating']=rating
+    }
+    res.render('userHome',{layout:'user',rest:data,result:'search result: '+tagName[0].tag_name})
+  })
+})
+// Sher: Post route for testing local strategy
 app.post(
   "/login",
   passportFunction.authenticate("local-login", {
