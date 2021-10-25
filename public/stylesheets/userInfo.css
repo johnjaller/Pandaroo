@@ -9,6 +9,14 @@
   font-size: 1.15rem;
 }
 
+.btn-userEditProfile {
+  font-family: "Bungee", cursive;
+  font-size: 1rem;
+  background-color: #ff6b62;
+  color: #fff;
+  padding: 5px 20px;
+}
+
 /* User info button
 ---------------------------------------------- */
 .btn-user {
@@ -33,7 +41,8 @@
 }
 
 .btn-userStatus,
-.btn-userCancel {
+.btn-userCancel,
+.btn-userInfoSubmit {
   font-family: "Bungee", cursive;
   font-size: 1rem;
   background-color: #ff6b62;
@@ -44,4 +53,20 @@
 .setUpTitle {
   font-family: "Bungee", cursive;
   font-size: 2rem;
+}
+
+/* Delete model & Edit profile model
+---------------------------------------------- */
+.modal-title {
+  font-family: "Bungee", cursive;
+  font-size: 1.55rem;
+  color: #ff6b62;
+}
+
+.btn-userClose {
+  font-family: "Bungee", cursive;
+  font-size: 1rem;
+  background-color: grey;
+  color: #fff;
+  padding: 5px 20px;
 }

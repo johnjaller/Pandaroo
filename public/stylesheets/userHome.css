@@ -1,3 +1,14 @@
+.welcomeTitle h2,
+.featuredTitle,
+.tagTitle {
+  font-family: "Bungee", cursive;
+  color: #ff6b62;
+}
+
+.welcomeTitle p {
+  font-size: 1.15rem;
+}
+
 .userSearch {
   width: 35vw;
   border: 1px solid #4b8494;
@@ -16,6 +27,22 @@
 }
 
 .userRestCardTitle {
+  font-family: "Bungee", cursive;
+  color: #ff6b62;
+  font-size: 1.25rem;
+}
+
+.userRestCard p {
   color: #4b8494;
-  font-size: 1.15rem;
+}
+
+.tags {
+  background-color: #4b8494;
+  padding: 15px 20px;
+}
+
+.tags a {
+  font-size: 1rem;
+  color: #fff;
+  text-decoration: none;
 }

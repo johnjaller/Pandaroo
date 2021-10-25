@@ -51,18 +51,6 @@ const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 const { uploadFile, downloadFile } = require("./s3Bucket/s3");
 
-// // Set up user service and router
-// const UserService = require("./service/userService");
-// const UserRouter = require("./router/userRouter");
-// const userService = new UserService(knex);
-// const userRouter = new UserRouter(userService);
-
-// // Set up restaurant service and router
-// const RestService = require("./service/restService");
-// const RestRouter = require("./router/restRouter");
-// const restService = new RestService(knex);
-// const restRouter = new RestRouter(restService);
-
 // Set up passport authentication
 const passportFunction = require("./passport/passport");
 app.use(passportFunction.initialize());
@@ -99,6 +87,7 @@ app.get(
     scope: ["email", "public_profile"],
   })
 );
+
 app.get(
   "/auth/facebook/callback",
   passportFunction.authenticate("facebook", {
@@ -112,6 +101,7 @@ app.get(
   "/auth/google",
   passportFunction.authenticate("google", { scope: ["email", "profile"] })
 );
+
 app.get(
   "/auth/google/callback",
   passportFunction.authenticate("google", {
@@ -129,10 +119,12 @@ const userRouter = new UserRouter(userService);
 // Set up restaurant service and router
 const RestService = require("./service/restService");
 const RestRouter = require("./router/restRouter");
-const stripe = require("stripe")(process.env.stripe_secret);
-const path = require("path");
 const restService = new RestService(knex);
 const restRouter = new RestRouter(restService);
+
+// Set up stripe
+const stripe = require("stripe")(process.env.stripe_secret);
+const path = require("path");
 
 // Route for users
 app.use("/user", userRouter.route());
@@ -141,6 +133,37 @@ app.get("/", userLogIn);
 
 app.get("/", async (req, res) => {
   let restTag = await userService.getRestTag();
+  for (let i = 0; i < restTag.length; i++) {
+    switch (restTag[i]["tag_name"]) {
+      case "hongKongStyle":
+        restTag[i]["tag_name"] = "Hong Kong Style";
+        break;
+      case "chinese":
+        restTag[i]["tag_name"] = "Chinese";
+        break;
+      case "taiwanese":
+        restTag[i]["tag_name"] = "Taiwanese";
+        break;
+      case "japanese":
+        restTag[i]["tag_name"] = "Japanese";
+        break;
+      case "korean":
+        restTag[i]["tag_name"] = "Korean";
+        break;
+      case "western":
+        restTag[i]["tag_name"] = "Western";
+        break;
+      case "petFriendly":
+        restTag[i]["tag_name"] = "Pet Friendly";
+        break;
+      case "liveBroadcast":
+        restTag[i]["tag_name"] = "Live Boardcast";
+        break;
+      default:
+        restTag[i]["tag_name"] = "Parking";
+    }
+  }
+  console.log("restTag", restTag);
   let user = await knex("account")
     .select("district", "firstname")
     .where("id", req.user.id);
@@ -399,17 +422,15 @@ app.post("/webhook", async (request, response) => {
 app.get("/success/:restId", (req, res) => {
   res.render("paymentSuccess", { layout: "user" });
 });
+
 app.get("/cancel", (req, res) => {
   res.render("paymentFailed", { layout: "user" });
 });
-app.get("/bookingshistory", restRouter.router());
 
 app.post("/checkout", stripePayment);
+
 app.get("/success", (req, res) => {
   res.render("paymentSuccess", { layout: "user" });
-});
-app.get("/cancel", (req, res) => {
-  res.render("paymentFailed", { layout: "user" });
 });
 
 app.post("/discount", (req, res) => {

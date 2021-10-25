@@ -78,6 +78,7 @@ $(document).on("click", ".userInfoSubmit", () => {
   $(".userPhone").find("span").html(phone);
 });
 
+// Shopping cart
 let shoppingCart = {};
 let requestId;
 $(document).ready(function () {
@@ -316,6 +317,7 @@ $(".couponCheck").on("click", function (event) {
     },
   });
 });
+
 $(".userLogout").on("click", function () {
   localStorage.clear();
 });

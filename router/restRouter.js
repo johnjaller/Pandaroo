@@ -27,6 +27,8 @@ class RestRouter {
       "/bizsetupmenu/:category",
       this.getSetUpMenuWithCategory.bind(this)
     );
+    router.put("/bizsetupmenu/:category", this.editMenu.bind(this));
+    router.delete("/bizsetupmenu/:category", this.deleteMenu.bind(this));
 
     return router;
   }
@@ -54,6 +56,7 @@ class RestRouter {
     }
   }
 
+  // Get "/info/:category"
   async getCategory(req, res) {
     console.log(req.params.category);
     console.log("Get restaurant menu");
@@ -80,6 +83,7 @@ class RestRouter {
     }
   }
 
+  // Get "/bookings"
   async getBooking(req, res) {
     console.log("Get restaurant current booking");
     try {
@@ -116,6 +120,7 @@ class RestRouter {
     }
   }
 
+  // Get "/orders"
   async getOrder(req, res) {
     console.log("Get restaurant current order");
     try {
@@ -152,6 +157,7 @@ class RestRouter {
     }
   }
 
+  // Get "/bookingshistory"
   async getBookingHistory(req, res) {
     console.log("Get restaurant booking history");
     try {
@@ -191,6 +197,7 @@ class RestRouter {
     }
   }
 
+  // Get "/ordershistory"
   async getOrderHistory(req, res) {
     console.log("Get restaurant order history");
     console.log("Req user", req.user.id);
@@ -231,6 +238,7 @@ class RestRouter {
     }
   }
 
+  // Get "/bookings/:bookingID"
   updateBookingStatus(req, res) {
     console.log("Update booking status");
     try {
@@ -244,6 +252,7 @@ class RestRouter {
     }
   }
 
+  // Get "/orders/:orderID"
   updateOrderStatus(req, res) {
     console.log("Update order status");
     try {
@@ -274,6 +283,7 @@ class RestRouter {
     }
   }
 
+  // Get "/bizsetup"
   async getRestSetUp(req, res) {
     try {
       console.log("Get restaurant info");
@@ -328,18 +338,34 @@ class RestRouter {
     }
   }
 
+  // Put "/bizsetup"
+  async putRestInfo(req, res) {
+    console.log("restRouter req.user.id: ", req.user.id);
+
+    console.log("restRouter: Updating restaurant info");
+    await this.restService.updateRestInfo(req.user.id, req.body);
+
+    console.log("restRouter: Updating restaurant tag");
+
+    await this.restService.deleteRestTag(req.user.id);
+    console.log("Deleted restaurant tag");
+
+    await this.restService.insertRestTag(req.user.id, req.body);
+    console.log("Inserted restaurant tag");
+    return res.sendStatus(200);
+  }
+
   // Get "/bizsetupmenu"
   async getSetUpMenu(req, res) {
     let dishInfo = await this.restService.getMenu(req.user.id, "soup&salad");
-    console.log(dishInfo);
     return res.render("restSetUpMenu", {
       layout: "restaurant",
       dishInfo: dishInfo,
     });
   }
 
+  // Get "/bizsetupmenu/:category"
   async getSetUpMenuWithCategory(req, res) {
-    console.log(req.params.category);
     console.log("Get restaurant menu in setup");
     try {
       let dishInfo = await this.restService.getMenu(
@@ -356,21 +382,30 @@ class RestRouter {
     }
   }
 
-  // Put "/bizsetup"
-  async putRestInfo(req, res) {
-    console.log("restRouter req.user.id: ", req.user.id);
+  // Put "/bizsetupmenu/:category"
+  async editMenu(req, res) {
+    console.log("Update restaurant menu");
+    try {
+      return this.restService
+        .editRestMenu(req.body.dishname, req.body.dishprice, req.body.dishId)
+        .then(() => {
+          res.send("DONE");
+        });
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 
-    console.log("restRouter: Updating restaurant info");
-    await this.restService.updateRestInfo(req.user.id, req.body);
-
-    console.log("restRouter: Updating restaurant tag");
-
-    await this.restService.deleteRestTag(req.user.id);
-    console.log("Deleted restaurant tag");
-
-    await this.restService.insertRestTag(req.user.id, req.body);
-    console.log("Inserted restaurant tag");
-    return res.sendStatus(200);
+  // Delete "/bizsetupmenu/:category"
+  async deleteMenu(req, res) {
+    console.log("Delete restaurant menu");
+    try {
+      return this.restService.deleteRestMenu(req.body.dishId).then(() => {
+        res.send("DONE");
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }
 
