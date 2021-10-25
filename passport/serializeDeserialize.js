@@ -6,7 +6,7 @@ function serializeUser(user, done) {
 }
 
 async function deserializeUser(data, done) {
-  console.log("desrilaizing user");
+  console.log("deserializing user");
   let username = data.username;
   console.log(username);
   try {

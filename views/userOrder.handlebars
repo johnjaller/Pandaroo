@@ -74,7 +74,6 @@
     </div>
 
     <div class="user-restMenu col-8">
-      <h4>Menu</h4>
       <table class="table table-bordered">
         <thead>
           <tr class="text-center">
@@ -90,7 +89,7 @@
 
       <div class="d-flex flex-wrap justify-content-start">
         {{#each dish}}
-        <div class="card me-1 text-center user-dishes" style="width: 13rem; height: 23rem">
+        <div class="card me-1 mb-1 text-center user-dishes" style="width: 13rem; height: 23rem">
           <img src="/image/{{this.photoPath}}" class="card-img-top mx-auto" alt="dishes pic" />
           <div class="card-body">
             <p class="card-text text-start item-name" id='{{id}}'>{{name}}</p>
