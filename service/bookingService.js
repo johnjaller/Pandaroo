@@ -28,11 +28,11 @@ class BookingService{
     }
     deleteBookingDetail(bookingId)
     {
-        return this.knex('booking_detail').delete().where('delivery_id',bookingId)
+        return this.knex('booking_detail').delete().where('booking_id',bookingId)
     }
     deleteBooking(bookingId)
     {
-        return this.knex('booking').delete().where('delivery.id',bookingId)
+        return this.knex('booking').delete().where('id',bookingId)
     }
 }
 

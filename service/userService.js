@@ -145,6 +145,19 @@ class UserService {
       })
       .where("id", userID);
   }
+
+  putUserSetUp(userId, userInfo) {
+    this.knex("account")
+      .where("id", userId)
+      .update({
+        firstname: userInfo.fname,
+        surname: userInfo.lname,
+        address: userInfo.address,
+        district: userInfo.district,
+        phone_no: userInfo.phone,
+      })
+      .catch((e) => console.log(e));
+  }
 }
 
 module.exports = UserService;

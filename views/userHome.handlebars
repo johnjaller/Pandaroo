@@ -1,62 +1,74 @@
 <form class="d-flex justify-content-center mb-5" method="GET" action="/search">
   <input
     class="form-control me-2 userSearch"
-    type="search" name="q" value="{{queryString}}"
+    type="search"
+    name="q"
+    value="{{queryString}}"
     placeholder="Search restaurant name"
     aria-label="Search"
   />
   <button type="submit" class="border-0 rounded btn-userSearch">GO ></button>
 </form>
-{{#each userInfo}}
-<h2>Welcome home, {{this.firstname}}</h2>
-<p>We have some recommendation for you at {{this.district}}</p>
-{{/each}}
-{{#each recommendation}}
-  <a href="/order/{{this.id}}" class="text-decoration-none">
-    <div
-      class="card mx-4 mb-4 border border-top-0 border-start-0 border-3 rounded-2 userRestCard"
-      style="width: 20rem;"
-    >
-      <img
-        src="/image/{{this.profile_path}}"
-        class="card-img-top mx-auto"
-        alt="Restaurant profile pic"
-      />
-      <div class="card-body">
-        <p class="card-text text-center userRestCardTitle">{{this.name}}</p>
-        <p>Address: {{this.address}}</p>
-        <div class="userBooking-star rating">{{this.rating}}</div>
-        <p>Tel: {{this.phone_no}}</p>
-        <p>Seats: {{this.seats}}</p>
-      </div>
+<div class="container">
+  {{#each userInfo}}
+    <div class="mb-3 welcomeTitle">
+      <h2 class="ms-5">Welcome home, {{this.firstname}} !</h2>
+      <p class="ms-5">There are some recommendations for you at
+        {{this.district}}</p>
     </div>
-  </a>
-</div>
-{{/each}}
-<h2>{{result}}</h2>
-<div class="d-flex flex-wrap justify-content-center">
-{{#each feature}}
-  <a href="/order/{{this.id}}" class="text-decoration-none">
-    <div
-      class="card mx-4 mb-4 border border-top-0 border-start-0 border-3 rounded-2 userRestCard"
-      style="width: 20rem;"
-    >
-      <img
-        src="/image/{{this.profile_path}}"
-        class="card-img-top mx-auto"
-        alt="Restaurant profile pic"
-      />
-      <div class="card-body">
-        <p class="card-text text-center userRestCardTitle">{{this.name}}</p>
-        <p>Address: {{this.address}}</p>
-        <div class="userBooking-star rating">{{this.rating}}</div>
-        <p>Tel: {{this.phone_no}}</p>
-        <p>Seats: {{this.seats}}</p>
-      </div>
-    </div>
-  </a>
   {{/each}}
-</div>
+<div class="d-flex flex-wrap justify-content-center">
+    {{#each recommendation}}
+      <a href="/order/{{this.id}}" class="text-decoration-none">
+        <div
+          class="card mx-4 mb-4 border border-top-0 border-start-0 border-3 rounded-2 userRestCard"
+          style="width: 20rem; height: 28rem;"
+        >
+          <img
+            src="/image/{{this.profile_path}}"
+            class="card-img-top mx-auto"
+            alt="Restaurant profile pic"
+          />
+          <div class="card-body">
+            <h4
+              class="card-text text-center userRestCardTitle"
+            >{{this.name}}</h4>
+            <p>Address: {{this.address}}</p>
+        <div class="userBooking-star rating">{{this.rating}}</div>
+            <p>Tel: {{this.phone_no}}</p>
+            <p>Seats: {{this.seats}}</p>
+          </div>
+        </div>
+      </a>
+    {{/each}}
+  </div>
+  <h2 class="my-4 ms-5 featuredTitle">{{result}}</h2>
+<div class="d-flex flex-wrap justify-content-center">
+<div class="d-flex flex-wrap justify-content-center">
+    {{#each feature}}
+      <a href="/order/{{this.id}}" class="text-decoration-none">
+        <div
+          class="card mx-4 mb-4 border border-top-0 border-start-0 border-3 rounded-2 userRestCard"
+          style="width: 20rem; height: 28rem;"
+        >
+          <img
+            src="/image/{{this.profile_path}}"
+            class="card-img-top mx-auto"
+            alt="Restaurant profile pic"
+          />
+          <div class="card-body">
+            <h4
+              class="card-text text-center userRestCardTitle"
+            >{{this.name}}</h4>
+            <p>Address: {{this.address}}</p>
+        <div class="userBooking-star rating">{{this.rating}}</div>
+            <p>Tel: {{this.phone_no}}</p>
+            <p>Seats: {{this.seats}}</p>
+          </div>
+        </div>
+      </a>
+    {{/each}}
+  </div>
 <div class="d-flex flex-wrap justify-content-center">
   {{! #Each restaurant }}
   {{#each rest}}
@@ -76,26 +88,23 @@
         <div class="userBooking-star rating">{{this.rating}}</div>
         <p>Tel: {{this.phone_no}}</p>
         <p>Seats: {{this.seats}}</p>
-      </div>
-    </div>
-  </a>
-</div>
-  {{/each}}
+      </div> 
+      {{/each}} 
+
   {{#if tag}}
-  <div class="container">
-  <h2>Tag</h2>
-  <div class="row row-cols-3" style="height: 300px;">
-  {{#each tag}}
-  <a href="/tag/{{this.id}}">
-  <div class="col">
-    {{this.tag_name}}
-  </div>
-  </a>
-  {{/each}}
-  </div>
-  </div>
+    <h2 class="my-4 ms-5 tagTitle">Tags</h2>
+    <div class="container ms-5">
+      {{#each tag}}
+        <span class="badge rounded-pill me-2 tags">
+          <a href="/tag/{{this.id}}">
+            {{this.tag_name}}
+          </a>
+        </span>
+      {{/each}}
+    </div>
   {{/if}}
-  {{! /each restaurant }}
+
+</div>
 
 <br />
 <br />

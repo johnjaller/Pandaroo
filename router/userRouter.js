@@ -10,6 +10,10 @@ class UserRouter {
     router.get("/order", this.getOrder.bind(this));
     router.get("/bookmark", this.getBookmark.bind(this));
     router.put("/info", this.putUserInfo.bind(this));
+
+    router.get("/setup", this.getUserSetUp.bind(this));
+    router.put("/setup", this.putUserSetUp.bind(this));
+
     return router;
   }
 
@@ -80,6 +84,15 @@ class UserRouter {
         req.body.phone
       )
       .catch((e) => console.log(e));
+  }
+
+  getUserSetUp(req, res) {
+    res.render("userSetUp", { layout: "user" });
+  }
+
+  async putUserSetUp(req, res) {
+    await this.userService.putUserSetUp(req.user.id, req.body);
+    return res.sendStatus(200);
   }
 }
 

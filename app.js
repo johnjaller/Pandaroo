@@ -1,7 +1,8 @@
-//import package
+// Import package
 require("dotenv").config();
 const express = require("express");
 const app = express();
+const flash = require("express-flash");
 const cors = require("cors");
 const fs = require("fs");
 const util = require("util");
@@ -20,9 +21,16 @@ const io = require("socket.io")(https);
 
 // Set up express session
 const session = require("express-session");
-app.use(session({ secret: "secret", resave: false, saveUninitialized: true }));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 // Set up public files and middleware
+app.use(flash());
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
@@ -42,18 +50,6 @@ const handlebarHelpers = require("./handlebars-helpers");
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 const { uploadFile, downloadFile } = require("./s3Bucket/s3");
-
-// // Set up user service and router
-// const UserService = require("./service/userService");
-// const UserRouter = require("./router/userRouter");
-// const userService = new UserService(knex);
-// const userRouter = new UserRouter(userService);
-
-// // Set up restaurant service and router
-// const RestService = require("./service/restService");
-// const RestRouter = require("./router/restRouter");
-// const restService = new RestService(knex);
-// const restRouter = new RestRouter(restService);
 
 // Set up passport authentication
 const passportFunction = require("./passport/passport");
@@ -91,6 +87,7 @@ app.get(
     scope: ["email", "public_profile"],
   })
 );
+
 app.get(
   "/auth/facebook/callback",
   passportFunction.authenticate("facebook", {
@@ -100,26 +97,17 @@ app.get(
 );
 
 // Set up user service and router
-const UserService = require("./service/userService");
-const UserRouter = require("./router/userRouter");
-const userService = new UserService(knex);
-const userRouter = new UserRouter(userService);
 const searchQuery=require('./database/searchQueries').searchQuery
-const homepageRecomendation=require('./database/searchQueries').homepageRecommendation
 
-// Set up restaurant service and router
-const RestService = require("./service/restService");
-const RestRouter = require("./router/restRouter");
-const stripe=require('stripe')(process.env.stripe_secret)
-const path = require("path");
-const restService = new RestService(knex);
-const restRouter = new RestRouter(restService);
+
+
 
 // Set up google authentication
 app.get(
   "/auth/google",
   passportFunction.authenticate("google", { scope: ["email", "profile"] })
 );
+
 app.get(
   "/auth/google/callback",
   passportFunction.authenticate("google", {
@@ -128,12 +116,25 @@ app.get(
   })
 );
 
+// Set up user service and router
+const UserService = require("./service/userService");
+const UserRouter = require("./router/userRouter");
+const userService = new UserService(knex);
+const userRouter = new UserRouter(userService);
+
+// Set up restaurant service and router
+const RestService = require("./service/restService");
+const RestRouter = require("./router/restRouter");
+const restService = new RestService(knex);
+const restRouter = new RestRouter(restService);
+
+
+
 // Route for users
 app.use("/user", userRouter.route());
 
 app.get("/", userLogIn);
 
-app.get("/", homepageRecomendation)
 app.get("/search", searchQuery);
 const BookingService=require('./service/bookingService')
 const BookingRouter=require('./router/bookingRouter')
@@ -164,6 +165,96 @@ app.post('/review/:restId',(req,res)=>{
     })
     .catch((e) => console.log(e));
 })
+app.get("/", async (req, res) => {
+  let restTag = await userService.getRestTag();
+  for (let i = 0; i < restTag.length; i++) {
+    switch (restTag[i]["tag_name"]) {
+      case "hongKongStyle":
+        restTag[i]["tag_name"] = "Hong Kong Style";
+        break;
+      case "chinese":
+        restTag[i]["tag_name"] = "Chinese";
+        break;
+      case "taiwanese":
+        restTag[i]["tag_name"] = "Taiwanese";
+        break;
+      case "japanese":
+        restTag[i]["tag_name"] = "Japanese";
+        break;
+      case "korean":
+        restTag[i]["tag_name"] = "Korean";
+        break;
+      case "western":
+        restTag[i]["tag_name"] = "Western";
+        break;
+      case "petFriendly":
+        restTag[i]["tag_name"] = "Pet Friendly";
+        break;
+      case "liveBroadcast":
+        restTag[i]["tag_name"] = "Live Boardcast";
+        break;
+      default:
+        restTag[i]["tag_name"] = "Parking";
+    }
+  }
+  console.log("restTag", restTag);
+  let user = await knex("account")
+      .select("district", "firstname")
+      .where("id", req.user.id);
+    console.log(user[0].district);
+    let featuredRest = await knex("restaurant").select();
+    for(let i=0;i<featuredRest.length;i++)
+    {
+      let rating
+      rating=await knex('review').where('rest_id',featuredRest[i].id).select('rating')
+      if(rating.length!=0)
+      {
+      rating=Math.round(rating.map(item=>Number(item.rating)).reduce((a,b)=>a+b)/rating.length*2)/2
+      console.log(rating)
+  
+      }
+      else{
+        rating=0
+      }
+   
+      featuredRest[i]['rating']=rating
+    }
+    let locationRecommendation;
+    if (user[0].district != undefined) {
+      locationRecommendation = await knex("restaurant")
+        .select()
+        .where("district", user[0].district);
+        for(let i=0;i<locationRecommendation.length;i++)
+        {
+          let rating
+          rating=await knex('review').where('rest_id',locationRecommendation[i].id).select('rating')
+          if(rating.length!=0)
+          {
+          rating=Math.round(rating.map(item=>Number(item.rating)).reduce((a,b)=>a+b)/rating.length*2)/2
+          console.log(rating)
+      
+          }
+          else{
+            rating=0
+          }
+       
+          locationRecommendation[i]['rating']=rating
+        }
+    } else {
+      locationRecommendation = [];
+    }
+
+  console.log(locationRecommendation, "loaded info");
+  res.render("userHome", {
+    layout: "user",
+    userInfo: user,
+    recommendation: locationRecommendation,
+    feature: featuredRest,
+    result: "Featured",
+    tag: restTag,
+  });
+});
+
 
 app.post("/bookmark/:id", (req, res) => {
   return knex("bookmark")
@@ -174,24 +265,19 @@ app.post("/bookmark/:id", (req, res) => {
     .catch((e) => console.log(e));
 });
 
-app.delete('/bookmark/:id',(req,res)=>{
-  return knex('bookmark').delete().where({account_id:req.user.id,rest_id:req.params.id}).then(()=>{
-      res.send('success')
-  }).catch((e)=> console.log(e))
-})
-
-
-app.get("/setup", userLogIn, (req, res) => {
-  res.render("userSetUp", { layout: "user" });
+app.delete("/bookmark/:id", (req, res) => {
+  return knex("bookmark")
+    .delete()
+    .where({ account_id: req.user.id, rest_id: req.params.id })
+    .then(() => {
+      res.send("success");
+    })
+    .catch((e) => console.log(e));
 });
+
 
 // Route for restaurants
 app.use("/biz", restLogIn, restRouter.router());
-
-// app.get("/bizinit", restLogIn, (req, res) => {
-//   console.log("First login from a restaurant user");
-//   res.render("restSetUp", { layout: "restaurant" });
-// });
 
 // Upload restaurant menu pic
 app.post("/bizaddmenu", upload.single("uploadedPhoto"), async (req, res) => {
@@ -240,7 +326,7 @@ app.post("/bizsetuppropic", upload.single("uploadedFile"), async (req, res) => {
         console.log("Inserting path done");
       });
     await unlinkFile(file.path);
-    res.redirect("/biz/bizinit");
+    res.redirect("/biz/bizsetup");
   } catch (err) {
     throw new Error(err);
   }
@@ -263,6 +349,12 @@ app.use('/checkout',checkoutRouter.route())
 
 app.get("/bookingshistory", restRouter.router());
 
+
+app.post("/checkout", stripePayment);
+
+app.get("/success", (req, res) => {
+  res.render("paymentSuccess", { layout: "user" });
+});
 
 app.post("/discount", (req, res) => {
   console.log(req.body.code);
@@ -341,50 +433,54 @@ app.post(
   passportFunction.authenticate("local-login", {
     successRedirect: "/",
     failureRedirect: "/login",
+    failureFlash: true,
   })
 );
 
-// Submit user signup form
 app.post(
   "/signup",
   passportFunction.authenticate("local-signup", {
-    successRedirect: "/setup",
+    successRedirect: "/user/setup",
     failureRedirect: "/login",
+    failureFlash: true,
   })
 );
 
-// Submit rest login form
 app.post(
   "/bizlogin",
   passportFunction.authenticate("local-login", {
     successRedirect: "/biz/info",
     failureRedirect: "/bizlogin",
+    failureFlash: true,
   })
 );
 
-// Submit rest signup form
 app.post(
   "/bizsignup",
   passportFunction.authenticate("local-signup", {
-    successRedirect: "/biz/bizinit",
+    successRedirect: "/biz/bizsetup",
     failureRedirect: "/bizlogin",
+    failureFlash: true,
   })
 );
 
-// Submit user info setup form
-app.put("/setup", userLogIn, async (req, res) => {
-  console.log("app.js 281 ID: ", req.user.id);
-  knex("account")
-    .where("id", req.user.id)
-    .update({
-      firstname: req.body.fname,
-      surname: req.body.lname,
-      address: req.body.address,
-      district: req.body.district,
-      phone_no: req.body.phone,
-    })
-    .catch((e) => console.log(e));
-  res.send("OKAY");
+// Handle 404 error
+app.use("*", (req, res) => {
+  if (!req.user) {
+    res.status(404).render("error404", { layout: "userSimple", guest: true });
+  } else if (req.user.username.includes("@")) {
+    res.status(404).render("error404", { layout: "user", user: true });
+  } else {
+    res
+      .status(404)
+      .render("error404", { layout: "restaurant", restaurant: true });
+  }
+});
+
+// Handle 500 server error
+app.use("*", (error, req, res, next) => {
+  console.error(error.stack);
+  res.status(500).render("error500", { layout: "userSimple" });
 });
 
 // Set up port

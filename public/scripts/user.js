@@ -298,7 +298,7 @@ $(".addToCart").on("click", (event) => {
 //Add to Bookmark
   $('.bookmark').on('click',(event)=>{
     let restId=$(event.target).parent().attr('id')
-    let icon=$(event.target)
+    let icon=$(event.target).find('i')
     if(icon.hasClass('far'))
     {
     icon.toggleClass('far fas')

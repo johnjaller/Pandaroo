@@ -1,80 +1,53 @@
-// User signup password validation
-$("#user-signup-form").submit((event) => {
-  let usernameInput = $(event.target).find("input[name=username]").val();
-  let passwordInput = $(event.target).find("input[name=password]").val();
-  console.log(`USERNAME: ${usernameInput}, PASSWORD: ${passwordInput}`);
-  if (!/^\w{3,20}$/.test(passwordInput)) {
-    console.log("Password length must be 3-20");
-    $("#validation-msg").empty();
-    $("#validation-msg").append("Password length must be between 3-20!");
-    return false;
-  } else {
-    console.log("Password validated");
-  }
-});
+// Shopping cart
+$(document).ready(function () {
+  if (window.location.pathname.includes("/order/")) {
+    if (!localStorage.hasOwnProperty("shoppingCart")) {
+      localStorage.setItem("shoppingCart", "");
+      shoppingCart = {};
+    } else {
+      shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"));
+    }
+    console.log(shoppingCart);
+    requestId = window.location.pathname.replace(/[^\d]/g, "");
 
-// Restaurant signup username & password validation
-$("#rest-signup-form").submit((event) => {
-  let usernameInput = $(event.target).find("input[name=username]").val();
-  let passwordInput = $(event.target).find("input[name=password]").val();
-  console.log(`USERNAME: ${usernameInput}, PASSWORD: ${passwordInput}`);
-  if (/[^a-zA-Z0-9]/.test(usernameInput)) {
-    console.log("Username cannot include special character");
-    $("#validation-msg").empty();
-    $("#validation-msg").append("Username cannot include special character!");
-    return false;
+    console.log(requestId);
+    if (shoppingCart.hasOwnProperty(requestId)) {
+      console.log(shoppingCart[requestId]);
+      shoppingCart[requestId].item.forEach((item) => {
+        $(".orderList").append(
+          `<tr class="dish text-center"><td>${item.name}</td><td>${item.amount}</td><td>HKD ${item.price}</td></tr>`
+        );
+      });
+      let price;
+      if (Object.keys(shoppingCart[requestId].discount).length > 0) {
+        let coupon = shoppingCart[requestId].discount;
+        let discount = coupon.percent_off * 100;
+        $(".discountList").append(
+          `<tr class="dish text-center"><td>Discount: '${coupon.discountCode}'</td><td></td><td>-${discount}%</td></tr>`
+        );
+        $("#discountCode").prop("disabled", "disabled");
+        $(".couponCheck").addClass("disabled");
+        price = Number(
+          (price * (1 - shoppingCart[requestId].discount.percent_off)).toFixed(
+            1
+          )
+        );
+      } else {
+        price = shoppingCart[requestId].item
+          .map((i) => i.price * i.amount)
+          .reduce((a, b) => a + b);
+      }
+      $(".totalPrice").html(`HKD ${price}`);
+    } else {
+      return false;
+    }
+  } else if (window.location.pathname.includes("/success/")) {
+    let deleteId = window.location.pathname.replace(/[^\d]/g, "");
+    delete shoppingCart[deleteId];
+    localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
   } else {
-    console.log("Username validated");
-  }
-  if (!/^\w{3,20}$/.test(passwordInput)) {
-    console.log("Password length must be 3-20");
-    $("#validation-msg").empty();
-    $("#validation-msg").append("Password length must be between 3-20!");
     return false;
-  } else {
-    console.log("Password validated");
   }
-});
-
-// Restaurant login username validation
-$("#rest-login-form").submit((event) => {
-  let usernameInput = $(event.target).find("input[name=username]").val();
-  console.log(`USERNAME: ${usernameInput}`);
-  if (!/[A-Za-z0-9]/.test(usernameInput)) {
-    console.log("Username cannot include special character");
-    $("#validation-msg").empty();
-    $("#validation-msg").append("Username cannot include special character!");
-    return false;
-  } else {
-    console.log("Username validated");
-  }
-});
-
-// User setup POST req
-$("#userSetUpForm").submit((event) => {
-  event.preventDefault();
-  let fnameInput = $("input[name=fname]").val();
-  let lnameInput = $("input[name=lname]").val();
-  let phoneInput = $("input[name=phone]").val();
-  let districtInput = $("#userDistrict option:selected").text();
-  let addressInput = $("input[name=address]").val();
-  console.log(
-    `FirstName: ${fnameInput}, LastName: ${lnameInput}, Phone: ${phoneInput}, District: ${districtInput}, Address: ${addressInput}`
-  );
-  $.ajax({
-    url: "/setup",
-    type: "PUT",
-    data: {
-      fname: fnameInput,
-      lname: lnameInput,
-      phone: phoneInput,
-      district: districtInput,
-      address: addressInput,
-    },
-    success: function () {
-      window.location.replace("https://localhost:8080/");
-    },
-  });
 });
 
 $(document).on("click", ".userInfoSubmit", () => {
@@ -106,65 +79,20 @@ $(document).on("click", ".userInfoSubmit", () => {
 });
 
 
+$(".userLogout").on("click", function () {
+  localStorage.clear();
+});
 
-
-
-// // User login Ajax POST req
-// $("#user-login-form").submit((event) => {
-//   event.preventDefault();
-//   let usernameInput = $("input[type=email]").val();
-//   let passwordInput = $("input[type=password]").val();
-//   console.log(`USERNAME: ${usernameInput}, PASSWORD: ${passwordInput}`);
-//   $.post({
-//     url: "/login",
-//     data: { username: usernameInput, password: passwordInput },
-//   }).done(() => {
-//     console.log("Successfully sent POST request");
-//   });
-// });
-
-// User signup Ajax POST req
-// $("#user-signup-form").submit((event) => {
-//   event.preventDefault();
-//   let fnameInput = $(event.target).find("input[name=fname]").val();
-//   let lnameInput = $(event.target).find("input[name=lname]").val();
-//   let phoneInput = $(event.target).find("input[name=phone]").val();
-//   let usernameInput = $(event.target).find("input[name=username]").val();
-//   let passwordInput = $(event.target).find("input[name=password]").val();
-//   console.log(
-//     `FNAME: ${fnameInput}, LNAME: ${lnameInput}, PHONE: ${phoneInput}, USERNAME: ${usernameInput}, PASSWORD: ${passwordInput}`
-//   );
-//   $.post({
-//     url: "/signup",
-//     data: {
-//       username: usernameInput,
-//       firstname: fnameInput,
-//       surname: lnameInput,
-//       password: passwordInput,
-//       phone_no: phoneInput,
-//     },
-//   }).done(() => {
-//     console.log("Successfully sent POST request");
-//   });
-// });
-
-// Rest login Ajax POST req
-// $("#rest-login-form").submit((event) => {
-//   event.preventDefault();
-//   let usernameInput = $("input[name=username]").val();
-//   if (usernameInput.includes("@")) {
-//     console.log("Username cannot includes @");
-//     return;
-//   }
-//   let passwordInput = $("input[name=password]").val();
-//   console.log(`USERNAME: ${usernameInput}, PASSWORD: ${passwordInput}`);
-//   $.post({
-//     url: "/bizlogin",
-//     data: {
-//       username: usernameInput,
-//       password: passwordInput,
-//     },
-//   }).done(() => {
-//     console.log("Successfully sent POST request");
-//   });
-// });
+$(".bookmark").on("click", (event) => {
+  let restId = $(event.target).parent().attr("id");
+  let icon = $(event.target);
+  icon.toggleClass("far fas");
+  console.log(restId);
+  $.ajax({
+    type: "post",
+    url: `/bookmark/${restId}`,
+    success: function (response) {
+      console.log(response);
+    },
+  });
+});
