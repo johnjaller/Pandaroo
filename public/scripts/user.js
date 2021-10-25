@@ -466,6 +466,12 @@ $('#userBookingForm').submit(function (event) {
     $('.bookingCart').val(JSON.stringify(bookingCart[requestId]));
     if(bookingTime>openingTime&&bookingTime<closingTime)
     {
+        $(':input',this)
+        .not(':button, :submit, :reset, :hidden')
+        .val('')
+        .prop('checked', false)
+        .prop('selected', false);
+        $('.bookingList').html("")
         return true
     }else{
         alert("You cannot book table outside of opening hour")

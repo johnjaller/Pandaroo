@@ -1,6 +1,10 @@
 require('dotenv').config()
 const knexConfig = require("../knexfile").development;
 const knex = require("knex")(knexConfig);
+const UserService = require("../service/userService");
+const UserRouter = require("../router/userRouter");
+const userService = new UserService(knex);
+const userRouter = new UserRouter(userService);
 async function searchQuery (req, res) {
     console.log(req.query.q, "this is a query");
     let query = req.query.q.split(" ").join("|");
