@@ -372,26 +372,6 @@ class RestRouter {
     console.log("Inserted restaurant tag");
     return res.sendStatus(200);
   }
-
-  // Add menu (moved to app.js)
-  // async postRestMenu(req, res) {
-  //   console.log("Receiving rest set menu req..");
-  //   try {
-  //     console.log("restRouter req.file: ", req.file);
-  //     const file = req.file;
-  //     let result = await uploadFile(file);
-  //     console.log(result);
-
-  //     await this.restService.addRestMenu(req.user.id, req.body, result);
-
-  //     // Unlink imagefile at /uploads
-  //     // await unlinkFile(file.path);
-  //     console.log("Update menu done");
-  //     res.redirect("/biz/bizsetupmenu");
-  //   } catch (err) {
-  //     throw new Error(err);
-  //   }
-  // }
 }
 
 module.exports = RestRouter;
