@@ -1,19 +1,28 @@
-/* user header 
+/* User order header 
 ---------------------------------------------- */
 .userBooking-restName {
   font-family: "Bungee", cursive;
+  font-size: 2.5rem;
   color: #4b8494;
 }
 
 .userBooking-star i.fas {
   color: #ffc46c;
 }
+
 .userBooking-star i.far {
   color: #ffc46c;
 }
 
 .userBooking-bookmark i.far {
   color: #4b8494;
+}
+
+.btn-userReview {
+  font-family: "Bungee", cursive;
+  background-color: #ff6b62;
+  color: #fff;
+  padding: 5px 10px;
 }
 
 /* User booking form 
