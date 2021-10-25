@@ -1,7 +1,8 @@
-//import package
+// Import package
 require("dotenv").config();
 const express = require("express");
 const app = express();
+const flash = require("express-flash");
 const cors = require("cors");
 const fs = require("fs");
 const util = require("util");
@@ -20,9 +21,16 @@ const io = require("socket.io")(https);
 
 // Set up express session
 const session = require("express-session");
-app.use(session({ secret: "secret", resave: false, saveUninitialized: true }));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 // Set up public files and middleware
+app.use(flash());
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
@@ -99,20 +107,6 @@ app.get(
   })
 );
 
-// Set up user service and router
-const UserService = require("./service/userService");
-const UserRouter = require("./router/userRouter");
-const userService = new UserService(knex);
-const userRouter = new UserRouter(userService);
-
-// Set up restaurant service and router
-const RestService = require("./service/restService");
-const RestRouter = require("./router/restRouter");
-const stripe=require('stripe')(process.env.stripe_secret)
-const path = require("path");
-const restService = new RestService(knex);
-const restRouter = new RestRouter(restService);
-
 // Set up google authentication
 app.get(
   "/auth/google",
@@ -125,6 +119,20 @@ app.get(
     failureRedirect: "/login",
   })
 );
+
+// Set up user service and router
+const UserService = require("./service/userService");
+const UserRouter = require("./router/userRouter");
+const userService = new UserService(knex);
+const userRouter = new UserRouter(userService);
+
+// Set up restaurant service and router
+const RestService = require("./service/restService");
+const RestRouter = require("./router/restRouter");
+const stripe = require("stripe")(process.env.stripe_secret);
+const path = require("path");
+const restService = new RestService(knex);
+const restRouter = new RestRouter(restService);
 
 // Route for users
 app.use("/user", userRouter.route());
@@ -183,38 +191,63 @@ app.get("/userbooking", (req, res) => {
   res.render("userBooking", { layout: "user" });
 });
 
-app.get('/order/:restID',async(req,res)=>{
+app.get("/order/:restID", async (req, res) => {
+  console.log(req.params.restID, "rest id how many times?");
 
-    console.log(req.params.restID, 'rest id how many times?')
- 
-    let restDetail=await  knex('restaurant').select().where('restaurant.id',req.params.restID)
-    
-  let dish=await knex('restaurant').select().join('menu','restaurant.id','menu.rest_id').where({'restaurant.id':req.params.restID,'category':"soup&salad"})
-    console.log(dish)
-    let dishItems=[]
-    dish.forEach(i => {
-      dishItems.push({id:i.id,name:i.item,price:i.price,photoPath:i.photo_path})
-    })
-    return res.render('userOrder',{layout:'user',restaurant:restDetail[0],dish:dishItems
-})
-  
-})
+  let restDetail = await knex("restaurant")
+    .select()
+    .where("restaurant.id", req.params.restID);
 
-app.get('/order/:restID/:category',async(req,res)=>{
-  let restDetail=await  knex('restaurant').select().where('restaurant.id',req.params.restID)
-  let dish=await knex('restaurant').select().join('menu','restaurant.id','menu.rest_id').where({'restaurant.id':req.params.restID,'category':req.params.category})
-    console.log(dish)
-    let dishItems=[]
-    for(let i=0;i<dish.length;i++)
-    {
-      dishItems.push({id:dish[i].id,name:dish[i].item,price:dish[i].price,photoPath:dish[i].photo_path})
+  let dish = await knex("restaurant")
+    .select()
+    .join("menu", "restaurant.id", "menu.rest_id")
+    .where({ "restaurant.id": req.params.restID, category: "soup&salad" });
+  console.log(dish);
+  let dishItems = [];
+  dish.forEach((i) => {
+    dishItems.push({
+      id: i.id,
+      name: i.item,
+      price: i.price,
+      photoPath: i.photo_path,
+    });
+  });
+  return res.render("userOrder", {
+    layout: "user",
+    restaurant: restDetail[0],
+    dish: dishItems,
+  });
+});
 
-    }
-  
-    console.log(dishItems)
-    return res.render('userOrder',{layout:'user',restaurant:restDetail[0],dish:dishItems
-})
-})
+app.get("/order/:restID/:category", async (req, res) => {
+  let restDetail = await knex("restaurant")
+    .select()
+    .where("restaurant.id", req.params.restID);
+  let dish = await knex("restaurant")
+    .select()
+    .join("menu", "restaurant.id", "menu.rest_id")
+    .where({
+      "restaurant.id": req.params.restID,
+      category: req.params.category,
+    });
+  console.log(dish);
+  let dishItems = [];
+  for (let i = 0; i < dish.length; i++) {
+    dishItems.push({
+      id: dish[i].id,
+      name: dish[i].item,
+      price: dish[i].price,
+      photoPath: dish[i].photo_path,
+    });
+  }
+
+  console.log(dishItems);
+  return res.render("userOrder", {
+    layout: "user",
+    restaurant: restDetail[0],
+    dish: dishItems,
+  });
+});
 
 app.post("/bookmark/:id", (req, res) => {
   return knex("bookmark")
@@ -225,27 +258,22 @@ app.post("/bookmark/:id", (req, res) => {
     .catch((e) => console.log(e));
 });
 
-app.delete('/bookmark/:id',(req,res)=>{
-  return knex('bookmark').delete().where({account_id:req.user.id,rest_id:req.params.id}).then(()=>{
-      res.send('success')
-  }).catch((e)=> console.log(e))
-})
+app.delete("/bookmark/:id", (req, res) => {
+  return knex("bookmark")
+    .delete()
+    .where({ account_id: req.user.id, rest_id: req.params.id })
+    .then(() => {
+      res.send("success");
+    })
+    .catch((e) => console.log(e));
+});
 
 app.get("/userorder", (req, res) => {
   res.render("userOrder", { layout: "user" });
 });
 
-app.get("/setup", userLogIn, (req, res) => {
-  res.render("userSetUp", { layout: "user" });
-});
-
 // Route for restaurants
 app.use("/biz", restLogIn, restRouter.router());
-
-// app.get("/bizinit", restLogIn, (req, res) => {
-//   console.log("First login from a restaurant user");
-//   res.render("restSetUp", { layout: "restaurant" });
-// });
 
 // Upload restaurant menu pic
 app.post("/bizaddmenu", upload.single("uploadedPhoto"), async (req, res) => {
@@ -294,7 +322,7 @@ app.post("/bizsetuppropic", upload.single("uploadedFile"), async (req, res) => {
         console.log("Inserting path done");
       });
     await unlinkFile(file.path);
-    res.redirect("/biz/bizinit");
+    res.redirect("/biz/bizsetup");
   } catch (err) {
     throw new Error(err);
   }
@@ -306,63 +334,74 @@ app.get("/image/:key", (req, res) => {
   const readStream = downloadFile(key);
   readStream.pipe(res);
 });
+
 //stripe checkout
+app.post("/checkout", stripePayment);
+const endPointSecret = "whsec_G2nJNMFVmpCn275FSbScXynzCytZxtJX";
 
-app.post('/checkout',stripePayment);
-const endPointSecret='whsec_G2nJNMFVmpCn275FSbScXynzCytZxtJX'
-
-app.post('/webhook', async(request, response) => {
-  console.log(request.body)
-  let event=request.body
-  if(event.type==='checkout.session.completed')
-  {
-    console.log('it is a successful payment')
-    console.log(event.data.object.metadata)
-    let specialRequest=event.data.object.metadata.specialRequest
-    let restId=event.data.object.metadata.rest_id
-    let userId=event.data.object.metadata.user_id;
-    let sessionId=event.data.object.id
-    let totalAmount=event.data.object.amount_total/100
-    let products=[]
+app.post("/webhook", async (request, response) => {
+  console.log(request.body);
+  let event = request.body;
+  if (event.type === "checkout.session.completed") {
+    console.log("it is a successful payment");
+    console.log(event.data.object.metadata);
+    let specialRequest = event.data.object.metadata.specialRequest;
+    let restId = event.data.object.metadata.rest_id;
+    let userId = event.data.object.metadata.user_id;
+    let sessionId = event.data.object.id;
+    let totalAmount = event.data.object.amount_total / 100;
+    let products = [];
     stripe.checkout.sessions.listLineItems(
       sessionId,
       { limit: 10 },
-      async function(err, lineItems) {
-   console.log(lineItems)
-   for(let i=0;i<lineItems.data.length;i++)
-   {
-     let menuId=await knex('menu').select('id').where('item',lineItems.data[i].description)
-     console.log(menuId)
-     products.push({quantity:lineItems.data[i].quantity,menu_id:menuId[i].id})
+      async function (err, lineItems) {
+        console.log(lineItems);
+        for (let i = 0; i < lineItems.data.length; i++) {
+          let menuId = await knex("menu")
+            .select("id")
+            .where("item", lineItems.data[i].description);
+          console.log(menuId);
+          products.push({
+            quantity: lineItems.data[i].quantity,
+            menu_id: menuId[i].id,
+          });
+        }
 
-   }
-  
-   console.log(products)
-   knex('delivery').insert({rest_id:restId,account_id:userId,order_status:'Preparing',special_request:specialRequest,total_amount:totalAmount}).returning('id').then(async(deliveryId)=>{
-     console.log(deliveryId)
-     for(let i=0;i<products.length;i++)
-     {
-      await knex('order_detail').insert({delivery_id:deliveryId[0],menu_id:products[i].menu_id,quantity:products[i].quantity})
-     }
-   })
-   
-  
-      
-    
-    //return knex('order_detail').insert({delivery_id:deliveryId,menu_id:,quantity:}))
-  
-  
-  response.status(200);
-})
+        console.log(products);
+        knex("delivery")
+          .insert({
+            rest_id: restId,
+            account_id: userId,
+            order_status: "Preparing",
+            special_request: specialRequest,
+            total_amount: totalAmount,
+          })
+          .returning("id")
+          .then(async (deliveryId) => {
+            console.log(deliveryId);
+            for (let i = 0; i < products.length; i++) {
+              await knex("order_detail").insert({
+                delivery_id: deliveryId[0],
+                menu_id: products[i].menu_id,
+                quantity: products[i].quantity,
+              });
+            }
+          });
+
+        //return knex('order_detail').insert({delivery_id:deliveryId,menu_id:,quantity:}))
+
+        response.status(200);
+      }
+    );
   }
 });
 
-  app.get('/success/:restId',(req,res)=>{
-      res.render('paymentSuccess',{layout:'user',})
-  })
-  app.get('/cancel',(req,res)=>{
-    res.render('paymentFailed',{layout:'user',})
-})
+app.get("/success/:restId", (req, res) => {
+  res.render("paymentSuccess", { layout: "user" });
+});
+app.get("/cancel", (req, res) => {
+  res.render("paymentFailed", { layout: "user" });
+});
 app.get("/bookingshistory", restRouter.router());
 
 app.post("/checkout", stripePayment);
@@ -402,77 +441,63 @@ app.get("/bizlogin", (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-    req.logout();
-    res.render("userLogin");
-  });
-// app.get("/logout", (req, res) => {
-//   req.logout();
-//   res.render("/login");
-// });
-app.post('/discount',(req,res)=>{
-  console.log(req.body.code)
-  let discountCode=req.body.code
-  knex('restaurant').select('discount').where('code',discountCode).then((data)=>{
-  if(data.length===0)
-  {
-    console.log("there is no such coupon")
-    res.json({percent_off:null})
-  }else{
-    res.json({discountCode:req.body.code,percent_off:Number(data[0].discount)})
-  }
-}
-  )
-})
-// Sher: Post route for testing local strategy
+  req.logout();
+  res.render("userLogin");
+});
+
 app.post(
   "/login",
   passportFunction.authenticate("local-login", {
     successRedirect: "/",
     failureRedirect: "/login",
+    failureFlash: true,
   })
 );
 
-// Submit user signup form
 app.post(
   "/signup",
   passportFunction.authenticate("local-signup", {
-    successRedirect: "/setup",
+    successRedirect: "/user/setup",
     failureRedirect: "/login",
+    failureFlash: true,
   })
 );
 
-// Submit rest login form
 app.post(
   "/bizlogin",
   passportFunction.authenticate("local-login", {
     successRedirect: "/biz/info",
     failureRedirect: "/bizlogin",
+    failureFlash: true,
   })
 );
 
-// Submit rest signup form
 app.post(
   "/bizsignup",
   passportFunction.authenticate("local-signup", {
-    successRedirect: "/biz/bizinit",
+    successRedirect: "/biz/bizsetup",
     failureRedirect: "/bizlogin",
+    failureFlash: true,
   })
 );
 
-// Submit user info setup form
-app.put("/setup", userLogIn, async (req, res) => {
-  console.log("app.js 281 ID: ", req.user.id);
-  knex("account")
-    .where("id", req.user.id)
-    .update({
-      firstname: req.body.fname,
-      surname: req.body.lname,
-      address: req.body.address,
-      district: req.body.district,
-      phone_no: req.body.phone,
-    })
-    .catch((e) => console.log(e));
-  res.send("OKAY");
+// Handle 404 error
+app.use("*", (req, res) => {
+  if (!req.user) {
+    res.status(404).render("error404", { layout: "userSimple", guest: true });
+  } else if (req.user.username.includes("@")) {
+    res.status(404).render("error404", { layout: "user", user: true });
+  } else {
+    res
+      .status(404)
+      .render("error404", { layout: "restaurant", restaurant: true });
+  }
+});
+
+// Handle 500 server error
+app.use("*", (error, req, res, next) => {
+  console.error(error.stack);
+  res.status(500).render("error500", { layout: "userSimple" });
 });
 
 // Set up port
