@@ -9,8 +9,12 @@
   />
   <button type="submit" class="border-0 rounded btn-userSearch">GO ></button>
 </form>
+<<<<<<< HEAD
 
 <div class="container pb-5">
+=======
+<div class="container">
+>>>>>>> 6a1e341f49c8914acb3121d4ab69af14485ce81a
   {{#each userInfo}}
     <div class="mb-3 welcomeTitle">
       <h2 class="ms-5">Welcome home, {{this.firstname}} !</h2>
@@ -18,8 +22,7 @@
         {{this.district}}</p>
     </div>
   {{/each}}
-
-  <div class="d-flex flex-wrap justify-content-center">
+<div class="d-flex flex-wrap justify-content-center">
     {{#each recommendation}}
       <a href="/order/{{this.id}}" class="text-decoration-none">
         <div
@@ -36,6 +39,7 @@
               class="card-text text-center userRestCardTitle"
             >{{this.name}}</h4>
             <p>Address: {{this.address}}</p>
+        <div class="userBooking-star rating">{{this.rating}}</div>
             <p>Tel: {{this.phone_no}}</p>
             <p>Seats: {{this.seats}}</p>
           </div>
@@ -43,10 +47,9 @@
       </a>
     {{/each}}
   </div>
-
   <h2 class="my-4 ms-5 featuredTitle">{{result}}</h2>
-
-  <div class="d-flex flex-wrap justify-content-center">
+<div class="d-flex flex-wrap justify-content-center">
+<div class="d-flex flex-wrap justify-content-center">
     {{#each feature}}
       <a href="/order/{{this.id}}" class="text-decoration-none">
         <div
@@ -63,6 +66,7 @@
               class="card-text text-center userRestCardTitle"
             >{{this.name}}</h4>
             <p>Address: {{this.address}}</p>
+        <div class="userBooking-star rating">{{this.rating}}</div>
             <p>Tel: {{this.phone_no}}</p>
             <p>Seats: {{this.seats}}</p>
           </div>
@@ -70,6 +74,27 @@
       </a>
     {{/each}}
   </div>
+<div class="d-flex flex-wrap justify-content-center">
+  {{! #Each restaurant }}
+  {{#each rest}}
+  <a href="/order/{{this.id}}" class="text-decoration-none">
+    <div
+      class="card mx-4 mb-4 border border-top-0 border-start-0 border-3 rounded-2 userRestCard"
+      style="width: 20rem;"
+    >
+      <img
+        src="/image/{{this.profile_path}}"
+        class="card-img-top mx-auto"
+        alt="Restaurant profile pic"
+      />
+      <div class="card-body">
+        <p class="card-text text-center userRestCardTitle">{{this.name}}</p>
+        <p>Address: {{this.address}}</p>
+        <div class="userBooking-star rating">{{this.rating}}</div>
+        <p>Tel: {{this.phone_no}}</p>
+        <p>Seats: {{this.seats}}</p>
+      </div> 
+      {{/each}} 
 
   {{#if tag}}
     <h2 class="my-4 ms-5 tagTitle">Tags</h2>
