@@ -27,6 +27,8 @@ class RestRouter {
       "/bizsetupmenu/:category",
       this.getSetUpMenuWithCategory.bind(this)
     );
+    router.put("/bizsetupmenu/:category", this.editMenu.bind(this));
+    router.delete("/bizsetupmenu/:category", this.deleteMenu.bind(this));
 
     return router;
   }
@@ -54,6 +56,7 @@ class RestRouter {
     }
   }
 
+  // Get "/info/:category"
   async getCategory(req, res) {
     console.log(req.params.category);
     console.log("Get restaurant menu");
@@ -80,6 +83,7 @@ class RestRouter {
     }
   }
 
+  // Get "/bookings"
   async getBooking(req, res) {
     console.log("Get restaurant current booking");
     try {
@@ -116,6 +120,7 @@ class RestRouter {
     }
   }
 
+  // Get "/orders"
   async getOrder(req, res) {
     console.log("Get restaurant current order");
     try {
@@ -152,6 +157,7 @@ class RestRouter {
     }
   }
 
+  // Get "/bookingshistory"
   async getBookingHistory(req, res) {
     console.log("Get restaurant booking history");
     try {
@@ -191,6 +197,7 @@ class RestRouter {
     }
   }
 
+  // Get "/ordershistory"
   async getOrderHistory(req, res) {
     console.log("Get restaurant order history");
     console.log("Req user", req.user.id);
@@ -231,6 +238,7 @@ class RestRouter {
     }
   }
 
+  // Get "/bookings/:bookingID"
   updateBookingStatus(req, res) {
     console.log("Update booking status");
     try {
@@ -244,6 +252,7 @@ class RestRouter {
     }
   }
 
+  // Get "/orders/:orderID"
   updateOrderStatus(req, res) {
     console.log("Update order status");
     try {
@@ -274,6 +283,7 @@ class RestRouter {
     }
   }
 
+  // Get "/bizsetup"
   async getRestSetUp(req, res) {
     try {
       console.log("Get restaurant info");
@@ -328,34 +338,6 @@ class RestRouter {
     }
   }
 
-  // Get "/bizsetupmenu"
-  async getSetUpMenu(req, res) {
-    let dishInfo = await this.restService.getMenu(req.user.id, "soup&salad");
-    console.log(dishInfo);
-    return res.render("restSetUpMenu", {
-      layout: "restaurant",
-      dishInfo: dishInfo,
-    });
-  }
-
-  async getSetUpMenuWithCategory(req, res) {
-    console.log(req.params.category);
-    console.log("Get restaurant menu in setup");
-    try {
-      let dishInfo = await this.restService.getMenu(
-        req.user.id,
-        req.params.category
-      );
-      console.log("Dish info", dishInfo);
-      return res.render("restSetUpMenu", {
-        layout: "restaurant",
-        dishInfo: dishInfo,
-      });
-    } catch (error) {
-      throw new Error(error);
-    }
-  }
-
   // Put "/bizsetup"
   async putRestInfo(req, res) {
     console.log("restRouter req.user.id: ", req.user.id);
@@ -373,25 +355,58 @@ class RestRouter {
     return res.sendStatus(200);
   }
 
-  // Add menu (moved to app.js)
-  // async postRestMenu(req, res) {
-  //   console.log("Receiving rest set menu req..");
-  //   try {
-  //     console.log("restRouter req.file: ", req.file);
-  //     const file = req.file;
-  //     let result = await uploadFile(file);
-  //     console.log(result);
+  // Get "/bizsetupmenu"
+  async getSetUpMenu(req, res) {
+    let dishInfo = await this.restService.getMenu(req.user.id, "soup&salad");
+    return res.render("restSetUpMenu", {
+      layout: "restaurant",
+      dishInfo: dishInfo,
+    });
+  }
 
-  //     await this.restService.addRestMenu(req.user.id, req.body, result);
+  // Get "/bizsetupmenu/:category"
+  async getSetUpMenuWithCategory(req, res) {
+    console.log("Get restaurant menu in setup");
+    try {
+      let dishInfo = await this.restService.getMenu(
+        req.user.id,
+        req.params.category
+      );
+      console.log("Dish info", dishInfo);
+      return res.render("restSetUpMenu", {
+        layout: "restaurant",
+        dishInfo: dishInfo,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 
-  //     // Unlink imagefile at /uploads
-  //     // await unlinkFile(file.path);
-  //     console.log("Update menu done");
-  //     res.redirect("/biz/bizsetupmenu");
-  //   } catch (err) {
-  //     throw new Error(err);
-  //   }
-  // }
+  // Put "/bizsetupmenu/:category"
+  async editMenu(req, res) {
+    console.log("Update restaurant menu");
+    try {
+      return this.restService
+        .editRestMenu(req.body.dishname, req.body.dishprice, req.body.dishId)
+        .then(() => {
+          res.send("DONE");
+        });
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  // Delete "/bizsetupmenu/:category"
+  async deleteMenu(req, res) {
+    console.log("Delete restaurant menu");
+    try {
+      return this.restService.deleteRestMenu(req.body.dishId).then(() => {
+        res.send("DONE");
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 }
 
 module.exports = RestRouter;

@@ -20,7 +20,8 @@ body {
 }
 
 .userLogo:hover {
-  color: #4b8494;
+  color: #ff6b62;
+  transform: scale(1.25);
   -webkit-text-stroke: 4px #fff;
 }
 
