@@ -143,7 +143,7 @@ export function checkRestInputs(restInfo) {
       $("#restDiscount").addClass("error");
     } else {
       setMessage($("#restDiscountCode"), "OK!");
-      setMessage($("#restDelivery"), "OK!");
+      setMessage($("#restDiscount"), "OK!");
       $("#restDiscountCode").addClass("success");
       $("#restDiscount").addClass("success");
     }
