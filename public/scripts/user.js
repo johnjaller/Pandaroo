@@ -268,7 +268,7 @@ $(".addToCart").on("click", (event) => {
     console.log(couponCode);
     $.ajax({
       type: "post",
-      url: "/discount",
+      url: "/discount/",
       data: { code: couponCode },
       dataType: "json",
       success: function (response) {
