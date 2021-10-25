@@ -21,6 +21,7 @@ body {
 
 .restLogo:hover {
   color: #4b8494;
+  transform: scale(1.25);
   -webkit-text-stroke: 4px #fff;
 }
 

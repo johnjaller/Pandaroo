@@ -24,9 +24,35 @@
   padding: 5px 10px;
 }
 
-.btn-restSubmit {
+.btn-restEdit,
+.btn-restDelete {
+  width: 100px;
   font-family: "Bungee", cursive;
   background-color: #ff6b62;
   color: #fff;
   padding: 5px 10px;
+}
+
+/* Edit profile model
+---------------------------------------------- */
+.modal-title {
+  font-family: "Bungee", cursive;
+  font-size: 1.55rem;
+  color: #ff6b62;
+}
+
+.btn-restClose {
+  font-family: "Bungee", cursive;
+  font-size: 1rem;
+  background-color: grey;
+  color: #fff;
+  padding: 5px 20px;
+}
+
+.btn-restSubmit {
+  font-family: "Bungee", cursive;
+  font-size: 1rem;
+  background-color: #ff6b62;
+  color: #fff;
+  padding: 5px 20px;
 }

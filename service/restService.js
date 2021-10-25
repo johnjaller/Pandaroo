@@ -240,14 +240,6 @@ class RestService {
     });
   }
 
-  getMenu(restId, category) {
-    return this.knex("menu")
-      .join("restaurant", "restaurant.id", "menu.rest_id")
-      .select("menu.item", "menu.price", "menu.photo_path")
-      .where("restaurant.id", restId)
-      .andWhere("category", category);
-  }
-
   updateBookingStatus(bookingId, bookingStatus) {
     return this.knex("booking")
       .update("booking_status", bookingStatus)
@@ -260,6 +252,21 @@ class RestService {
       .update("order_status", orderStatus)
       .orderBy("id")
       .where("id", orderId);
+  }
+
+  getMenu(restId, category) {
+    return this.knex("menu")
+      .join("restaurant", "restaurant.id", "menu.rest_id")
+      .select(
+        "menu.id",
+        "menu.item",
+        "menu.price",
+        "menu.category",
+        "menu.photo_path"
+      )
+      .where("restaurant.id", restId)
+      .andWhere("category", category)
+      .orderBy("menu.id");
   }
 
   // Edit rest setup info (with tag) "/bizsetup"
@@ -343,6 +350,19 @@ class RestService {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  editRestMenu(dishname, dishprice, dishId) {
+    return this.knex("menu")
+      .update({
+        item: dishname,
+        price: dishprice,
+      })
+      .where("id", dishId);
+  }
+
+  deleteRestMenu(dishId) {
+    return this.knex("menu").where("id", dishId).del();
   }
 }
 

@@ -65,7 +65,7 @@
 /* Each dishes
 ---------------------------------------------- */
 .user-dishes img {
-  width: 180px;
+  width: 200px;
   height: 180px;
 }
 
@@ -76,4 +76,12 @@
   background-color: #4b8494;
   color: #fff;
   padding: 5px 10px;
+}
+
+.btn-userCoupon {
+  font-family: "Bungee", cursive;
+  background-color: #4b8494;
+  color: #fff;
+  text-decoration: none;
+  padding: 7px 20px;
 }

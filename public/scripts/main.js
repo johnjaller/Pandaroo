@@ -77,7 +77,7 @@ $("#userSetUpForm").submit((event) => {
   });
 });
 
-// Shopping cart
+// Update user profile
 $(document).on("click", ".userInfoSubmit", () => {
   let username = $(".username").val();
   let firstname = $(".firstname").val();
@@ -106,6 +106,7 @@ $(document).on("click", ".userInfoSubmit", () => {
   $(".userPhone").find("span").html(phone);
 });
 
+// Shopping cart
 let shoppingCart = {};
 let requestId;
 $(document).ready(function () {
@@ -118,30 +119,6 @@ $(document).ready(function () {
     }
     console.log(shoppingCart);
     requestId = window.location.pathname.replace(/[^\d]/g, "");
-  
-  console.log(requestId)
-  if(shoppingCart.hasOwnProperty(requestId))
-  {
-    console.log(shoppingCart[requestId])
-    shoppingCart[requestId].item.forEach(item=>{
-      $('.orderList').append(`<tr class="dish text-center"><td>${item.name}</td><td>${item.amount}</td><td>HKD ${item.price}</td></tr>`)
-    })
-      let price
-      if(Object.keys(shoppingCart[requestId].discount).length>0)
-      {
-        let coupon= shoppingCart[requestId].discount
-        let discount=coupon.percent_off*100
-  $('.discountList').append(`<tr class="dish text-center"><td>Discount: '${coupon.discountCode}'</td><td></td><td>-${discount}%</td></tr>`)
-  $('#discountCode').prop('disabled','disabled')
-  $('.couponCheck').addClass('disabled')
-  price=Number((price*(1-shoppingCart[requestId].discount.percent_off)).toFixed(1))
-}else{
-  price=shoppingCart[requestId].item.map(i=>i.price*i.amount).reduce((a,b)=>a+b)
-}
-      $('.totalPrice').html(`HKD ${price}`)
-    
-    $('#specialRequest').val(shoppingCart[requestId].specialRequest)
-    requestId = window.location.pathname.replace(/[^\d]/g, "");
 
     console.log(requestId);
     if (shoppingCart.hasOwnProperty(requestId)) {
@@ -150,43 +127,37 @@ $(document).ready(function () {
         $(".orderList").append(
           `<tr class="dish text-center"><td>${item.name}</td><td>${item.amount}</td><td>HKD ${item.price}</td></tr>`
         );
+      });
+      let price;
+      if (Object.keys(shoppingCart[requestId].discount).length > 0) {
         let coupon = shoppingCart[requestId].discount;
         let discount = coupon.percent_off * 100;
-        let price = shoppingCart[requestId].item
+        $(".discountList").append(
+          `<tr class="dish text-center"><td>Discount: '${coupon.discountCode}'</td><td></td><td>-${discount}%</td></tr>`
+        );
+        $("#discountCode").prop("disabled", "disabled");
+        $(".couponCheck").addClass("disabled");
+        price = Number(
+          (price * (1 - shoppingCart[requestId].discount.percent_off)).toFixed(
+            1
+          )
+        );
+      } else {
+        price = shoppingCart[requestId].item
           .map((i) => i.price * i.amount)
           .reduce((a, b) => a + b);
-        if (Object.keys(shoppingCart[requestId].discount).length > 0) {
-          $(".orderList").append(
-            `<tr class="dish text-center"><td>Discount: '${coupon.discountCode}'</td><td></td><td>-${discount}%</td></tr>`
-          );
-          $("#discountCode").prop("disabled", "disabled");
-          $(".couponCheck").addClass("disabled");
-          price = Number(
-            (
-              price *
-              (1 - shoppingCart[requestId].discount.percent_off)
-            ).toFixed(1)
-          );
-        }
-        $(".totalPrice").html(`HKD ${price}`);
-      });
-      $("#specialRequest").val(shoppingCart[requestId].specialRequest);
+      }
+      $(".totalPrice").html(`HKD ${price}`);
     } else {
-      console.log("There is nothing in the cart");
+      return false;
     }
+  } else if (window.location.pathname.includes("/success/")) {
+    let deleteId = window.location.pathname.replace(/[^\d]/g, "");
+    delete shoppingCart[deleteId];
+    localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
   } else {
     return false;
   }
-
-}else if(window.location.pathname.includes('/success/'))
-{
-  let deleteId=window.location.pathname.replace(/[^\d]/g,'')
-  delete shoppingCart[deleteId]
-localStorage.setItem('shoppingCart',JSON.stringify(shoppingCart))
-}
-else{
-  return false;
-}
 });
 
 $(".addToCart").on("click", (event) => {
@@ -265,35 +236,41 @@ $(".addToCart").on("click", (event) => {
   $(".totalPrice").html(`HKD ${price}`);
   localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
 });
-$('#userOrderForm').submit(function () { 
-  let request=$('.specialRequest').val()
-  shoppingCart[requestId]['specialRequest']=request
-  localStorage.setItem('shoppingCart',JSON.stringify(shoppingCart))
-  order=[]
-  console.log('running checkout')
-  
-  shoppingCart[requestId].item.forEach(dish=>order.push({
-    price_data: {
-      currency: 'hkd',
-      product_data: {
-        name: dish.name,
-        metadata:{menu_id:dish.menuId},
+$("#userOrderForm").submit(function () {
+  let request = $(".specialRequest").val();
+  shoppingCart[requestId]["specialRequest"] = request;
+  localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+  order = [];
+  console.log("running checkout");
+
+  shoppingCart[requestId].item.forEach((dish) =>
+    order.push({
+      price_data: {
+        currency: "hkd",
+        product_data: {
+          name: dish.name,
+          metadata: { menu_id: dish.menuId },
+        },
+        unit_amount: dish.price * 100,
       },
-      unit_amount: dish.price*100,
-    },
-    quantity: dish.amount,
-  }))
-  $('.userRest').val(requestId)
-  console.log(  $('.userRest').val())
-  $('.userOrder').val(JSON.stringify(order))
-  if(Object.keys(shoppingCart[requestId].discount).length>0)
-  {
-  let discount=shoppingCart[requestId].discount.percent_off*100
-  $('#discount').val(JSON.stringify({name:shoppingCart[requestId].discount.discountCode,percent_off:discount}))
-  }else{
-    $('#discount').val(JSON.stringify({}))
+      quantity: dish.amount,
+    })
+  );
+  $(".userRest").val(requestId);
+  console.log($(".userRest").val());
+  $(".userOrder").val(JSON.stringify(order));
+  if (Object.keys(shoppingCart[requestId].discount).length > 0) {
+    let discount = shoppingCart[requestId].discount.percent_off * 100;
+    $("#discount").val(
+      JSON.stringify({
+        name: shoppingCart[requestId].discount.discountCode,
+        percent_off: discount,
+      })
+    );
+  } else {
+    $("#discount").val(JSON.stringify({}));
   }
-  return true
+  return true;
 });
 
 $(".couponCheck").on("click", function (event) {
@@ -306,18 +283,25 @@ $(".couponCheck").on("click", function (event) {
     data: { code: couponCode },
     dataType: "json",
     success: function (response) {
-      console.log(response)
-      if(response.percent_off===null)
-      {
-        return alert(`There is no such coupon for "${couponCode}"`)
-      }else{
-  $('#discountCode').prop('disabled','disabled')
-  $(event.target).addClass('disabled')
-        let discount=response.percent_off*100
-        shoppingCart[requestId].discount=response
-        $('.discountList').append(`<tr class="dish text-center"><td>Discount: '${couponCode}'</td><td></td><td>-${discount}%</td></tr>`)
-let price=shoppingCart[requestId].item.map(i=>i.price*i.amount).reduce((a,b)=>a+b)
-price=Number((price*(1-shoppingCart[requestId].discount.percent_off)).toFixed(1))
+      console.log(response);
+      if (response.percent_off === null) {
+        return alert(`There is no such coupon for "${couponCode}"`);
+      } else {
+        $("#discountCode").prop("disabled", "disabled");
+        $(event.target).addClass("disabled");
+        let discount = response.percent_off * 100;
+        shoppingCart[requestId].discount = response;
+        $(".discountList").append(
+          `<tr class="dish text-center"><td>Discount: '${couponCode}'</td><td></td><td>-${discount}%</td></tr>`
+        );
+        let price = shoppingCart[requestId].item
+          .map((i) => i.price * i.amount)
+          .reduce((a, b) => a + b);
+        price = Number(
+          (price * (1 - shoppingCart[requestId].discount.percent_off)).toFixed(
+            1
+          )
+        );
 
         $(".totalPrice").html(`HKD ${price}`);
 
@@ -326,24 +310,24 @@ price=Number((price*(1-shoppingCart[requestId].discount.percent_off)).toFixed(1)
     },
   });
 });
+
 $(".userLogout").on("click", function () {
   localStorage.clear();
 });
 
-$('.bookmark').on('click',(event)=>{
-  let restId=$(event.target).parent().attr('id')
-  let icon=$(event.target)
-  icon.toggleClass('far fas')
-  console.log(restId)
+$(".bookmark").on("click", (event) => {
+  let restId = $(event.target).parent().attr("id");
+  let icon = $(event.target);
+  icon.toggleClass("far fas");
+  console.log(restId);
   $.ajax({
     type: "post",
     url: `/bookmark/${restId}`,
     success: function (response) {
-      console.log(response)
-      
-    }
+      console.log(response);
+    },
   });
-})
+});
 // // User login Ajax POST req
 // $("#user-login-form").submit((event) => {
 //   event.preventDefault();
