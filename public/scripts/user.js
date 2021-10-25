@@ -335,7 +335,7 @@ $('.confirmCancelOrder').on('click', (event)=> {
     console.log(canelId)
     $.ajax({
         type: "DELETE",
-        url: "/userOrder/"+canelId,
+        url: "/order/"+canelId,
         success: function (response) {
             console.log(response)
             if(response==='success')
@@ -356,7 +356,7 @@ $('.confirmCancelBooking').on('click', (event)=> {
     console.log(canelId)
     $.ajax({
         type: "DELETE",
-        url: "/userBooking/"+canelId,
+        url: "/booking/"+canelId,
         success: function (response) {
             console.log(response)
             if(response==='success')
