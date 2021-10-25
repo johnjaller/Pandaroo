@@ -20,10 +20,10 @@ module.exports = new LocalStrategy(async (username, password, done) => {
     // Check password for a non-business user
     if (matchedUser.length > 0 && matchedRest.length == 0) {
       let user = matchedUser[0];
-      console.log(user);
+      console.log(`User: ${user}`);
+      console.log(`Password: ${user.password}`);
 
       let result = await hashFunction.checkPassowrd(password, user.password);
-      console.log(`Result of checkPassword: ${result}`);
 
       if (result) {
         console.log("Successfully logged in!");
@@ -41,19 +41,16 @@ module.exports = new LocalStrategy(async (username, password, done) => {
       console.log(`Password: ${rest.password}`);
 
       let result = await hashFunction.checkPassowrd(password, rest.password);
-      console.log(`Result of checkPassword: ${result}`);
 
       if (result) {
         console.log("Successfully logged in!");
         return done(null, rest);
       } else {
         console.log("Wrong password");
-        return done(null, false);
+        return done(null, false, { message: "Incorrect password" });
       }
-    }
-
-    // Return if error occur in server side
-    else {
+    } else {
+      // Return if error occur in server side
       return done(err);
     }
   } catch (err) {

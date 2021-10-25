@@ -1,0 +1,19 @@
+.bungee {
+  font-family: "Bungee", cursive;
+}
+
+.user-color {
+  color: #ff6b62;
+}
+
+.rest-color {
+  color: #4b8494;
+}
+
+.user-help-links:hover {
+  color: #eb4940;
+}
+
+.rest-help-links:hover {
+  color: #1f697e;
+}

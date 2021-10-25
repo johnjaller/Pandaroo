@@ -1,7 +1,8 @@
-//import package
+// Import package
 require("dotenv").config();
 const express = require("express");
 const app = express();
+const flash = require("express-flash");
 const cors = require("cors");
 const fs = require("fs");
 const util = require("util");
@@ -20,9 +21,16 @@ const io = require("socket.io")(https);
 
 // Set up express session
 const session = require("express-session");
-app.use(session({ secret: "secret", resave: false, saveUninitialized: true }));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 // Set up public files and middleware
+app.use(flash());
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
@@ -287,17 +295,8 @@ app.get("/userorder", (req, res) => {
   res.render("userOrder", { layout: "user" });
 });
 
-app.get("/setup", userLogIn, (req, res) => {
-  res.render("userSetUp", { layout: "user" });
-});
-
 // Route for restaurants
 app.use("/biz", restLogIn, restRouter.router());
-
-// app.get("/bizinit", restLogIn, (req, res) => {
-//   console.log("First login from a restaurant user");
-//   res.render("restSetUp", { layout: "restaurant" });
-// });
 
 // Upload restaurant menu pic
 app.post("/bizaddmenu", upload.single("uploadedPhoto"), async (req, res) => {
@@ -346,7 +345,7 @@ app.post("/bizsetuppropic", upload.single("uploadedFile"), async (req, res) => {
         console.log("Inserting path done");
       });
     await unlinkFile(file.path);
-    res.redirect("/biz/bizinit");
+    res.redirect("/biz/bizsetup");
   } catch (err) {
     throw new Error(err);
   }
@@ -466,61 +465,60 @@ app.get("/logout", (req, res) => {
   req.logout();
   res.render("userLogin");
 });
-// app.get("/logout", (req, res) => {
-//   req.logout();
-//   res.render("/login");
-// });
 
-// Sher: Post route for testing local strategy
 app.post(
   "/login",
   passportFunction.authenticate("local-login", {
     successRedirect: "/",
     failureRedirect: "/login",
+    failureFlash: true,
   })
 );
 
-// Submit user signup form
 app.post(
   "/signup",
   passportFunction.authenticate("local-signup", {
-    successRedirect: "/setup",
+    successRedirect: "/user/setup",
     failureRedirect: "/login",
+    failureFlash: true,
   })
 );
 
-// Submit rest login form
 app.post(
   "/bizlogin",
   passportFunction.authenticate("local-login", {
     successRedirect: "/biz/info",
     failureRedirect: "/bizlogin",
+    failureFlash: true,
   })
 );
 
-// Submit rest signup form
 app.post(
   "/bizsignup",
   passportFunction.authenticate("local-signup", {
-    successRedirect: "/biz/bizinit",
+    successRedirect: "/biz/bizsetup",
     failureRedirect: "/bizlogin",
+    failureFlash: true,
   })
 );
 
-// Submit user info setup form
-app.put("/setup", userLogIn, async (req, res) => {
-  console.log("app.js 281 ID: ", req.user.id);
-  knex("account")
-    .where("id", req.user.id)
-    .update({
-      firstname: req.body.fname,
-      surname: req.body.lname,
-      address: req.body.address,
-      district: req.body.district,
-      phone_no: req.body.phone,
-    })
-    .catch((e) => console.log(e));
-  res.send("OKAY");
+// Handle 404 error
+app.use("*", (req, res) => {
+  if (!req.user) {
+    res.status(404).render("error404", { layout: "userSimple", guest: true });
+  } else if (req.user.username.includes("@")) {
+    res.status(404).render("error404", { layout: "user", user: true });
+  } else {
+    res
+      .status(404)
+      .render("error404", { layout: "restaurant", restaurant: true });
+  }
+});
+
+// Handle 500 server error
+app.use("*", (error, req, res, next) => {
+  console.error(error.stack);
+  res.status(500).render("error500", { layout: "userSimple" });
 });
 
 // Set up port

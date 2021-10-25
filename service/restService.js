@@ -25,56 +25,35 @@ class RestService {
   // Get rest setup info (with tag) "/bizsetup"
   getRestSetUpInfo(restId) {
     console.log("restService restId: ", restId);
-    return (
-      this.knex("restaurant")
-        // .join("tag_rest_join", "restaurant.id", "tag_rest_join.rest_id")
-        // .join("tag", "tag_rest_join.tag_id", "tag.id")
-        .select(
-          // "profile_path",
-          "name",
-          "description",
-          "address",
-          "district",
-          "phone_no",
-          "opening_time",
-          "closing_time",
-          "seats",
-          "delivery",
-          "code",
-          "discount",
-          "description"
-          // this.knex.raw("ARRAY_AGG(tag.tag_name) as tag")
-        )
-        .where("restaurant.id", restId)
-      // .whereRaw("restaurant.id = ?", [restId])
-      // .groupBy("restaurant.id", restId)
-    );
+    return this.knex("restaurant")
+      .select(
+        "name",
+        "description",
+        "address",
+        "district",
+        "phone_no",
+        "opening_time",
+        "closing_time",
+        "seats",
+        "delivery",
+        "code",
+        "discount",
+        "description"
+      )
+      .where("restaurant.id", restId);
   }
 
-  async postRestInit(restId) {
-    try {
-      console.log("restService restId: ", restId);
-      return await this.knex("restaurant")
-        .where("id", restId)
-        // .join("tag_rest_join", "restaurant.id", "tag_rest_join.rest_id")
-        // .join("tag", "tag_rest_join.tag_id", "tag.id")
-        .update({
-          name: null,
-          description: null,
-          address: null,
-          district: null,
-          phone_no: null,
-          opening_time: null,
-          closing_time: null,
-          seats: null,
-          delivery: null,
-          code: null,
-          discount: null,
-          description: null,
-          // this.knex.raw("ARRAY_AGG(tag.tag_name) as tag")
-        });
-    } catch (err) {
-      console.log(err);
+  async getRestTag(restId) {
+    console.log("restService restId: ", restId);
+    let tagQuery = await this.knex("tag_rest_join")
+      .join("tag", "tag_rest_join.tag_id", "tag.id")
+      .select("tag.tag_name")
+      .where("tag_rest_join.rest_id", restId);
+    console.log(tagQuery);
+    if (tagQuery) {
+      return tagQuery;
+    } else {
+      return { message: "Tag not found" };
     }
   }
 
@@ -308,24 +287,39 @@ class RestService {
 
   async insertRestTag(restId, data) {
     try {
-      console.log("158 restService", data["restTag[]"]);
+      console.log("restService insertRestTag data: ", data);
+      console.log("restService", data["restTag[]"]);
       let tagArr = data["restTag[]"];
-      let tagIdArr = [];
-      for (let i = 0; i < tagArr.length; i++) {
-        let tagId = await this.knex
+      if (Array.isArray(tagArr)) {
+        let tagIdArr = [];
+        for (let i = 0; i < tagArr.length; i++) {
+          let tagId = await this.knex
+            .select("id")
+            .from("tag")
+            .where("tag_name", tagArr[i]);
+          tagIdArr.push(tagId[0].id);
+          console.log("tagId: ", tagId[0].id);
+        }
+        console.log("restService tagIdArr: ", tagIdArr);
+        for (let j = 0; j < tagIdArr.length; j++) {
+          console.log("Adding into joint table");
+          await this.knex("tag_rest_join").insert({
+            rest_id: restId,
+            tag_id: tagIdArr[j],
+          });
+        }
+      } else if (typeof tagArr === "string") {
+        let tagIdQuery = await this.knex
           .select("id")
           .from("tag")
-          .where("tag_name", tagArr[i]);
-        tagIdArr.push(tagId[0].id);
-        console.log("167 tagId: ", tagId[0].id);
-      }
-      console.log("167 restService tagIdArr: ", tagIdArr);
-      for (let j = 0; j < tagIdArr.length; j++) {
-        console.log("Adding into joint table");
-        await this.knex("tag_rest_join").insert({
-          rest_id: restId,
-          tag_id: tagIdArr[j],
-        });
+          .where("tag_name", tagArr);
+        console.log("insertRestTag tagIdQuery: ", tagIdQuery[0]);
+        if (tagIdQuery[0]) {
+          await this.knex("tag_rest_join").insert({
+            rest_id: restId,
+            tag_id: tagIdQuery[0].id,
+          });
+        }
       }
     } catch (err) {
       console.log(err);

@@ -10,6 +10,7 @@ class RestRouter {
 
     router.get("/info", this.get.bind(this));
     router.get("/info/:category", this.getCategory.bind(this));
+
     router.get("/bookings", this.getBooking.bind(this));
     router.get("/orders", this.getOrder.bind(this));
     router.get("/bookingshistory", this.getBookingHistory.bind(this));
@@ -17,14 +18,10 @@ class RestRouter {
     router.put("/bookings/:bookingID", this.updateBookingStatus.bind(this));
     router.put("/orders/:orderID", this.updateOrderStatus.bind(this));
 
-    // Submit signup form > redirect to this route
-    router.get("/bizinit", this.getRestInitialSetUp.bind(this));
-
-    // Click edit info on homepage > redirect to this route
     router.get("/bizsetup", this.getRestSetUp.bind(this));
     router.put("/bizsetup", this.putRestInfo.bind(this));
+    router.use("/biztag", this.getBizTag.bind(this));
 
-    // Click edit menu > redirect to this route
     router.get("/bizsetupmenu", this.getSetUpMenu.bind(this));
     router.get(
       "/bizsetupmenu/:category",
@@ -269,16 +266,18 @@ class RestRouter {
     }
   }
 
-  // Get "/restinit"
-  async getRestInitialSetUp(req, res) {
-    console.log("First login from a restaurant user");
+  // Get "/biztag"
+  async getBizTag(req, res) {
+    console.log("Get tag");
     try {
-      // await this.restService.postRestInit(req.user.id);
-      let restInfo = await this.restService.getRestInfo(req.user.id);
-      return res.render("restSetUp", {
-        layout: "restaurant",
-        restInfo: restInfo,
-      });
+      let tagInfo = await this.restService.getRestTag(req.user.id);
+      if (tagInfo.length > 0) {
+        res.send({ data: tagInfo });
+        console.log("restRouter getBizTag tagInfo: ", tagInfo);
+      } else {
+        res.sendStatus(200);
+        console.log("restRouter getBizTag No tagInfo");
+      }
     } catch (err) {
       console.log(err);
     }
@@ -331,7 +330,7 @@ class RestRouter {
       }
       console.log("restInfo", restInfo);
       return res.render("restSetUp", {
-        layout: "restaurant",
+        layout: "restSetUpLayout",
         restInfo: restInfo,
       });
     } catch (err) {
@@ -411,26 +410,6 @@ class RestRouter {
       throw new Error(error);
     }
   }
-
-  // Add menu (moved to app.js)
-  // async postRestMenu(req, res) {
-  //   console.log("Receiving rest set menu req..");
-  //   try {
-  //     console.log("restRouter req.file: ", req.file);
-  //     const file = req.file;
-  //     let result = await uploadFile(file);
-  //     console.log(result);
-
-  //     await this.restService.addRestMenu(req.user.id, req.body, result);
-
-  //     // Unlink imagefile at /uploads
-  //     // await unlinkFile(file.path);
-  //     console.log("Update menu done");
-  //     res.redirect("/biz/bizsetupmenu");
-  //   } catch (err) {
-  //     throw new Error(err);
-  //   }
-  // }
 }
 
 module.exports = RestRouter;

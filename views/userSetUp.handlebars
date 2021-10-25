@@ -5,16 +5,27 @@
         <h4 class="setUpTitle">Information</h4><br>
         {{! User full name }}
         <div class="mb-2">
-          <label for="userFirstName" class="form-label">First name</label>
-          <input type="text" name="fname" class="form-control" id="userFirstName" />
-          <label for="userLastName" class="form-label">Last name</label>
-          <input type="text" name="lname" class="form-control" id="userLastName" />
+          <div>
+            <label for="userFirstName" class="form-label">
+              First name
+              </label>
+              <input type="text" name="fname" class="form-control" id="userFirstName" />
+            <div class="v-msg"></div>
+          </div>
+          <div>
+            <label for="userLastName" class="form-label">
+              Last name
+            </label>
+              <input type="text" name="lname" class="form-control" id="userLastName" />
+              <div class="v-msg"></div>
+          </div>
         </div>
         {{! User phone, district }}
         <div class="d-flex">
           <div class="mb-2 me-1">
             <label for="userPhone" class="form-label">Phone</label>
             <input type="text" name="phone" class="form-control" id="userPhone" />
+            <div class="v-msg"></div>
           </div>
           <div class="mb-2">
             <label for="userDistrict" class="form-label">District</label>
@@ -39,20 +50,22 @@
               <option value="sai-kung">Sai Kung</option>
               <option value="islands">Islands</option>
             </select>
+            <div class="v-msg"></div>
           </div>
         </div>
 
         {{! User address }}
         <div class="mb-2 me-1">
-          <label for="restAddress" class="form-label">Address</label>
-          <input type="text" name="address" class="form-control" id="restAddress" />
+          <label for="userAddress" class="form-label">Address</label>
+          <input type="text" name="address" class="form-control" id="userAddress" />
+          <div class="v-msg"></div>
         </div>
 
         {{! Submit info form}}
         <div class="container">
           <div class="row">
             <div class="col-12 text-center">
-              <a href="/biz/info"><button type="submit" class="mt-2 border-0 rounded btn-userStatus">Go ></button></a>
+              <button type="submit" class="mt-2 border-0 rounded btn-userStatus">Go ></button>
             </div>
           </div>
         </div>
@@ -61,6 +74,5 @@
   </div>
 </form>
 
-<br />
-<br />
-<script src="/scripts/userSetUp.js"></script>
+<script src="/scripts/userSetUp.js" type="module"></script>
+<script src="/scripts/dataValidation.js" type="module"></script>
