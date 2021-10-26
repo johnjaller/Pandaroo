@@ -120,8 +120,7 @@ const restService = new RestService(knex);
 const restRouter = new RestRouter(restService);
 
 // Route for users
-app.use("/user", userRouter.route());
-
+app.use("/user", userLogIn, userRouter.route());
 app.get("/", userLogIn);
 
 // Set up user service and router

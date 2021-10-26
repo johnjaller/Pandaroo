@@ -22,11 +22,10 @@ class OrderService {
       .join("menu", "restaurant.id", "menu.rest_id")
       .where({ "restaurant.id": restId, category: category });
   }
-  deleteOrderDetail(orderId) {
-    return this.knex("order_detail").delete().where("delivery_id", orderId);
-  }
-  deleteDeliveryOrder(orderId) {
-    return this.knex("delivery").delete().where("delivery.id", orderId);
+  putCacncelOrder(orderId) {
+    return this.knex("delivery")
+      .update("order_status", "Cancelled")
+      .where("delivery_id", orderId);
   }
 }
 module.exports = OrderService;

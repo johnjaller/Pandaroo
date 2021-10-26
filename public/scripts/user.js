@@ -351,7 +351,7 @@ $(".userLogout").on("click", function () {
 //Add to Bookmark
 $(".bookmark").on("click", (event) => {
   let restId = $(event.target).parent().attr("id");
-  let icon = $(event.target).find("i");
+  let icon = $(event.target);
   if (icon.hasClass("far")) {
     icon.toggleClass("far fas");
     console.log(restId);
@@ -533,8 +533,8 @@ $("#userBookingForm").submit(function (event) {
   bookingTime = new Date().setHours(bookingTime[0], bookingTime[1]);
   $(".bookingCart").val(JSON.stringify(bookingCart[requestId]));
   if (
-    openingTime < bookingDateTime &&
-    bookingDateTime < closingTime &&
+    openingTime < bookingTime &&
+    bookingTime < closingTime &&
     bookingDateTime >= currentDate
   ) {
     return true;

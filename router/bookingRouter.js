@@ -8,7 +8,7 @@ class BookingRouter {
     router.get("/:restId", this.getBookingDefault.bind(this));
     router.get("/:restId/:category", this.getBookingCategory.bind(this));
     router.post("/:restId", this.postBooking.bind(this));
-    router.delete("/:bookingId", this.deleteBooking.bind(this));
+    router.put("/:bookingId", this.putCancelBooking.bind(this));
     return router;
   }
   async getBookingDefault(req, res) {
@@ -138,14 +138,10 @@ class BookingRouter {
         res.redirect("/user");
       });
   }
-  deleteBooking(req, res) {
-    return this.bookingService
-      .deleteBookingDetail(req.params.bookingId)
-      .then(() => {
-        this.bookingService.deleteBooking(req.params.bookingId).then(() => {
-          res.send("success");
-        });
-      });
+  putCancelBooking(req, res) {
+    return this.bookingService.putBooking(req.params.bookingId).then(() => {
+      res.send("success");
+    });
   }
 }
 
