@@ -33,7 +33,7 @@ $("#restSetUpSubmit").click((event) => {
     deliveryData = false;
   }
   // Converting discount data from string to decimal
-  let discountData = (100 - parseInt($("#restDiscount").val())) / 100;
+  let discountData = parseInt($("#restDiscount").val()) / 100;
   console.log("restSetUp.js discountData: ", discountData);
   // Converting tag checkbox data to an array
   let checkboxData = [];

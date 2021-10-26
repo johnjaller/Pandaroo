@@ -278,8 +278,8 @@ class RestRouter {
         res.sendStatus(200);
         console.log("restRouter getBizTag No tagInfo");
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      throw new Error(error);
     }
   }
 
@@ -299,31 +299,31 @@ class RestRouter {
       let discount = restInfo[0]["discount"];
       switch (discount) {
         case "0.10":
-          restInfo[0]["discount"] = "90% Off";
+          restInfo[0]["discount"] = "10% Off";
           break;
         case "0.20":
-          restInfo[0]["discount"] = "80% Off";
+          restInfo[0]["discount"] = "20% Off";
           break;
         case "0.30":
-          restInfo[0]["discount"] = "70% Off";
+          restInfo[0]["discount"] = "30% Off";
           break;
         case "0.40":
-          restInfo[0]["discount"] = "60% Off";
+          restInfo[0]["discount"] = "40% Off";
           break;
         case "0.50":
           restInfo[0]["discount"] = "50% Off";
           break;
         case "0.60":
-          restInfo[0]["discount"] = "40% Off";
+          restInfo[0]["discount"] = "60% Off";
           break;
         case "0.70":
-          restInfo[0]["discount"] = "30% Off";
+          restInfo[0]["discount"] = "70% Off";
           break;
         case "0.80":
-          restInfo[0]["discount"] = "20% Off";
+          restInfo[0]["discount"] = "80% Off";
           break;
         case "0.90":
-          restInfo[0]["discount"] = "10% Off";
+          restInfo[0]["discount"] = "90% Off";
           break;
         default:
           restInfo[0]["discount"] = "None";
@@ -333,8 +333,8 @@ class RestRouter {
         layout: "restSetUpLayout",
         restInfo: restInfo,
       });
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      throw new Error(error);
     }
   }
 

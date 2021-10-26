@@ -22,7 +22,7 @@ class UserRouter {
       console.log(req.cookies);
       console.log(req.user.id);
       console.log(req.session);
-      let userInfo = await this.userService.getUserInfo(req.user.id || 1);
+      let userInfo = await this.userService.getUserInfo(req.user.id);
       let userBooking = await this.userService.getUserBooking(req.user.id);
       console.log(userBooking);
       if (userBooking.length === 1) {
@@ -57,10 +57,8 @@ class UserRouter {
   async getBookmark(req, res) {
     try {
       let userInfo = await this.userService.getUserInfo(req.user.id);
-      let userBookmark = await this.userService.getUserBookmark(
-        req.user.id
-      );
-      console.log(userBookmark)
+      let userBookmark = await this.userService.getUserBookmark(req.user.id);
+      console.log(userBookmark);
       return res.render("userInfo", {
         layout: "user",
         info: userInfo,
