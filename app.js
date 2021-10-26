@@ -1,4 +1,4 @@
-// Import package
+// Import package and Hello world
 require("dotenv").config();
 const express = require("express");
 const app = express();
