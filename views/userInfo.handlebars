@@ -288,7 +288,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form class="userInfo-edit"></form>
+        <form class="userInfo-edit">
         {{#each info}}
         <br>
         <input class="username" name="username" type="email" value="{{this.username}}">
@@ -336,6 +336,7 @@
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <button type="submit" class="btn btn-primary userInfoSubmit" data-bs-dismiss="modal">Submit</button>
       </div>
+        </form>
     </div>
   </div>
 </div>
