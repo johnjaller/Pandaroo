@@ -30,20 +30,5 @@ $(document).on("click", ".userInfoSubmit", () => {
 });
 
 
-$(".userLogout").on("click", function () {
-  localStorage.clear();
-});
 
-$(".bookmark").on("click", (event) => {
-  let restId = $(event.target).parent().attr("id");
-  let icon = $(event.target);
-  icon.toggleClass("far fas");
-  console.log(restId);
-  $.ajax({
-    type: "post",
-    url: `/bookmark/${restId}`,
-    success: function (response) {
-      console.log(response);
-    },
-  });
-});
+
