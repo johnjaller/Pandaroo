@@ -2,15 +2,19 @@ class OrderService {
   constructor(knex) {
     this.knex = knex;
   }
+
   getDeliveryStatus(restId) {
     return this.knex("restaurant").select("delivery").where("id", restId);
   }
+
   getRestDetail(restId) {
     return this.knex("restaurant").select().where("id", restId);
   }
+
   getRestRating(restId) {
     return this.knex("review").where("rest_id", restId);
   }
+
   getUserBookmarkStatus(userId, restId) {
     return this.knex("bookmark")
       .select()
@@ -22,10 +26,12 @@ class OrderService {
       .join("menu", "restaurant.id", "menu.rest_id")
       .where({ "restaurant.id": restId, category: category });
   }
-  putCacncelOrder(orderId) {
+
+  putCancelOrder(orderId) {
     return this.knex("delivery")
       .update("order_status", "Cancelled")
-      .where("delivery_id", orderId);
+      .where("id", orderId);
   }
 }
+
 module.exports = OrderService;

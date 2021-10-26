@@ -2,6 +2,7 @@ class UserService {
   constructor(knex) {
     this.knex = knex;
   }
+
   getUserInfo(userId) {
     return this.knex
       .select(

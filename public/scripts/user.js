@@ -121,8 +121,8 @@ $(document).ready(function () {
       console.log(shoppingCart[requestId]);
       shoppingCart[requestId].item.forEach((item) => {
         $(".orderList")
-          .append(`<tr class="dish text-center"><td>${item.name}</td><td>${item.amount}</td><td>HKD ${item.price}</td><td><button class="btn-danger orderDelete"><i class="fas fa-trash-alt"></i>
-        </button></td></tr>`);
+          .append(`<tr class="dish text-center"><td>${item.name}</td><td>${item.amount}</td><td>HKD ${item.price}</td><td><i class="fas fa-trash-alt orderDelete"></i>
+        </td></tr>`);
       });
       let price;
       if (Object.keys(shoppingCart[requestId].discount).length > 0) {
@@ -132,7 +132,7 @@ $(document).ready(function () {
         let coupon = shoppingCart[requestId].discount;
         let discount = coupon.percent_off * 100;
         $(".discountList").append(
-          `<tr class="dish text-center"><td>Discount: '${coupon.discountCode}'</td><td></td><td>-${discount}%</td><td><button  class="couponDelete"><i class="fas fa-trash-alt"></i></button></td></tr>`
+          `<tr class="dish text-center"><td>Discount: '${coupon.discountCode}'</td><td></td><td>-${discount}%</td><td><i class="fas fa-trash-alt couponDelete"></i></td></tr>`
         );
         $("#discountCode").prop("disabled", "disabled");
         $(".couponCheck").addClass("disabled");
@@ -164,8 +164,8 @@ $(document).ready(function () {
       console.log(bookingCart[requestId]);
       bookingCart[requestId].item.forEach((item) => {
         $(".bookingList")
-          .append(`<tr class="dish text-center"><td>${item.name}</td><td>${item.amount}</td><td>HKD ${item.price}</td><td><button class="btn-danger bookingDelete"><i class="fas fa-trash-alt"></i>
-    </button></td></tr>`);
+          .append(`<tr class="dish text-center"><td>${item.name}</td><td>${item.amount}</td><td>HKD ${item.price}</td><td><i class="fas fa-trash-alt bookingDelete"></i>
+    </td></tr>`);
       });
       let price;
       price = bookingCart[requestId].item
@@ -211,8 +211,8 @@ $(".addToCart").on("click", (event) => {
         .find(`td:contains(${dishName})`)
         .parent();
       $(item).html(
-        `<td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td><td><button class="btn-danger orderDelete"><i class="fas fa-trash-alt"></i>
-          </button></td>`
+        `<td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td><td><i class="fas fa-trash-alt orderDelete"></i>
+          </td>`
       );
     } else {
       dishAmount = 1;
@@ -232,8 +232,8 @@ $(".addToCart").on("click", (event) => {
       };
       cart.push(dishItem);
       $(".orderList").append(
-        `<tr class="dish text-center"><td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td><td><button class="btn-danger orderDelete"><i class="fas fa-trash-alt"></i>
-          </button></td></tr>`
+        `<tr class="dish text-center"><td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td><td><i class="fas fa-trash-alt orderDelete"></i>
+          </td></tr>`
       );
     }
   } else {
@@ -253,8 +253,8 @@ $(".addToCart").on("click", (event) => {
     };
     cart.push(dishItem);
     $(".orderList").append(
-      `<tr class="dish text-center"><td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td><td><button class="btn-danger orderDelete"><i class="fas fa-trash-alt"></i>
-        </button></td></tr>`
+      `<tr class="dish text-center"><td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td><td><i class="fas fa-trash-alt orderDelete"></i>
+        </td></tr>`
     );
   }
   console.log(dishPrice);
@@ -326,7 +326,7 @@ $(".couponCheck").on("click", function (event) {
         let discount = response.percent_off * 100;
         shoppingCart[requestId].discount = response;
         $(".discountList").append(
-          `<tr class="dish text-center"><td>Discount: '${couponCode}'</td><td></td><td>-${discount}%</td><td><button  class="couponDelete"><i class="fas fa-trash-alt"></i></button></td></tr>`
+          `<tr class="dish text-center"><td>Discount: '${couponCode}'</td><td></td><td>-${discount}%</td><td><i class="fas fa-trash-alt couponDelete"></i></td></tr>`
         );
         let price = shoppingCart[requestId].item
           .map((i) => i.price * i.amount)
@@ -356,7 +356,7 @@ $(".bookmark").on("click", (event) => {
     icon.toggleClass("far fas");
     console.log(restId);
     $.ajax({
-      type: "post",
+      type: "POST",
       url: `/bookmark/${restId}`,
       success: function (response) {
         console.log(response);
@@ -366,7 +366,7 @@ $(".bookmark").on("click", (event) => {
     icon.toggleClass("fas far");
     console.log(restId);
     $.ajax({
-      type: "delete",
+      type: "DELETE",
       url: `/bookmark/${restId}`,
       success: function (response) {
         console.log(response);
@@ -385,7 +385,7 @@ $(".confirmCancelOrder").on("click", (event) => {
   $(event.target).removeAttr("id");
   console.log(canelId);
   $.ajax({
-    type: "DELETE",
+    type: "PUT",
     url: "/order/" + canelId,
     success: function (response) {
       console.log(response);
@@ -406,7 +406,7 @@ $(".confirmCancelBooking").on("click", (event) => {
   $(event.target).removeAttr("id");
   console.log(canelId);
   $.ajax({
-    type: "DELETE",
+    type: "PUT",
     url: "/booking/" + canelId,
     success: function (response) {
       console.log(response);
@@ -454,8 +454,8 @@ $(".addToBookingCart").on("click", (event) => {
         .find(`td:contains(${dishName})`)
         .parent();
       $(item).html(
-        `<td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td><td><button class="btn-danger bookingDelete"><i class="fas fa-trash-alt"></i>
-          </button></td>`
+        `<td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td><td><i class="fas fa-trash-alt bookingDelete"></i>
+          </td>`
       );
     } else {
       dishAmount = 1;
@@ -475,8 +475,8 @@ $(".addToBookingCart").on("click", (event) => {
       };
       cart.push(dishItem);
       $(".bookingList").append(
-        `<tr class="dish text-center"><td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td><td><button class="btn-danger bookingDelete"><i class="fas fa-trash-alt"></i>
-          </button></td></tr>`
+        `<tr class="dish text-center"><td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td><td><i class="fas fa-trash-alt bookingDelete"></i>
+          </td></tr>`
       );
     }
   } else {
@@ -496,8 +496,8 @@ $(".addToBookingCart").on("click", (event) => {
     };
     cart.push(dishItem);
     $(".bookingList").append(
-      `<tr class="dish text-center"><td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td><td><button class="btn-danger bookingDelete"><i class="fas fa-trash-alt"></i>
-        </button></td></tr>`
+      `<tr class="dish text-center"><td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td><td><i class="fas fa-trash-alt bookingDelete"></i>
+        </td></tr>`
     );
   }
   console.log(dishPrice);

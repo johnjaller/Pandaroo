@@ -3,6 +3,7 @@ class BookingRouter {
   constructor(bookingService) {
     this.bookingService = bookingService;
   }
+
   route() {
     let router = express.Router();
     router.get("/:restId", this.getBookingDefault.bind(this));
@@ -11,6 +12,7 @@ class BookingRouter {
     router.put("/:bookingId", this.putCancelBooking.bind(this));
     return router;
   }
+
   async getBookingDefault(req, res) {
     let restDetail = await this.bookingService.getRestDetail(req.params.restId);
     let bookmark = await this.bookingService.getUserBookmarkStatus(
@@ -59,6 +61,7 @@ class BookingRouter {
       bookmark: bookmarkClass,
     });
   }
+
   async getBookingCategory(req, res) {
     let restDetail = await this.bookingService.getRestDetail(req.params.restId);
     let bookmark = await this.bookingService.getUserBookmarkStatus(
@@ -107,6 +110,7 @@ class BookingRouter {
       bookmark: bookmarkClass,
     });
   }
+
   postBooking(req, res) {
     console.log(req.body);
     let bookingCart;

@@ -265,9 +265,8 @@ class RestService {
         code: data.restDiscountCode,
         discount: data.restDiscount,
       });
-    } catch (err) {
-      console.log(err);
-      return new Error(err);
+    } catch (error) {
+      throw new Error(error);
     }
   }
 
@@ -280,8 +279,8 @@ class RestService {
       if (restTagQuery) {
         return await this.knex("tag_rest_join").where("rest_id", restId).del();
       }
-    } catch (err) {
-      return new Error("User does not exist, cannot delete restaurant tag");
+    } catch (error) {
+      throw new Error("User does not exist, cannot delete restaurant tag");
     }
   }
 
@@ -321,9 +320,8 @@ class RestService {
           });
         }
       }
-    } catch (err) {
-      console.log(err);
-      return new Error("User does not exist, cannot insert restaurant tag");
+    } catch (error) {
+      throw new Error("User does not exist, cannot insert restaurant tag");
     }
   }
 
@@ -342,7 +340,7 @@ class RestService {
           console.log("Inserting path done");
         });
     } catch (err) {
-      console.log(err);
+      throw new Error(error);
     }
   }
 

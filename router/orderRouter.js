@@ -114,10 +114,14 @@ class OrderRouter {
       res.redirect(`/booking/${req.params.restId}`);
     }
   }
+
   putCancelUserOrder(req, res) {
-    return this.orderService.putCancelOrder(req.params.orderId).then(() => {
-      res.send("success");
-    });
+    return this.orderService
+      .putCancelOrder(Number(req.params.orderId))
+      .then(() => {
+        res.send("success");
+      });
   }
 }
+
 module.exports = OrderRouter;

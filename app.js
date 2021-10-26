@@ -349,8 +349,8 @@ app.post("/bizaddmenu", upload.single("uploadedPhoto"), async (req, res) => {
     await unlinkFile(file.path);
     console.log("Update menu done");
     res.redirect("/biz/bizsetupmenu");
-  } catch (err) {
-    throw new Error(err);
+  } catch (error) {
+    throw new Error(error);
   }
 });
 
@@ -372,8 +372,8 @@ app.post("/bizsetuppropic", upload.single("uploadedFile"), async (req, res) => {
       });
     await unlinkFile(file.path);
     res.redirect("/biz/bizsetup");
-  } catch (err) {
-    throw new Error(err);
+  } catch (error) {
+    throw new Error(error);
   }
 });
 

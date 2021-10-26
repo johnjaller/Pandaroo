@@ -2,17 +2,21 @@ class BookingService {
   constructor(knex) {
     this.knex = knex;
   }
+
   getRestDetail(restId) {
     return this.knex("restaurant").select().where("id", restId);
   }
+
   getUserBookmarkStatus(userId, restId) {
     return this.knex("bookmark")
       .select()
       .where({ account_id: userId, rest_id: restId });
   }
+
   getRestRating(restId) {
     return this.knex("review").where("rest_id", restId);
   }
+
   getRestDishes(restId, category) {
     return this.knex("restaurant")
       .select()

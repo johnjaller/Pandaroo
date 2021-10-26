@@ -22,7 +22,7 @@ class UserRouter {
       console.log(req.cookies);
       console.log(req.user.id);
       console.log(req.session);
-      let userInfo = await this.userService.getUserInfo(req.user.id || 1);
+      let userInfo = await this.userService.getUserInfo(req.user.id);
       let userBooking = await this.userService.getUserBooking(req.user.id);
       console.log(userBooking);
       if (userBooking.length === 1) {

@@ -277,8 +277,8 @@ class RestRouter {
         res.sendStatus(200);
         console.log("restRouter getBizTag No tagInfo");
       }
-    } catch (err) {
-      throw new Error(err);
+    } catch (error) {
+      throw new Error(error);
     }
   }
 
@@ -332,8 +332,8 @@ class RestRouter {
         layout: "restSetUpLayout",
         restInfo: restInfo,
       });
-    } catch (err) {
-      throw new Error(err);
+    } catch (error) {
+      throw new Error(error);
     }
   }
 
