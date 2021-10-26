@@ -1,107 +1,99 @@
 {{! Restaurant header }}
 <div class="container">
   <div class="row d-flex align-items-center">
-    <div class="col-6">
-      <h2 class="userBooking-restName mx-5 my-3">{{restaurant.name}}</h2>
+    <div class="col-10">
+      <span class="ms-5 me-3 align-middle userBooking-restName">{{restaurant.name}}</span>
+      <span class="me-3 userBooking-star rating">{{restaurant.rating}}</span>
+      <button type="button" class="border-0 rounded my-3 btn-userCancel reviewButton" data-bs-toggle="modal"
+        data-bs-target="#review">review</button>
     </div>
-    <div class="col-4 userBooking-star rating">{{restaurant.rating}}</div>
-                      <button
-                  type="button"
-                  class="border-0 rounded my-3 btn-userCancel reviewButton" data-bs-toggle="modal" data-bs-target="#review"
-                >review</button>
     <div class="col-2 userBooking-bookmark">
-    <button type="button" class="border-0 bg-white bookmark" id="{{restaurant.id}}"><i
-          class="{{bookmark}} fa-bookmark fa-2x"
-        ></i></button>
+      <button type="button" class="border-0 bg-white bookmark" id="{{restaurant.id}}"><i
+          class="{{bookmark}} fa-bookmark fa-2x"></i></button>
     </div>
   </div>
 </div>
 
 {{! Restaurant form }}
-<div class="container">
+<div class="container pb-5">
   <div class="row">
     <div class="col-4">
-
       <div class="userBookingForm card" style="width: 26.7rem;">
         <div class="card-body">
           <div class="d-flex justify-content-between">
             <div>
-              <p class="book">Book</p>
+              <h4 class="book">Book</h4>
             </div>
             <div class="userBookingForm-order">
-              <a href="/order/{{restaurant.id}}" class="text-decoration-none"><p class="order">Order ></p></a>
+              <a href="/order/{{restaurant.id}}" class="text-decoration-none">
+                <p class="order">Order ></p>
+              </a>
             </div>
           </div>
           <div class="bg-white">
-            <h4 class="pt-3 ms-3 userBookingForm-restName">{{restaurant.name}}</h4>
+            <h3 class="pt-3 text-center userBookingForm-restName">{{restaurant.name}}</h3>
             <hr class="my-3 mx-auto userBookingForm-hr" />
-            <p class="ms-4">Address:<br />{{restaurant.address}}</p>
-            <p class="ms-4">Tel:<br />{{restaurant.phone_no}}</p>
-            <p class="ms-4">Business hour:<br /><span class="opening">{{restaurant.opening_time}}</span> - <span class="closing">{{restaurant.closing_time}}</span></p>
+            <p class="mx-4">Address:<br />{{restaurant.address}}</p>
+            <p class="mx-4">Tel:<br />{{restaurant.phone_no}}</p>
+            <p class="mx-4">Business hour:<br /><span class="opening">{{restaurant.opening_time}}</span> - <span
+                class="closing">{{restaurant.closing_time}}</span></p>
             <hr class="my-3 mx-auto userBookingForm-hr" />
-            <br />
-            <table>
-              <tbody class="bookingList">
+
+            <h4 class="text-center userBookingForm-restName">Your orders</h4>
+            <table class="table table-borderless">
+              <tbody class="ms-3 bookingList">
               </tbody>
-              </table>
-<div class="d-flex justify-content-between">
+            </table>
+            <div class="d-flex justify-content-between">
               <p class="ms-3">Total:</p>
               <p class="me-3 totalPrice">HKD </p>
             </div>
           </div>
           <form id="userBookingForm" action="/booking/{{restaurant.id}}" method="POST" >
 
-          <input type="text" class="bookingCart d-none" name="bookingCart">
+          <form id="userBookingForm" class="needs-validation" action="/booking/{{restaurant.id}}" method="POST">
+            <input type="text" class="bookingCart d-none" name="bookingCart">
             <div class="d-flex">
-              <div class=" mt-3 me-2">Date<br /><input
-                  type="date"
-                  id=""
-                  name="bookingDate" class="form-control"
-                  style="width: 190px;" required
-                /><div class="invalid-feedback">
-      Please enter a Date.
-    </div>
-    
+              <div class="form-check mt-3 me-2">Date<br /><input type="date" id="" name="bookingDate"
+                  class="form-control" style="width: 190px;" required />
+                <div class="invalid-feedback">
+                  Please enter a Date.
                 </div>
-                 
-              <div class=" mt-3">Time<br /><input
-                  type="time"
-                  id=""
-                  name="bookingTime" class="form-control bookingTime"
-                  style="width: 190px;" required
-                /></div>
-            </div>
-            <div class=" mt-3">No of guests<br /><div class="form-control"><input
-                type="number"
-                id=""
-                name="noOfGuest" required
-              />
-              
-    </div></div>
-            <div class="mt-3">Special request<br /><textarea
-                id=""
-                name="specialRequest"
-                rows="3"
-                cols="41"
-              ></textarea>
-            </div>
+                <div class="valid-feedback">
+                  Looks good!
+                </div>
+              </div>
 
-            <button
-                type="submit"
-                class="mt-3 float-end border-0 rounded btn-userSubmit bookingSubmit"
-              >Submit ></button>
+              <div class="form-check mt-3">Time<br /><input type="time" id="" name="bookingTime"
+                  class="form-control bookingTime" style="width: 190px;" required />
+                <div class="invalid-feedback">
+                  Please enter a time.
+                </div>
+              </div>
+            </div>
+            <div class=" mt-3">No of guests<br />
+              <div class="form-control"><input type="number" id="" name="noOfGuest" required />
+                <div class="invalid-feedback">
+                  Please enter the number of guests.
+                </div>
+                <div class="valid-feedback">
+                  Looks good!
+                </div>
+              </div>
+            </div>
+            <div class="mt-3">Special request<br /><textarea id="" name="specialRequest" rows="3" cols="41"></textarea>
+            </div>
+            <button type="submit" class="mt-3 float-end border-0 rounded btn-userSubmit bookingSubmit">Submit ></button>
           </form>
-
         </div>
       </div>
     </div>
 
     <div class="user-restMenu col-8">
-      <h4>Menu</h4>
       <table class="table table-bordered">
         <thead>
           <tr class="text-center">
-           <th><a href="/booking/{{restaurant.id}}" class="text-decoration-none">Soup n Salad</a></th>
+            <th><a href="/booking/{{restaurant.id}}" class="text-decoration-none">Soup n Salad</a></th>
             <th><a href="/booking/{{restaurant.id}}/starter" class="text-decoration-none">Starter</a></th>
             <th><a href="/booking/{{restaurant.id}}/main" class="text-decoration-none">Main</a></th>
             <th><a href="/booking/{{restaurant.id}}/dessert" class="text-decoration-none">Dessert</a></th>
@@ -112,63 +104,43 @@
       </table>
 
       <div class="d-flex flex-wrap justify-content-start">
-        {{! each dishes }}
-         {{#each dish}}
-        <div class="card me-1 text-center user-dishes" style="width: 13rem;">
-          <img
-            src="/image/{{this.photoPath}}"
-            class="card-img-top mx-auto"
-            alt="dishes pic"
-          />
+        {{#each dish}}
+        <div class="card me-1 mb-1 text-center user-dishes" style="width: 13rem; height: 23rem">
+          <img src="/image/{{this.photoPath}}" class="card-img-top mx-auto" alt="dishes pic" />
           <div class="card-body">
             <p class="card-text text-start item-name" id='{{id}}'>{{name}}</p>
-            <p class="card-text text-start item-price">HKD {{price}}</p>
-            <button type="submit" class="border-0 rounded btn-userAddToCart addToBookingCart">Add
-              to cart</button>
           </div>
+          <p class="card-text text-start ms-3 item-price">HKD {{price}}</p>
+          <button type="submit" class="border-0 rounded btn-userAddToCart addToBookingCart">Add
+            to cart</button>
         </div>
         {{/each}}
-        {{! /each dishes }}
       </div>
     </div>
-
   </div>
 </div>
 
-<br />
-<br />
-
-{{!-- review modal --}}
-<div class="modal fade" id="review" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-<div class="modal fade" id="review" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+{{! review modal }}
+<div class="modal fade" id="review" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Rate the restaurant</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <h5 class="modal-title">Rate the restaurant</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-       Would you recommend this restaurant?
-        <select  class="form-select " id="rating">
-              <option value='5' selected >5 --very likely</option>
-              <option value='4'>4</option>
-              <option value='3'>3</option>
-              <option value='2'>2</option>
-              <option value='1'>1 -- unllikely</option>
-            </select>
+        Would you recommend this restaurant?
+        <select class="form-select" id="rating">
+          <option value="5" selected>5 -- Very likely</option>
+          <option value="4">4</option>
+          <option value="3">3</option>
+          <option value="2">2</option>
+          <option value="1">1 -- Unlikely</option>
+        </select>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary review"  data-bs-dismiss="modal">confirmed</button>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >Close</button>
+        <button type="button" class="border-0 rounded btn-userClose" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="border-0 rounded btn-userReview review" data-bs-dismiss="modal">Submit</button>
       </div>
     </div>
   </div>
