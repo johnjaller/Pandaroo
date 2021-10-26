@@ -29,7 +29,7 @@ GOOGLE_ID=<your google oauth key>
 GOOGLE_SECRET=<your google secret>
 
 FACEBOOK_APP_ID=<your facebook oauth key>
-FACEBOOK_APP_SECRET=18978aa44422157fdd0dbb99551ec4de
+FACEBOOK_APP_SECRET=<your facebook oauth secret>
 
 AWS_BUCKET_NAME=<your s3 bucket name>
 AWS_BUCKET_REGION=<your s3 bucket region>
