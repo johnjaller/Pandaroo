@@ -35,7 +35,7 @@ class UserRouter {
         booking: userBooking,
       });
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     }
   }
 
@@ -50,7 +50,7 @@ class UserRouter {
         order: userOrder,
       });
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     }
   }
 
@@ -65,14 +65,13 @@ class UserRouter {
         bookmark: userBookmark,
       });
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     }
   }
 
-  putUserInfo(req, res) {
-    console.log(req.body);
-    return this.userService
-      .putUserInfo(
+  async putUserInfo(req, res) {
+    try {
+      await this.userService.putUserInfo(
         req.user.id,
         req.body.username,
         req.body.firstname,
@@ -80,8 +79,11 @@ class UserRouter {
         req.body.address,
         req.body.district,
         req.body.phone
-      )
-      .catch((e) => console.log(e));
+      );
+      return res.sendStatus(200);
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   getUserSetUp(req, res) {
@@ -89,8 +91,12 @@ class UserRouter {
   }
 
   async putUserSetUp(req, res) {
-    await this.userService.putUserSetUp(req.user.id, req.body);
-    return res.sendStatus(200);
+    try {
+      await this.userService.putUserSetUp(req.user.id, req.body);
+      return res.sendStatus(200);
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }
 

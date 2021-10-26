@@ -5,10 +5,9 @@ let bookingCart = {};
 //shoppingCart setup
 $(document).ready(function () {
   let ratingArr = $(".rating");
-  console.log(ratingArr.length);
+
   for (let i = 0; i < ratingArr.length; i++) {
     let rating = $(".rating").eq(i).html();
-    console.log(rating);
     switch (rating) {
       case "1" || 1:
         $(".rating")
@@ -85,13 +84,11 @@ $(document).ready(function () {
 
   if (window.location.pathname.includes("/order/")) {
     let currentTime = new Date();
-    console.log(currentTime);
+
     let opening = $(".opening").html().split(":");
     let closing = $(".closing").html().split(":");
     let openingTime = new Date().setHours(opening[0], opening[1], opening[2]);
     let closingTime = new Date().setHours(closing[0], closing[1], closing[2]);
-    console.log(currentTime < openingTime);
-    console.log(currentTime > closingTime);
 
     if (currentTime < openingTime || currentTime > closingTime) {
       $(".checkout").attr("disabled", true);
@@ -113,12 +110,10 @@ $(document).ready(function () {
     } else {
       shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"));
     }
-    console.log(shoppingCart);
+
     requestId = window.location.pathname.replace(/[^\d]/g, "");
 
-    console.log(requestId);
     if (shoppingCart.hasOwnProperty(requestId)) {
-      console.log(shoppingCart[requestId]);
       shoppingCart[requestId].item.forEach((item) => {
         $(".orderList")
           .append(`<tr class="dish text-center"><td>${item.name}</td><td>${item.amount}</td><td>HKD ${item.price}</td><td><i class="fas fa-trash-alt orderDelete"></i>

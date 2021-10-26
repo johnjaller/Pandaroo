@@ -10,6 +10,8 @@ $("#userSetUpForm").submit((event) => {
   let phoneData = parseInt($("input[name=phone]").val());
   console.log("userSetUp.js phoneData: ", phoneData);
 
+
+  // Original
   let userInfo = {
     fname: $("input[name=fname]").val().trim(),
     lname: $("input[name=lname]").val().trim(),

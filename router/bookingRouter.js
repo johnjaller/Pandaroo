@@ -14,101 +14,113 @@ class BookingRouter {
   }
 
   async getBookingDefault(req, res) {
-    let restDetail = await this.bookingService.getRestDetail(req.params.restId);
-    let bookmark = await this.bookingService.getUserBookmarkStatus(
-      req.user.id,
-      req.params.restId
-    );
-    let bookmarkClass;
-    let rating = await this.bookingService.getRestRating(req.params.restId);
-    if (rating.length != 0) {
-      rating =
-        Math.round(
-          (rating.map((item) => Number(item.rating)).reduce((a, b) => a + b) /
-            rating.length) *
-            2
-        ) / 2;
-      console.log(rating);
-    } else {
-      rating = 0;
-    }
-    restDetail[0]["rating"] = rating;
-    let dish = await this.bookingService.getRestDishes(
-      req.params.restId,
-      "soup&salad"
-    );
-    console.log(dish);
-    console.log(bookmark);
-    if (bookmark.length != 0) {
-      bookmarkClass = "fas";
-    } else {
-      bookmarkClass = "far";
-    }
-    let dishItems = [];
-    dish.forEach((i) => {
-      dishItems.push({
-        id: i.id,
-        name: i.item,
-        price: i.price,
-        photoPath: i.photo_path,
+    try {
+      let restDetail = await this.bookingService.getRestDetail(
+        req.params.restId
+      );
+      let bookmark = await this.bookingService.getUserBookmarkStatus(
+        req.user.id,
+        req.params.restId
+      );
+      let bookmarkClass;
+      let rating = await this.bookingService.getRestRating(req.params.restId);
+      if (rating.length != 0) {
+        rating =
+          Math.round(
+            (rating.map((item) => Number(item.rating)).reduce((a, b) => a + b) /
+              rating.length) *
+              2
+          ) / 2;
+        console.log(rating);
+      } else {
+        rating = 0;
+      }
+      restDetail[0]["rating"] = rating;
+      let dish = await this.bookingService.getRestDishes(
+        req.params.restId,
+        "soup&salad"
+      );
+      console.log(dish);
+      console.log(bookmark);
+      if (bookmark.length != 0) {
+        bookmarkClass = "fas";
+      } else {
+        bookmarkClass = "far";
+      }
+      let dishItems = [];
+      dish.forEach((i) => {
+        dishItems.push({
+          id: i.id,
+          name: i.item,
+          price: i.price,
+          photoPath: i.photo_path,
+        });
       });
-    });
-    console.log(restDetail);
-    return res.render("userBooking", {
-      layout: "user",
-      restaurant: restDetail[0],
-      dish: dishItems,
-      bookmark: bookmarkClass,
-    });
+      console.log(restDetail);
+      return res.render("userBooking", {
+        layout: "user",
+        restaurant: restDetail[0],
+        dish: dishItems,
+        bookmark: bookmarkClass,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   async getBookingCategory(req, res) {
-    let restDetail = await this.bookingService.getRestDetail(req.params.restId);
-    let bookmark = await this.bookingService.getUserBookmarkStatus(
-      req.user.id,
-      req.params.restId
-    );
-    let bookmarkClass;
-    let rating = await this.bookingService.getRestRating(req.params.restId);
-    if (rating.length != 0) {
-      rating =
-        Math.round(
-          (rating.map((item) => Number(item.rating)).reduce((a, b) => a + b) /
-            rating.length) *
-            2
-        ) / 2;
-      console.log(rating);
-    } else {
-      rating = 0;
-    }
-    restDetail[0]["rating"] = rating;
-    let dish = await this.bookingService.getRestDishes(
-      req.params.restId,
-      req.params.category
-    );
-    console.log(dish);
-    console.log(bookmark);
-    if (bookmark.length != 0) {
-      bookmarkClass = "fas";
-    } else {
-      bookmarkClass = "far";
-    }
-    let dishItems = [];
-    dish.forEach((i) => {
-      dishItems.push({
-        id: i.id,
-        name: i.item,
-        price: i.price,
-        photoPath: i.photo_path,
+    try {
+      let restDetail = await this.bookingService.getRestDetail(
+        req.params.restId
+      );
+      let bookmark = await this.bookingService.getUserBookmarkStatus(
+        req.user.id,
+        req.params.restId
+      );
+      let bookmarkClass;
+      let rating = await this.bookingService.getRestRating(req.params.restId);
+      if (rating.length != 0) {
+        rating =
+          Math.round(
+            (rating.map((item) => Number(item.rating)).reduce((a, b) => a + b) /
+              rating.length) *
+              2
+          ) / 2;
+        console.log(rating);
+      } else {
+        rating = 0;
+      }
+      restDetail[0]["rating"] = rating;
+      let dish = await this.bookingService.getRestDishes(
+        req.params.restId,
+        req.params.category
+      );
+      console.log(dish);
+      console.log(bookmark);
+      if (bookmark.length != 0) {
+        bookmarkClass = "fas";
+      } else {
+        bookmarkClass = "far";
+      }
+      let dishItems = [];
+      dish.forEach((i) => {
+        dishItems.push({
+          id: i.id,
+          name: i.item,
+          price: i.price,
+          photoPath: i.photo_path,
+        });
       });
-    });
-    console.log(restDetail);
-    return res.render("userBooking", {
-      layout: "user",
-      restaurant: restDetail[0],
-      dish: dishItems,
-      bookmark: bookmarkClass,
-    });
+      console.log(restDetail);
+      return res.render("userBooking", {
+        layout: "user",
+        restaurant: restDetail[0],
+        dish: dishItems,
+        bookmark: bookmarkClass,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   postBooking(req, res) {
@@ -142,6 +154,7 @@ class BookingRouter {
         res.redirect("/user");
       });
   }
+
   putCancelBooking(req, res) {
     return this.bookingService.putBooking(req.params.bookingId).then(() => {
       res.send("success");
