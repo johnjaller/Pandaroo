@@ -78,7 +78,6 @@ $(document).on("click", ".userInfoSubmit", () => {
   $(".userPhone").find("span").html(phone);
 });
 
-
 $(".userLogout").on("click", function () {
   localStorage.clear();
 });
