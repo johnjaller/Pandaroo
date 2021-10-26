@@ -58,7 +58,7 @@ class RestService {
   }
 
   getRestCurrentBooking(restId) {
-    return this.knex("booking")
+    let query = this.knex("booking")
       .join("account", "account_id", "account.id")
       .select(
         "booking.id",
@@ -78,10 +78,16 @@ class RestService {
       })
       .andWhere("booking.rest_id", restId)
       .orderBy("booking.id");
+    return query.then((data) => {
+      for (let i = 0; i < data.length; i++) {
+        data[i]["booking_date"] = data[i]["booking_date"].toLocaleDateString();
+      }
+      return data;
+    });
   }
 
   getRestBookingHistory(restId) {
-    return this.knex("booking")
+    let query = this.knex("booking")
       .join("account", "account_id", "account.id")
       .select(
         "booking.id",
@@ -101,6 +107,13 @@ class RestService {
       })
       .andWhere("booking.rest_id", restId)
       .orderBy("booking.id");
+    return query.then((data) => {
+      console.log(data);
+      for (let i = 0; i < data.length; i++) {
+        data[i]["booking_date"] = data[i]["booking_date"].toLocaleDateString();
+      }
+      return data;
+    });
   }
 
   getRestCurrentOrder(restId) {
@@ -141,7 +154,7 @@ class RestService {
         for (let i = 0; i < result.length; i++) {
           let eachOrder = {
             id: result[i][0].id,
-            created_at: result[i][0].created_at,
+            created_at: new Date(result[i][0].created_at).toLocaleString(),
             total_amount: result[i][0].total_amount,
             order_status: result[i][0].order_status,
             special_request: result[i][0].special_request,
@@ -199,7 +212,7 @@ class RestService {
         for (let i = 0; i < result.length; i++) {
           let eachOrder = {
             id: result[i][0].id,
-            created_at: result[i][0].created_at,
+            created_at: new Date(result[i][0].created_at).toLocaleString(),
             total_amount: result[i][0].total_amount,
             order_status: result[i][0].order_status,
             special_request: result[i][0].special_request,
