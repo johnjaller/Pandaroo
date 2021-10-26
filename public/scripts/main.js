@@ -1,11 +1,11 @@
 
-import { checkUserInputs } from "./dataValidation.js";
+// import { checkUserInputs } from "./dataValidation.js";
 
 
 $('.userInfo-edit').submit((e) => {
-  e.preventDefault();
-  $("*").removeClass("success");
-  $("*").removeClass("error");
+  // e.preventDefault();
+  // $("*").removeClass("success");
+  // $("*").removeClass("error");
   let username = $(".username").val();
   let firstname = $(".firstname").val();
   let surname = $(".surname").val();
