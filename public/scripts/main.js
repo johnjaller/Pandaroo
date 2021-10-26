@@ -1,6 +1,4 @@
 // Shopping cart
-
-
 $(document).on("click", ".userInfoSubmit", () => {
   let username = $(".username").val();
   let firstname = $(".firstname").val();
@@ -28,7 +26,3 @@ $(document).on("click", ".userInfoSubmit", () => {
   $(".userDistrict").find("span").html(district);
   $(".userPhone").find("span").html(phone);
 });
-
-
-
-
