@@ -53,6 +53,8 @@ class UserService {
         rating = 0;
       }
       booking[i]["rating"] = rating;
+      booking[i]["booking_date"] =
+        booking[i]["booking_date"].toLocaleDateString();
       let bookingDetail = await this.knex("booking_detail")
         .join("booking", "booking_id", "booking.id")
         .join("menu", "menu_id", "menu.id")
