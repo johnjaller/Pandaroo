@@ -1,7 +1,11 @@
-// Shopping cart
+
+import { checkUserInputs } from "./dataValidation.js";
 
 
-$(document).on("click", ".userInfoSubmit", () => {
+$('.userInfo-edit').submit((e) => {
+  e.preventDefault();
+  $("*").removeClass("success");
+  $("*").removeClass("error");
   let username = $(".username").val();
   let firstname = $(".firstname").val();
   let surname = $(".surname").val();

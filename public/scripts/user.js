@@ -237,7 +237,8 @@ $(".addToCart").on("click", (event) => {
     $(".totalPrice").html(`HKD ${price}`);
     localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
   });
-  $('#userOrderForm').submit(function () { 
+  $('#userOrderForm').submit(function (event) { 
+    console.log(event)
     let request=$('.specialRequest').val()
     shoppingCart[requestId]['specialRequest']=request
     localStorage.setItem('shoppingCart',JSON.stringify(shoppingCart))
@@ -480,7 +481,7 @@ $('#userBookingForm').submit(function (event) {
         console.log(closingTime)
     bookingTime=new Date().setHours(bookingTime[0],bookingTime[1])
     $('.bookingCart').val(JSON.stringify(bookingCart[requestId]));
-    if(openingTime<bookingDateTime&&bookingDateTime<closingTime&&bookingDateTime>=currentDate)
+    if(openingTime<bookingTime&&bookingTime<closingTime&&bookingDateTime>=currentDate)
     {
 
         return true
@@ -557,7 +558,7 @@ price=0
 });
 //delete shoppingItem
 $(document).on('click','.orderDelete', function (e) {
-    e.preventDefault()
+    // e.preventDefault()
     let target=$(e.currentTarget).parent().parent().find('td')
     let targetName=target.eq(0).html()
     console.log(targetName)

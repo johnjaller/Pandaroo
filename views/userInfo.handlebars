@@ -207,12 +207,12 @@
               <br>
               <input class="phone" type="number" value="{{this.phone_no}}">
               {{/each}}
-              </form>
             </div>
             <div class="modal-footer">
               <button type="button" class="border-0 rounded btn-userClose" data-bs-dismiss="modal">Close</button>
               <button type="submit" class="border-0 rounded btn-userInfoSubmit userInfoSubmit"
                 data-bs-dismiss="modal">Submit</button>
+              </form>
             </div>
           </div>
         </div>
@@ -295,15 +295,15 @@
         <br>
         <label for="firstname">First Name</label>
         <br>
-        <input class="firstname" type="text" value="{{this.firstname}}">
+        <input class="firstname" id="userFirstname" type="text" value="{{this.firstname}}">
         <br>
         <label for="surname">Surname</label>
         <br>
-        <input class="surname" type="text" value="{{this.surname}}">
+        <input class="surname" id="userSurname" type="text" value="{{this.surname}}">
          <br>
         <label for="address">Address</label>
         <br>
-        <input class="address" type="text" value="{{this.address}}">
+        <input class="address" id="userAddress" type="text" value="{{this.address}}">
         <br>
          <label for="userDistrict" class="form-label">District</label>
             <select  class="form-select district" id="userDistrict">
