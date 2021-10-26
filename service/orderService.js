@@ -20,7 +20,6 @@ class OrderService {
       .select()
       .where({ account_id: userId, rest_id: restId });
   }
-
   getRestDishes(restId, category) {
     return this.knex("restaurant")
       .select()

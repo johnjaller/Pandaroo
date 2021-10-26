@@ -22,7 +22,7 @@ class RestService {
       .where("id", restId);
   }
 
-  // Get rest setup info (with tag) "/bizsetup"
+  // Get rest setup info "/bizsetup"
   getRestSetUpInfo(restId) {
     console.log("restService restId: ", restId);
     return this.knex("restaurant")

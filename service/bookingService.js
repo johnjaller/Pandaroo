@@ -23,7 +23,6 @@ class BookingService {
       .join("menu", "restaurant.id", "menu.rest_id")
       .where({ "restaurant.id": restId, category: category });
   }
-
   insertBooking(
     restId,
     userId,
@@ -45,7 +44,6 @@ class BookingService {
       })
       .returning("id");
   }
-
   insertBookingDetail(bookingId, menuId, amount) {
     return this.knex("booking_detail").insert({
       booking_id: bookingId,

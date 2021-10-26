@@ -152,7 +152,6 @@ class RestRouter {
         lastPage: page - 1,
       });
     } catch (error) {
-      console.log(error);
       throw new Error(error);
     }
   }
@@ -340,28 +339,27 @@ class RestRouter {
 
   // Put "/bizsetup"
   async putRestInfo(req, res) {
-    console.log("restRouter req.user.id: ", req.user.id);
-
-    console.log("restRouter: Updating restaurant info");
-    await this.restService.updateRestInfo(req.user.id, req.body);
-
-    console.log("restRouter: Updating restaurant tag");
-
-    await this.restService.deleteRestTag(req.user.id);
-    console.log("Deleted restaurant tag");
-
-    await this.restService.insertRestTag(req.user.id, req.body);
-    console.log("Inserted restaurant tag");
-    return res.sendStatus(200);
+    try {
+      await this.restService.updateRestInfo(req.user.id, req.body);
+      await this.restService.deleteRestTag(req.user.id);
+      await this.restService.insertRestTag(req.user.id, req.body);
+      return res.sendStatus(200);
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   // Get "/bizsetupmenu"
   async getSetUpMenu(req, res) {
-    let dishInfo = await this.restService.getMenu(req.user.id, "soup&salad");
-    return res.render("restSetUpMenu", {
-      layout: "restaurant",
-      dishInfo: dishInfo,
-    });
+    try {
+      let dishInfo = await this.restService.getMenu(req.user.id, "soup&salad");
+      return res.render("restSetUpMenu", {
+        layout: "restaurant",
+        dishInfo: dishInfo,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   // Get "/bizsetupmenu/:category"

@@ -186,5 +186,5 @@ export function setMessage(input, message) {
     input.siblings(".v-msg").css("color", "#e45151");
   }
   input.siblings(".v-msg").html(message);
-  console.log("Input: ", input, "Message: ", message);
+  // console.log("Input: ", input, "Message: ", message);
 }

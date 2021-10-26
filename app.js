@@ -16,9 +16,6 @@ const options = {
 };
 const https = require("https").Server(options, app);
 
-// Set up socket.io
-const io = require("socket.io")(https);
-
 // Set up express session
 const session = require("express-session");
 app.use(
@@ -123,8 +120,7 @@ const restService = new RestService(knex);
 const restRouter = new RestRouter(restService);
 
 // Route for users
-app.use("/user", userRouter.route());
-
+app.use("/user", userLogIn, userRouter.route());
 app.get("/", userLogIn);
 
 // Set up user service and router
