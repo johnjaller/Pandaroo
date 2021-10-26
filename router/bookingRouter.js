@@ -5,15 +5,12 @@ class BookingRouter {
   }
   route() {
     let router = express.Router();
-
     router.get("/:restId", this.getBookingDefault.bind(this));
     router.get("/:restId/:category", this.getBookingCategory.bind(this));
     router.post("/:restId", this.postBooking.bind(this));
     router.delete("/:bookingId", this.deleteBooking.bind(this));
-
     return router;
   }
-
   async getBookingDefault(req, res) {
     let restDetail = await this.bookingService.getRestDetail(req.params.restId);
     let bookmark = await this.bookingService.getUserBookmarkStatus(
@@ -21,9 +18,6 @@ class BookingRouter {
       req.params.restId
     );
     let bookmarkClass;
-    console.log("bookingRouter restDetail: ", restDetail[0]);
-
-    // Get rest rating
     let rating = await this.bookingService.getRestRating(req.params.restId);
     if (rating.length != 0) {
       rating =
@@ -37,8 +31,6 @@ class BookingRouter {
       rating = 0;
     }
     restDetail[0]["rating"] = rating;
-
-    // Get rest dishes
     let dish = await this.bookingService.getRestDishes(
       req.params.restId,
       "soup&salad"
@@ -60,7 +52,6 @@ class BookingRouter {
       });
     });
     console.log(restDetail);
-
     return res.render("userBooking", {
       layout: "user",
       restaurant: restDetail[0],
@@ -68,7 +59,6 @@ class BookingRouter {
       bookmark: bookmarkClass,
     });
   }
-
   async getBookingCategory(req, res) {
     let restDetail = await this.bookingService.getRestDetail(req.params.restId);
     let bookmark = await this.bookingService.getUserBookmarkStatus(
@@ -76,12 +66,7 @@ class BookingRouter {
       req.params.restId
     );
     let bookmarkClass;
-
-    let rating = await this.bookingService.getRestRating(
-      "rest_id",
-      req.params.restId
-    );
-
+    let rating = await this.bookingService.getRestRating(req.params.restId);
     if (rating.length != 0) {
       rating =
         Math.round(
@@ -122,27 +107,14 @@ class BookingRouter {
       bookmark: bookmarkClass,
     });
   }
-
   postBooking(req, res) {
+    console.log(req.body);
     let bookingCart;
-    if (req.body.bookingCart) {
+    if (req.body.bookingCart != "") {
       bookingCart = JSON.parse(req.body.bookingCart);
-      console.log("bookingRouter bookingCart: ", bookingCart);
     } else {
-      console.log("No cart data");
+      bookingCart = [];
     }
-
-    console.log("req.body: ", req.body);
-
-    // let bookingData = {
-    //   restId: req.params.restId,
-    //   bookingTime: req.body.bookingTime,
-    //   bookingDate: req.body.bookingDate,
-    //   specialRequest: req.body.specialRequest,
-    //   noOfGuest: req.body.noOfGuest,
-    // };
-    // console.log("bookingRouter bookingData: ", bookingData);
-
     return this.bookingService
       .insertBooking(
         req.params.restId,
@@ -154,7 +126,7 @@ class BookingRouter {
         "confirmed"
       )
       .then(async (bookingId) => {
-        if (bookingCart) {
+        if (bookingCart.length != 0) {
           for (let i = 0; i < bookingCart.item.length; i++) {
             await this.bookingService.insertBookingDetail(
               bookingId[0],
@@ -163,9 +135,9 @@ class BookingRouter {
             );
           }
         }
+        res.redirect("/user");
       });
   }
-
   deleteBooking(req, res) {
     return this.bookingService
       .deleteBookingDetail(req.params.bookingId)

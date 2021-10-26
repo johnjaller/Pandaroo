@@ -148,7 +148,37 @@ class UserService {
         .join("tag", "tag_rest_join.tag_id", "tag.id")
         .select("tag_name")
         .where("rest_id", restId);
-      console.log(tagName);
+      console.log("tagName", tagName);
+      for (let i = 0; i < tagName.length; i++) {
+        switch (tagName[i]["tag_name"]) {
+          case "hongKongStyle":
+            tagName[i]["tag_name"] = "Hong Kong Style";
+            break;
+          case "chinese":
+            tagName[i]["tag_name"] = "Chinese";
+            break;
+          case "taiwanese":
+            tagName[i]["tag_name"] = "Taiwanese";
+            break;
+          case "japanese":
+            tagName[i]["tag_name"] = "Japanese";
+            break;
+          case "korean":
+            tagName[i]["tag_name"] = "Korean";
+            break;
+          case "western":
+            tagName[i]["tag_name"] = "Western";
+            break;
+          case "petFriendly":
+            tagName[i]["tag_name"] = "Pet Friendly";
+            break;
+          case "liveBroadcast":
+            tagName[i]["tag_name"] = "Live Boardcast";
+            break;
+          default:
+            tagName[i]["tag_name"] = "Parking";
+        }
+      }
       tagName = tagName.map((item) => item.tag_name);
       bookmark[i]["tag_name"] = tagName;
     }

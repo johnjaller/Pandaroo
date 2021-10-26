@@ -13,7 +13,7 @@ exports.up = function (knex) {
     table.integer("seats");
     table.text("description");
     table.boolean("delivery");
-    table.string("code").unique();
+    table.string("code")
     table.decimal("discount");
     table.timestamps(false, true);
   });

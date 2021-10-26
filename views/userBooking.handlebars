@@ -2,14 +2,23 @@
 <div class="container">
   <div class="row d-flex align-items-center">
     <div class="col-10">
-      <span class="me-3 align-middle userBooking-restName">{{restaurant.name}}</span>
+      <span
+        class="me-3 align-middle userBooking-restName"
+      >{{restaurant.name}}</span>
       <span class="me-3 userBooking-star rating">{{restaurant.rating}}</span>
-      <button type="button" class="border-0 rounded my-3 btn-userCancel reviewButton" data-bs-toggle="modal"
-        data-bs-target="#review">review</button>
+      <button
+        type="button"
+        class="border-0 rounded my-3 btn-userCancel reviewButton"
+        data-bs-toggle="modal"
+        data-bs-target="#review"
+      >review</button>
     </div>
     <div class="col-2 userBooking-bookmark text-end">
-      <button type="button" class="border-0 bg-white bookmark" id="{{restaurant.id}}">
-        <i class="{{bookmark}} fa-bookmark fa-2x"></i></button>
+      <button
+        type="button"
+        class="border-0 bg-white bookmark"
+        id="{{restaurant.id}}"
+      ><i class="{{bookmark}} fa-bookmark fa-2x"></i></button>
     </div>
   </div>
 </div>
@@ -32,13 +41,18 @@
             </div>
           </div>
           <div class="bg-white">
-            <h3 class="pt-3 text-center userBookingForm-restName">{{restaurant.name}}</h3>
+            <h3
+              class="pt-3 text-center userBookingForm-restName"
+            >{{restaurant.name}}</h3>
             <hr class="my-3 mx-auto userBookingForm-hr" />
             <p class="mx-4">Address:<br />{{restaurant.address}}</p>
             <p class="mx-4">Tel:<br />{{restaurant.phone_no}}</p>
             <p class="mx-4">No. of Seats:<br />{{restaurant.seats}}</p>
-            <p class="mx-4">Business hour:<br /><span class="opening">{{restaurant.opening_time}}</span> - <span
-                class="closing">{{restaurant.closing_time}}</span></p>
+            <p class="mx-4">Business hour:<br /><span
+                class="opening"
+              >{{restaurant.opening_time}}</span>
+              -
+              <span class="closing">{{restaurant.closing_time}}</span></p>
             <hr class="my-3 mx-auto userBookingForm-hr" />
 
             <h4 class="text-center userBookingForm-restName">Your orders</h4>
@@ -51,28 +65,54 @@
               <p class="me-3 totalPrice">HKD </p>
             </div>
           </div>
+          <form id="userBookingForm" action="/booking/{{restaurant.id}}" method="POST" >
 
-          <form id="userBookingForm" action="/booking/{{restaurant.id}}" method="POST">
+          <form
+            id="userBookingForm"
+            {{!-- class="needs-validation" --}}
+            action="/booking/{{restaurant.id}}"
+            method="POST"
+          >
             <input type="text" class="bookingCart d-none" name="bookingCart" />
-
             <div class="d-flex">
               <div class="mt-3 me-2">Date<br />
-                <input type="date" name="bookingDate" class="form-control bookingDate" style="width: 190px;" required />
+              <input type="date" id="" name="bookingDate"
+                  class="form-control bookingDate" style="width: 190px;" required />
               </div>
-              <div class="mt-3">Time<br />
-                <input type="time" name="bookingTime" min={{restaurant.opening_time}} max={{restaurant.closing_time}} class="form-control bookingTime" style="width: 190px;" required />
+
+              <div class="mt-3">Time<br /><input
+                  type="time"
+                  name="bookingTime" 
+                  min={{restaurant.opening_time}}
+                  max={{restaurant.closing_time}}
+                  class="form-control bookingTime"
+                  style="width: 190px;"
+                  required
+                />
               </div>
             </div>
-
             <div class="mt-3">No of guests<br />
-              <input type="number" min="1" max={{restaurant.seats}} name="noOfGuest" class="form-control" required />
+              <div><input
+                  type="number"
+                  min="1"
+                  max={{restaurant.seats}}
+                  name="noOfGuest"
+                  class="form-control"
+                  required
+                />
+              </div>
             </div>
-
-            <div class="mt-3">Special request<br />
-              <textarea id="specialRequest" class="form-control" name="specialRequest" rows="3" cols="41"></textarea>
+            <div class="mt-3">Special request<br /><textarea
+                class="form-control"
+                name="specialRequest"
+                rows="3"
+                cols="41"
+              ></textarea>
             </div>
-            
-            <button type="submit" class="mt-3 float-end border-0 rounded btn-userSubmit bookingSubmit">Submit ></button>
+            <button
+              type="submit"
+              class="mt-3 float-end border-0 rounded btn-userSubmit bookingSubmit"
+            >Submit ></button>
           </form>
 
         </div>
@@ -83,28 +123,56 @@
       <table class="table table-bordered">
         <thead>
           <tr class="text-center">
-            <th><a href="/booking/{{restaurant.id}}" class="text-decoration-none">Soup n Salad</a></th>
-            <th><a href="/booking/{{restaurant.id}}/starter" class="text-decoration-none">Starter</a></th>
-            <th><a href="/booking/{{restaurant.id}}/main" class="text-decoration-none">Main</a></th>
-            <th><a href="/booking/{{restaurant.id}}/dessert" class="text-decoration-none">Dessert</a></th>
-            <th><a href="/booking/{{restaurant.id}}/drinks" class="text-decoration-none">Drinks</a></th>
-            <th><a href="/booking/{{restaurant.id}}/others" class="text-decoration-none">Others</a></th>
+            <th><a
+                href="/booking/{{restaurant.id}}"
+                class="text-decoration-none"
+              >Soup n Salad</a></th>
+            <th><a
+                href="/booking/{{restaurant.id}}/starter"
+                class="text-decoration-none"
+              >Starter</a></th>
+            <th><a
+                href="/booking/{{restaurant.id}}/main"
+                class="text-decoration-none"
+              >Main</a></th>
+            <th><a
+                href="/booking/{{restaurant.id}}/dessert"
+                class="text-decoration-none"
+              >Dessert</a></th>
+            <th><a
+                href="/booking/{{restaurant.id}}/drinks"
+                class="text-decoration-none"
+              >Drinks</a></th>
+            <th><a
+                href="/booking/{{restaurant.id}}/others"
+                class="text-decoration-none"
+              >Others</a></th>
           </tr>
         </thead>
       </table>
 
       {{!-- Dish cards --}}
       <div class="d-flex flex-wrap justify-content-start">
-      {{#each dish}}
-        <div class="card me-1 mb-1 text-center user-dishes" style="width: 13rem; height: 23rem">
-          <img src="/image/{{this.photoPath}}" class="card-img-top mx-auto" alt="dishes pic" />
-          <div class="card-body">
-            <p class="card-text text-start item-name" id='{{id}}'>{{name}}</p>
+        {{#each dish}}
+          <div
+            class="card me-1 mb-1 text-center user-dishes"
+            style="width: 13rem; height: 23rem"
+          >
+            <img
+              src="/image/{{this.photoPath}}"
+              class="card-img-top mx-auto"
+              alt="dishes pic"
+            />
+            <div class="card-body">
+              <p class="card-text text-start item-name" id="{{id}}">{{name}}</p>
+            </div>
+            <p class="card-text text-start ms-3 item-price">HKD {{price}}</p>
+            <button
+              type="submit"
+              class="border-0 rounded btn-userAddToCart addToBookingCart"
+            >Add to cart</button>
           </div>
-          <p class="card-text text-start ms-3 item-price">HKD {{price}}</p>
-          <button type="submit" class="border-0 rounded btn-userAddToCart addToBookingCart">Add to cart</button>
-        </div>
-      {{/each}}
+        {{/each}}
       </div>
 
     </div>
@@ -117,7 +185,12 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Rate the restaurant</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
         Would you recommend this restaurant?
@@ -130,8 +203,16 @@
         </select>
       </div>
       <div class="modal-footer">
-        <button type="button" class="border-0 rounded btn-userClose" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="border-0 rounded btn-userReview review" data-bs-dismiss="modal">Submit</button>
+        <button
+          type="button"
+          class="border-0 rounded btn-userClose"
+          data-bs-dismiss="modal"
+        >Close</button>
+        <button
+          type="button"
+          class="border-0 rounded btn-userReview review"
+          data-bs-dismiss="modal"
+        >Submit</button>
       </div>
     </div>
   </div>

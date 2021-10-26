@@ -93,9 +93,6 @@ app.get(
   })
 );
 
-// Set up user service and router
-const searchQuery = require("./database/searchQueries").searchQuery;
-
 // Set up google authentication
 app.get(
   "/auth/google",
@@ -127,21 +124,24 @@ app.use("/user", userRouter.route());
 
 app.get("/", userLogIn);
 
+// Set up user service and router
+const searchQuery = require("./database/searchQueries").searchQuery;
 app.get("/search", searchQuery);
+
 const BookingService = require("./service/bookingService");
 const BookingRouter = require("./router/bookingRouter");
 const bookingService = new BookingService(knex);
 const bookingRouter = new BookingRouter(bookingService);
 app.use("/booking", bookingRouter.route());
 
-//orderService
+// OrderService
 const OrderRouter = require("./router/orderRouter");
 const OrderService = require("./service/orderService");
 const orderService = new OrderService(knex);
 const orderRouter = new OrderRouter(orderService);
 app.use("/order", orderRouter.route());
-//delete order
 
+// Checkout
 const CheckoutService = require("./service/checkoutService");
 const CheckoutRouter = require("./router/checkoutRouter");
 const checkoutService = new CheckoutService(knex);
@@ -275,6 +275,53 @@ app.delete("/bookmark/:id", (req, res) => {
     .catch((e) => console.log(e));
 });
 
+app.get("/tag/:tagid", async (req, res) => {
+  let tagName = await knex("tag")
+    .select("tag_name")
+    .where("id", req.params.tagid);
+  return knex("restaurant")
+    .select(
+      "restaurant.id",
+      "restaurant.name",
+      "restaurant.address",
+      "restaurant.district",
+      "restaurant.profile_path",
+      "restaurant.phone_no",
+      "restaurant.seats"
+    )
+    .join("tag_rest_join", "restaurant.id", "tag_rest_join.rest_id")
+    .join("tag", "tag_rest_join.tag_id", "tag.id")
+    .where("tag.id", req.params.tagid)
+    .then(async (data) => {
+      console.log(data);
+      for (let i = 0; i < data.length; i++) {
+        let rating;
+        rating = await knex("review")
+          .where("rest_id", data[i].id)
+          .select("rating");
+        if (rating.length != 0) {
+          rating =
+            Math.round(
+              (rating
+                .map((item) => Number(item.rating))
+                .reduce((a, b) => a + b) /
+                rating.length) *
+                2
+            ) / 2;
+          console.log(rating);
+        } else {
+          rating = 0;
+        }
+        data[i]["rating"] = rating;
+      }
+      res.render("userHome", {
+        layout: "user",
+        rest: data,
+        result: "Search result: " + tagName[0].tag_name,
+      });
+    });
+});
+
 // Route for restaurants
 app.use("/biz", restLogIn, restRouter.router());
 
@@ -341,11 +388,11 @@ app.get("/image/:key", (req, res) => {
 //stripe checkout
 app.use("/checkout", checkoutRouter.route());
 
+app.post("/checkout", stripePayment);
+
 app.get("/success/:restId", (req, res) => {
   res.render("paymentSuccess", { layout: "user" });
 });
-
-app.post("/checkout", stripePayment);
 
 app.get("/success", (req, res) => {
   res.render("paymentSuccess", { layout: "user" });
@@ -382,53 +429,6 @@ app.get("/bizlogin", (req, res) => {
 app.get("/logout", (req, res) => {
   req.logout();
   res.render("userLogin");
-});
-
-app.get("/tag/:tagid", async (req, res) => {
-  let tagName = await knex("tag")
-    .select("tag_name")
-    .where("id", req.params.tagid);
-  return knex("restaurant")
-    .select(
-      "restaurant.id",
-      "restaurant.name",
-      "restaurant.address",
-      "restaurant.district",
-      "restaurant.profile_path",
-      "restaurant.phone_no",
-      "restaurant.seats"
-    )
-    .join("tag_rest_join", "restaurant.id", "tag_rest_join.rest_id")
-    .join("tag", "tag_rest_join.tag_id", "tag.id")
-    .where("tag.id", req.params.tagid)
-    .then(async (data) => {
-      console.log(data);
-      for (let i = 0; i < data.length; i++) {
-        let rating;
-        rating = await knex("review")
-          .where("rest_id", data[i].id)
-          .select("rating");
-        if (rating.length != 0) {
-          rating =
-            Math.round(
-              (rating
-                .map((item) => Number(item.rating))
-                .reduce((a, b) => a + b) /
-                rating.length) *
-                2
-            ) / 2;
-          console.log(rating);
-        } else {
-          rating = 0;
-        }
-        data[i]["rating"] = rating;
-      }
-      res.render("userHome", {
-        layout: "user",
-        rest: data,
-        result: "Search result: " + tagName[0].tag_name,
-      });
-    });
 });
 
 // Sher: Post route for testing local strategy
