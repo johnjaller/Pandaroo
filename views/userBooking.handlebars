@@ -63,6 +63,7 @@
               <p class="me-3 totalPrice">HKD </p>
             </div>
           </div>
+          <form id="userBookingForm" action="/booking/{{restaurant.id}}" method="POST" >
 
           <form
             id="userBookingForm"
@@ -72,6 +73,7 @@
           >
             <input type="text" class="bookingCart d-none" name="bookingCart" />
             <div class="d-flex">
+<<<<<<< HEAD
               <div class="form-check mt-3 me-2">Date<br /><input
                   type="date"
                   id=""
@@ -80,6 +82,10 @@
                   style="width: 190px;"
                   required
                 />
+=======
+              <div class="form-check mt-3 me-2">Date<br /><input type="date" id="" name="bookingDate"
+                  class="form-control bookingDate" style="width: 190px;" required />
+>>>>>>> b660f4af5dbd27014c268a477c8f851cd72109fe
                 <div class="invalid-feedback">
                   Please enter a Date.
                 </div>
