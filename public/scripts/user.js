@@ -1,3 +1,4 @@
+
 let shoppingCart = {};
 let requestId;
 let bookingCart={}
@@ -463,24 +464,32 @@ $(".addToBookingCart").on("click", (event) => {
   });
   //bookingSubmit
 $('#userBookingForm').submit(function (event) { 
-    
+    let bookingDate=$('.bookingDate').val().split("-")
     let bookingTime=$('.bookingTime').val().split(":");
+    console.log(bookingDate)
     console.log(bookingTime)
     let opening=$('.opening').html().split(":");
         let closing=$('.closing').html().split(":");
+        bookingDateTime=new Date(Number(bookingDate[0]),Number(bookingDate[1])-1,Number(bookingDate[2]),Number(bookingTime[0]),Number(bookingTime[1]))
+        console.log(bookingDateTime)
+        let currentDate=new Date()
+        console.log(bookingDateTime>=currentDate)
         let openingTime=new Date().setHours(opening[0],opening[1],opening[2])
+        console.log(openingTime)
         let closingTime=new Date().setHours(closing[0],closing[1],closing[2])
+        console.log(closingTime)
     bookingTime=new Date().setHours(bookingTime[0],bookingTime[1])
     $('.bookingCart').val(JSON.stringify(bookingCart[requestId]));
-    if(bookingTime>openingTime&&bookingTime<closingTime)
+    if(openingTime<bookingDateTime&&bookingDateTime<closingTime&&bookingDateTime>=currentDate)
     {
 
         return true
         
     }else{
-        alert("You cannot book table outside of opening hour")
+        alert("You should input a right date and time")
         return false
     }
+    
     
 
 });
