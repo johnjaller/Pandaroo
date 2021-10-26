@@ -1,7 +1,8 @@
 let shoppingCart = {};
 let requestId;
 let bookingCart = {};
-//shoppingCart setup
+
+// Setup shopping cart
 $(document).ready(function () {
   let ratingArr = $(".rating");
   console.log(ratingArr.length);
@@ -185,7 +186,7 @@ $(document).ready(function () {
   }
 });
 
-//Add to cart
+// Add to cart
 $(".addToCart").on("click", (event) => {
   console.log($(event.target).parent().find(".item-name").html());
   let dishAmount;
@@ -262,6 +263,7 @@ $(".addToCart").on("click", (event) => {
   $(".totalPrice").html(`HKD ${price}`);
   localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
 });
+
 $("#userOrderForm").submit(function () {
   let request = $(".specialRequest").val();
   shoppingCart[requestId]["specialRequest"] = request;
@@ -336,40 +338,13 @@ $(".couponCheck").on("click", function (event) {
     },
   });
 });
-$(".userLogout").on("click", function () {
-  localStorage.clear();
-});
-//Add to Bookmark
-$(".bookmark").on("click", (event) => {
-  let restId = $(event.target).parent().attr("id");
-  let icon = $(event.target).find("i");
-  if (icon.hasClass("far")) {
-    icon.toggleClass("far fas");
-    console.log(restId);
-    $.ajax({
-      type: "post",
-      url: `/bookmark/${restId}`,
-      success: function (response) {
-        console.log(response);
-      },
-    });
-  } else {
-    icon.toggleClass("fas far");
-    console.log(restId);
-    $.ajax({
-      type: "delete",
-      url: `/bookmark/${restId}`,
-      success: function (response) {
-        console.log(response);
-      },
-    });
-  }
-});
-//Cancel order
+
+// Cancel order
 $(".userCancelOrder").on("click", (event) => {
   let cancelId = $(event.target).parents().closest(".userOrder").attr("id");
   $(".confirmCancelOrder").attr("id", cancelId);
 });
+
 $(".confirmCancelOrder").on("click", (event) => {
   let canelId = $(event.target).attr("id");
   $(event.target).removeAttr("id");
@@ -385,47 +360,47 @@ $(".confirmCancelOrder").on("click", (event) => {
     },
   });
 });
-//cancel booking
-$(".userCancelBooking").on("click", (event) => {
-  let cancelId = $(event.target).parents().closest(".userBooking").attr("id");
-  $(".confirmCancelBooking").attr("id", cancelId);
+
+// Add Review
+$(".reviewButton").on("click", function (event) {
+  let restId;
+  if (
+    window.location.pathname.includes("/order/") ||
+    window.location.pathname.includes("/order/")
+  ) {
+    restId = window.location.pathname.replace(/[^\d]/g, "");
+  } else {
+    restId = $(event.target).attr("id");
+  }
+  console.log(restId);
+  $(".review").attr("id", restId);
 });
-$(".confirmCancelBooking").on("click", (event) => {
-  let canelId = $(event.target).attr("id");
-  $(event.target).removeAttr("id");
-  console.log(canelId);
+$(".review").on("click", function (event) {
+  let restId = $(event.target).attr("id");
+  console.log(restId);
+  let ratingVal = $("#rating").val();
+  $(".review").removeAttr("id");
   $.ajax({
-    type: "DELETE",
-    url: "/booking/" + canelId,
+    type: "POST",
+    url: "/review/" + restId,
+    data: { rating: Number(ratingVal) },
+    dataType: "json",
     success: function (response) {
-      console.log(response);
       if (response === "success") {
-        $(`.userBooking#${canelId}`).remove();
+        alert("Thank you for your review");
       }
     },
   });
 });
-//unbookmark
-$(".unbookmark").on("click", function (e) {
-  let unbookmarkId = $(e.target).parents().closest(".userBookmark").attr("id");
-  console.log(unbookmarkId);
-  $.ajax({
-    type: "DELETE",
-    url: "/bookmark/" + unbookmarkId,
-    success: function (response) {
-      if (response === "success") {
-        $(`.userBookmark#${unbookmarkId}`).remove();
-      }
-    },
-  });
-});
-//booking cart
+
+// Add dishes to booking cart
 $(".addToBookingCart").on("click", (event) => {
   console.log($(event.target).parent().find(".item-name").html());
   let dishAmount;
   let dishPrice;
   let dishName;
   let dishMenuId;
+
   dishName = $(event.target).parent().find(".item-name").html();
   if (bookingCart.hasOwnProperty(requestId)) {
     let cart = bookingCart[requestId].item;
@@ -491,16 +466,23 @@ $(".addToBookingCart").on("click", (event) => {
   $(".totalPrice").html(`HKD ${price}`);
   localStorage.setItem("bookingCart", JSON.stringify(bookingCart));
 });
-//bookingSubmit
+
+// Submit booking form
 $("#userBookingForm").submit(function (event) {
   let bookingTime = $(".bookingTime").val().split(":");
   console.log(bookingTime);
+
   let opening = $(".opening").html().split(":");
+  console.log("Opening: ", opening);
   let closing = $(".closing").html().split(":");
+  console.log("Closing: ", closing);
+
   let openingTime = new Date().setHours(opening[0], opening[1], opening[2]);
   let closingTime = new Date().setHours(closing[0], closing[1], closing[2]);
   bookingTime = new Date().setHours(bookingTime[0], bookingTime[1]);
+
   $(".bookingCart").val(JSON.stringify(bookingCart[requestId]));
+
   if (bookingTime > openingTime && bookingTime < closingTime) {
     $(":input", this)
       .not(":button, :submit, :reset, :hidden")
@@ -514,34 +496,74 @@ $("#userBookingForm").submit(function (event) {
     return false;
   }
 });
-//review
-$(".reviewButton").on("click", function (event) {
-  let restId;
-  if (
-    window.location.pathname.includes("/order/") ||
-    window.location.pathname.includes("/order/")
-  ) {
-    restId = window.location.pathname.replace(/[^\d]/g, "");
-  } else {
-    restId = $(event.target).attr("id");
-  }
-  console.log(restId);
-  $(".review").attr("id", restId);
+
+// Cancel booking
+$(".userCancelBooking").on("click", (event) => {
+  let cancelId = $(event.target).parents().closest(".userBooking").attr("id");
+  $(".confirmCancelBooking").attr("id", cancelId);
 });
-$(".review").on("click", function (event) {
-  let restId = $(event.target).attr("id");
-  console.log(restId);
-  let ratingVal = $("#rating").val();
-  $(".review").removeAttr("id");
+$(".confirmCancelBooking").on("click", (event) => {
+  let canelId = $(event.target).attr("id");
+  $(event.target).removeAttr("id");
+  console.log(canelId);
   $.ajax({
-    type: "POST",
-    url: "/review/" + restId,
-    data: { rating: Number(ratingVal) },
-    dataType: "json",
+    type: "DELETE",
+    url: "/booking/" + canelId,
     success: function (response) {
+      console.log(response);
       if (response === "success") {
-        alert("Thank you for your review");
+        $(`.userBooking#${canelId}`).remove();
       }
     },
   });
+});
+
+// Add to bookmark
+$(".bookmark").on("click", (event) => {
+  let restId = $(event.target).parent().attr("id");
+  let icon = $(event.target).find("i");
+  if (icon.hasClass("far")) {
+    icon.toggleClass("far fas");
+    console.log(restId);
+    $.ajax({
+      type: "post",
+      url: `/bookmark/${restId}`,
+      success: function (response) {
+        console.log(response);
+      },
+    });
+  } else {
+    icon.toggleClass("fas far");
+    console.log(restId);
+    $.ajax({
+      type: "delete",
+      url: `/bookmark/${restId}`,
+      success: function (response) {
+        console.log(response);
+      },
+    });
+  }
+});
+
+// Remove a bookmark
+$(".unbookmark").on("click", function (event) {
+  let unbookmarkId = $(event.target)
+    .parents()
+    .closest(".userBookmark")
+    .attr("id");
+  console.log(unbookmarkId);
+  $.ajax({
+    type: "DELETE",
+    url: "/bookmark/" + unbookmarkId,
+    success: function (response) {
+      if (response === "success") {
+        $(`.userBookmark#${unbookmarkId}`).remove();
+      }
+    },
+  });
+});
+
+// Clear local storage when user logout
+$(".userLogout").on("click", function () {
+  localStorage.clear();
 });

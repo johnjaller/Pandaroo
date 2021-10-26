@@ -16,9 +16,6 @@ const options = {
 };
 const https = require("https").Server(options, app);
 
-// Set up socket.io
-const io = require("socket.io")(https);
-
 // Set up express session
 const session = require("express-session");
 app.use(

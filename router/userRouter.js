@@ -57,10 +57,8 @@ class UserRouter {
   async getBookmark(req, res) {
     try {
       let userInfo = await this.userService.getUserInfo(req.user.id);
-      let userBookmark = await this.userService.getUserBookmark(
-        req.user.id
-      );
-      console.log(userBookmark)
+      let userBookmark = await this.userService.getUserBookmark(req.user.id);
+      console.log(userBookmark);
       return res.render("userInfo", {
         layout: "user",
         info: userInfo,
