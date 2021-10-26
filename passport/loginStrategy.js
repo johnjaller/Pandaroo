@@ -51,9 +51,9 @@ module.exports = new LocalStrategy(async (username, password, done) => {
       }
     } else {
       // Return if error occur in server side
-      return done(err);
+      return done(error);
     }
-  } catch (err) {
-    throw new Error(err);
+  } catch (error) {
+    throw new Error(error);
   }
 });

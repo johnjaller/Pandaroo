@@ -41,7 +41,7 @@ module.exports = new LocalStrategy(async (username, password, done) => {
       console.log("New restaurant: ", newUser);
       done(null, newUser);
     }
-  } catch (err) {
-    throw new Error(err);
+  } catch (error) {
+    throw new Error(error);
   }
 });

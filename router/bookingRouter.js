@@ -3,14 +3,16 @@ class BookingRouter {
   constructor(bookingService) {
     this.bookingService = bookingService;
   }
+
   route() {
     let router = express.Router();
     router.get("/:restId", this.getBookingDefault.bind(this));
     router.get("/:restId/:category", this.getBookingCategory.bind(this));
     router.post("/:restId", this.postBooking.bind(this));
-    router.delete("/:bookingId", this.deleteBooking.bind(this));
+    router.put("/:bookingId", this.putCancelBooking.bind(this));
     return router;
   }
+
   async getBookingDefault(req, res) {
     let restDetail = await this.bookingService.getRestDetail(req.params.restId);
     let bookmark = await this.bookingService.getUserBookmarkStatus(
@@ -59,6 +61,7 @@ class BookingRouter {
       bookmark: bookmarkClass,
     });
   }
+
   async getBookingCategory(req, res) {
     let restDetail = await this.bookingService.getRestDetail(req.params.restId);
     let bookmark = await this.bookingService.getUserBookmarkStatus(
@@ -66,8 +69,7 @@ class BookingRouter {
       req.params.restId
     );
     let bookmarkClass;
-    let rating = await this.bookingService.getRestRating(req.params.restId
-    );
+    let rating = await this.bookingService.getRestRating(req.params.restId);
     if (rating.length != 0) {
       rating =
         Math.round(
@@ -108,14 +110,14 @@ class BookingRouter {
       bookmark: bookmarkClass,
     });
   }
+
   postBooking(req, res) {
     console.log(req.body);
-    let bookingCart
-    if(req.body.bookingCart!='')
-    {
-    bookingCart = JSON.parse(req.body.bookingCart);
-    }else{
-        bookingCart=[]
+    let bookingCart;
+    if (req.body.bookingCart != "") {
+      bookingCart = JSON.parse(req.body.bookingCart);
+    } else {
+      bookingCart = [];
     }
     return this.bookingService
       .insertBooking(
@@ -137,17 +139,14 @@ class BookingRouter {
             );
           }
         }
-        res.redirect('/user')
+        res.redirect("/user");
       });
   }
-  deleteBooking(req, res) {
-    return this.bookingService
-      .deleteBookingDetail(req.params.bookingId)
-      .then(() => {
-        this.bookingService.deleteBooking(req.params.bookingId).then(() => {
-          res.send("success");
-        });
-      });
+
+  putCancelBooking(req, res) {
+    return this.bookingService.putBooking(req.params.bookingId).then(() => {
+      res.send("success");
+    });
   }
 }
 
