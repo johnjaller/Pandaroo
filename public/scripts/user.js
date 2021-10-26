@@ -1,3 +1,4 @@
+
 let shoppingCart = {};
 let requestId;
 let bookingCart={}
@@ -68,7 +69,7 @@ $(document).ready(function () {
             
 
         }
-      if (!localStorage.hasOwnProperty("shoppingCart")) {
+      if (!localStorage.hasOwnProperty("shoppingCart")||Object.keys(localStorage.shoppingCart).length===0) {
         localStorage.setItem("shoppingCart", "");
         shoppingCart = {};
       } else {
@@ -82,17 +83,19 @@ $(document).ready(function () {
     {
       console.log(shoppingCart[requestId])
       shoppingCart[requestId].item.forEach(item=>{
-        $('.orderList').append(`<tr class="dish text-center"><td>${item.name}</td><td>${item.amount}</td><td>HKD ${item.price}</td></tr>`)
+        $('.orderList').append(`<tr class="dish text-center"><td>${item.name}</td><td>${item.amount}</td><td>HKD ${item.price}</td><td><button class="btn-danger orderDelete"><i class="fas fa-trash-alt"></i>
+        </button></td></tr>`)
       })
         let price
         if(Object.keys(shoppingCart[requestId].discount).length>0)
         {
+            price=shoppingCart[requestId].item.map(i=>i.price*i.amount).reduce((a,b)=>a+b)
           let coupon= shoppingCart[requestId].discount
           let discount=coupon.percent_off*100
-    $('.discountList').append(`<tr class="dish text-center"><td>Discount: '${coupon.discountCode}'</td><td></td><td>-${discount}%</td></tr>`)
+    $('.discountList').append(`<tr class="dish text-center"><td>Discount: '${coupon.discountCode}'</td><td></td><td>-${discount}%</td><td><button  class="couponDelete"><i class="fas fa-trash-alt"></i></button></td></tr>`)
     $('#discountCode').prop('disabled','disabled')
     $('.couponCheck').addClass('disabled')
-    price=Number((price*(1-shoppingCart[requestId].discount.percent_off)).toFixed(1))
+    price=Number((price*(1-Number(coupon.percent_off))).toFixed(1))
   }else{
     price=shoppingCart[requestId].item.map(i=>i.price*i.amount).reduce((a,b)=>a+b)
   }
@@ -105,10 +108,9 @@ $(document).ready(function () {
   
   }else if(window.location.pathname.includes('/booking/'))
   {
-    const forms = document.querySelectorAll('.needs-validation');
 
   
-  if (!localStorage.hasOwnProperty("bookingCart")) {
+  if (!localStorage.hasOwnProperty("bookingCart")||Object.keys(localStorage.bookingCart).length===0) {
     localStorage.setItem("bookingCart", "");
     bookingCart = {};
   } else {
@@ -122,7 +124,8 @@ if(bookingCart.hasOwnProperty(requestId))
 {
   console.log(bookingCart[requestId])
   bookingCart[requestId].item.forEach(item=>{
-    $('.bookingList').append(`<tr class="dish text-center"><td>${item.name}</td><td>${item.amount}</td><td>HKD ${item.price}</td></tr>`)
+    $('.bookingList').append(`<tr class="dish text-center"><td>${item.name}</td><td>${item.amount}</td><td>HKD ${item.price}</td><td><button class="btn-danger bookingDelete"><i class="fas fa-trash-alt"></i>
+    </button></td></tr>`)
   })
     let price
 price=bookingCart[requestId].item.map(i=>i.price*i.amount).reduce((a,b)=>a+b)
@@ -176,7 +179,8 @@ $(".addToCart").on("click", (event) => {
           .find(`td:contains(${dishName})`)
           .parent();
         $(item).html(
-          `<td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td>`
+          `<td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td><td><button class="btn-danger orderDelete"><i class="fas fa-trash-alt"></i>
+          </button></td>`
         );
       } else {
         dishAmount = 1;
@@ -196,7 +200,8 @@ $(".addToCart").on("click", (event) => {
         };
         cart.push(dishItem);
         $(".orderList").append(
-          `<tr class="dish text-center"><td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td></tr>`
+          `<tr class="dish text-center"><td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td><td><button class="btn-danger orderDelete"><i class="fas fa-trash-alt"></i>
+          </button></td></tr>`
         );
       }
     } else {
@@ -216,7 +221,8 @@ $(".addToCart").on("click", (event) => {
       };
       cart.push(dishItem);
       $(".orderList").append(
-        `<tr class="dish text-center"><td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td></tr>`
+        `<tr class="dish text-center"><td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td><td><button class="btn-danger orderDelete"><i class="fas fa-trash-alt"></i>
+        </button></td></tr>`
       );
     }
     console.log(dishPrice);
@@ -261,14 +267,14 @@ $(".addToCart").on("click", (event) => {
     }
     return true
   });
-  
+  //coupon
   $(".couponCheck").on("click", function (event) {
     let couponCode = $("#discountCode").val();
     $("#discountCode").val("");
     console.log(couponCode);
     $.ajax({
       type: "post",
-      url: "/discount",
+      url: "/discount/",
       data: { code: couponCode },
       dataType: "json",
       success: function (response) {
@@ -281,7 +287,7 @@ $(".addToCart").on("click", (event) => {
     $(event.target).addClass('disabled')
           let discount=response.percent_off*100
           shoppingCart[requestId].discount=response
-          $('.discountList').append(`<tr class="dish text-center"><td>Discount: '${couponCode}'</td><td></td><td>-${discount}%</td></tr>`)
+          $('.discountList').append(`<tr class="dish text-center"><td>Discount: '${couponCode}'</td><td></td><td>-${discount}%</td><td><button  class="couponDelete"><i class="fas fa-trash-alt"></i></button></td></tr>`)
   let price=shoppingCart[requestId].item.map(i=>i.price*i.amount).reduce((a,b)=>a+b)
   price=Number((price*(1-shoppingCart[requestId].discount.percent_off)).toFixed(1))
   
@@ -403,7 +409,8 @@ $(".addToBookingCart").on("click", (event) => {
           .find(`td:contains(${dishName})`)
           .parent();
         $(item).html(
-          `<td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td>`
+          `<td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td><td><button class="btn-danger bookingDelete"><i class="fas fa-trash-alt"></i>
+          </button></td>`
         );
       } else {
         dishAmount = 1;
@@ -423,7 +430,8 @@ $(".addToBookingCart").on("click", (event) => {
         };
         cart.push(dishItem);
         $(".bookingList").append(
-          `<tr class="dish text-center"><td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td></tr>`
+          `<tr class="dish text-center"><td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td><td><button class="btn-danger bookingDelete"><i class="fas fa-trash-alt"></i>
+          </button></td></tr>`
         );
       }
     } else {
@@ -443,7 +451,8 @@ $(".addToBookingCart").on("click", (event) => {
       };
       cart.push(dishItem);
       $(".bookingList").append(
-        `<tr class="dish text-center"><td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td></tr>`
+        `<tr class="dish text-center"><td>${dishName}</td><td>${dishAmount}</td><td>HKD ${dishPrice}</td><td><button class="btn-danger bookingDelete"><i class="fas fa-trash-alt"></i>
+        </button></td></tr>`
       );
     }
     console.log(dishPrice);
@@ -455,28 +464,33 @@ $(".addToBookingCart").on("click", (event) => {
   });
   //bookingSubmit
 $('#userBookingForm').submit(function (event) { 
-    
+    let bookingDate=$('.bookingDate').val().split("-")
     let bookingTime=$('.bookingTime').val().split(":");
+    console.log(bookingDate)
     console.log(bookingTime)
     let opening=$('.opening').html().split(":");
         let closing=$('.closing').html().split(":");
+        bookingDateTime=new Date(Number(bookingDate[0]),Number(bookingDate[1])-1,Number(bookingDate[2]),Number(bookingTime[0]),Number(bookingTime[1]))
+        console.log(bookingDateTime)
+        let currentDate=new Date()
+        console.log(bookingDateTime>=currentDate)
         let openingTime=new Date().setHours(opening[0],opening[1],opening[2])
+        console.log(openingTime)
         let closingTime=new Date().setHours(closing[0],closing[1],closing[2])
+        console.log(closingTime)
     bookingTime=new Date().setHours(bookingTime[0],bookingTime[1])
     $('.bookingCart').val(JSON.stringify(bookingCart[requestId]));
-    if(bookingTime>openingTime&&bookingTime<closingTime)
+    if(openingTime<bookingDateTime&&bookingDateTime<closingTime&&bookingDateTime>=currentDate)
     {
-        $(':input',this)
-        .not(':button, :submit, :reset, :hidden')
-        .val('')
-        .prop('checked', false)
-        .prop('selected', false);
-        $('.bookingList').html("")
+
         return true
+        
     }else{
-        alert("You cannot book table outside of opening hour")
+        alert("You should input a right date and time")
         return false
     }
+    
+    
 
 });
 //review
@@ -511,4 +525,94 @@ $('.review').on('click', function (event) {
             
         }
     });
+});
+//delete booking item
+$(document).on('click','.bookingDelete', function (e) {
+    let target=$(e.currentTarget).parent().parent().find('td')
+    let targetName=target.eq(0).html()
+    console.log(targetName)
+    let bookingItem=bookingCart[requestId].item.map(item=>item.name)
+    let deleteIndex=bookingItem.indexOf(targetName)
+    if(bookingCart[requestId].item[deleteIndex].amount===1)
+    {
+        bookingCart[requestId].item.splice(deleteIndex,1)
+        target.remove();
+    }
+    else{
+        bookingCart[requestId].item[deleteIndex].amount--   
+        target.eq(1).html(bookingCart[requestId].item[deleteIndex].amount);
+
+    }
+    let price
+    if(bookingCart[requestId].item.length!=0)
+    {
+     price = bookingCart[requestId].item
+    .map((i) => i.price * i.amount)
+    .reduce((a, b) => a + b);
+    }else{
+price=0
+    }
+  $(".totalPrice").html(`HKD ${price}`);
+    localStorage.setItem('bookingCart',JSON.stringify(bookingCart))
+});
+//delete shoppingItem
+$(document).on('click','.orderDelete', function (e) {
+    e.preventDefault()
+    let target=$(e.currentTarget).parent().parent().find('td')
+    let targetName=target.eq(0).html()
+    console.log(targetName)
+    let orderItem=shoppingCart[requestId].item.map(item=>item.name)
+    let deleteIndex=orderItem.indexOf(targetName)
+    if(shoppingCart[requestId].item[deleteIndex].amount===1)
+    {
+        shoppingCart[requestId].item.splice(deleteIndex,1)
+        target.remove();
+    }
+    else{
+        shoppingCart[requestId].item[deleteIndex].amount--   
+        target.eq(1).html(shoppingCart[requestId].item[deleteIndex].amount);
+
+    }
+    let price
+    if(shoppingCart[requestId].item.length!=0)
+    {
+    price= shoppingCart[requestId].item
+    .map((i) => i.price * i.amount)
+    .reduce((a, b) => a + b);
+  if (Object.keys(shoppingCart[requestId].discount).length > 0) {
+    price = Number(
+      (price * (1 - shoppingCart[requestId].discount.percent_off)).toFixed(1)
+    );
+  }
+}else{
+    price=0
+}
+  $(".totalPrice").html(`HKD ${price}`);
+    localStorage.setItem('shoppingCart',JSON.stringify(shoppingCart))
+});
+
+$(document).on('click','.couponDelete', function (e) {
+    e.preventDefault()
+shoppingCart[requestId].discount={}
+$('.discountList').html('');
+$('#discountCode').removeAttr('disabled')
+    $('.couponCheck').removeClass('disabled')
+    let price
+    if(shoppingCart[requestId].item.length!=0)
+    {
+    price= shoppingCart[requestId].item
+    .map((i) => i.price * i.amount)
+    .reduce((a, b) => a + b);
+  if (Object.keys(shoppingCart[requestId].discount).length > 0) {
+    price = Number(
+      (price * (1 - shoppingCart[requestId].discount.percent_off)).toFixed(1)
+    );
+  }
+}else{
+    price=0
+}
+
+        $(".totalPrice").html(`HKD ${price}`);
+
+        localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
 });
