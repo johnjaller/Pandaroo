@@ -25,10 +25,6 @@ class UserRouter {
       let userInfo = await this.userService.getUserInfo(req.user.id);
       let userBooking = await this.userService.getUserBooking(req.user.id);
       console.log(userBooking);
-      if (userBooking.length === 1) {
-        let date = userBooking[0].booking_date.toDateString();
-        userBooking[0].booking_date = date;
-      }
       return res.render("userInfo", {
         layout: "user",
         info: userInfo,
