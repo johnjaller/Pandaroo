@@ -544,7 +544,7 @@ $(".reviewButton").on("click", function (event) {
   let restId;
   if (
     window.location.pathname.includes("/order/") ||
-    window.location.pathname.includes("/order/")
+    window.location.pathname.includes("/booking/")
   ) {
     restId = window.location.pathname.replace(/[^\d]/g, "");
   } else {
