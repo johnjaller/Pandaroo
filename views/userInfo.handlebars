@@ -43,12 +43,19 @@
         {{#each booking}}
           <div class="userBooking rounded" id="{{this.id}}">
             <div class="container">
-              <div class="row d-flex justify-content-center align-items-center">
-                <div class="col-3 rest-profile-pic">
+              <div class="row d-flex align-items-center">
+                <div class="col-3 text-center rest-profile-pic">
                   <img
                     src="/image/{{this.profile_path}}"
                     alt="restaurant profile pic"
                   />
+                  <button
+                    type="button"
+                    class="border-0 rounded mt-4 btn-userReview reviewButton"
+                    id="{{this.rest_id}}"
+                    data-bs-toggle="modal"
+                    data-bs-target="#review"
+                  >review</button>
                 </div>
                 <div class="col-7">
                   <div class="d-flex align-items-center">
@@ -56,13 +63,6 @@
                     <p
                       class="mt-3 me-4 userBooking-star rating"
                     >{{this.rating}}</p>
-                    <button
-                      type="button"
-                      class="border-0 rounded my-3 btn-userReview reviewButton"
-                      id="{{this.rest_id}}"
-                      data-bs-toggle="modal"
-                      data-bs-target="#review"
-                    >review</button>
                   </div>
                   <p><i class="fas fa-map-marker-alt userNavbarIcon"></i>&nbsp;
                     {{this.address}}
@@ -114,12 +114,19 @@
         {{#each order}}
           <div class="userOrder rounded" id="{{this.id}}">
             <div class="container">
-              <div class="row d-flex justify-content-center align-items-center">
-                <div class="col-3 rest-profile-pic">
+              <div class="row d-flex align-items-center">
+                <div class="col-3 text-center rest-profile-pic">
                   <img
                     src="/image/{{this.profile_path}}"
                     alt="restaurant profile pic"
                   />
+                  <button
+                    type="button"
+                    class="border-0 rounded mt-4 btn-userReview reviewButton"
+                    id="{{this.rest_id}}"
+                    data-bs-toggle="modal"
+                    data-bs-target="#review"
+                  >review</button>
                 </div>
                 <div class="col-7">
                   <div class="d-flex align-items-center">
@@ -127,13 +134,6 @@
                     <p
                       class="mt-3 me-4 userBooking-star rating"
                     >{{this.rating}}</p>
-                    <button
-                      type="button"
-                      class="border-0 rounded my-3 btn-userReview reviewButton"
-                      id="{{this.rest_id}}"
-                      data-bs-toggle="modal"
-                      data-bs-target="#review"
-                    >review</button>
                   </div>
                   <p><i
                       class="fas fa-map-marker-alt userNavbarIcon"
@@ -234,12 +234,12 @@
       <div class="modal-footer">
         <button
           type="button"
-          class="btn btn-secondary"
+          class="border-0 rounded btn-userClose"
           data-bs-dismiss="modal"
         >Close</button>
         <button
           type="button"
-          class="btn btn-danger confirmCancelBooking"
+          class="border-0 rounded btn-userCancel confirmCancelBooking"
           data-bs-dismiss="modal"
         >Cancel</button>
       </div>
