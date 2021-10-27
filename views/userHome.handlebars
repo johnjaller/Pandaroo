@@ -51,6 +51,11 @@
             <p>Address: {{this.address}}</p>
             <p>Tel: {{this.phone_no}}</p>
             <p>Seats: {{this.seats}}</p>
+            {{#if delivery}}
+            <p class="mx-4">Order delivery: <br />Yes</p>
+            {{else}}
+            <p class="mx-4">Order delivery: <br />No</p>
+            {{/if}}
           </div>
         </div>
       </a>
@@ -100,6 +105,11 @@
             <p>Address: {{this.address}}</p>
             <p>Tel: {{this.phone_no}}</p>
             <p>Seats: {{this.seats}}</p>
+            {{#if delivery}}
+            <p class="mx-4">Order delivery: <br />Yes</p>
+            {{else}}
+            <p class="mx-4">Order delivery: <br />No</p>
+            {{/if}}
           </div>
         </div>
       </a>
