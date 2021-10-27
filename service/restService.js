@@ -154,7 +154,9 @@ class RestService {
         for (let i = 0; i < result.length; i++) {
           let eachOrder = {
             id: result[i][0].id,
-            created_at: new Date(result[i][0].created_at).toLocaleString(),
+            created_at: new Date(
+              Date.parse(result[i][0].created_at)
+            ).toLocaleString(),
             total_amount: result[i][0].total_amount,
             order_status: result[i][0].order_status,
             special_request: result[i][0].special_request,
@@ -173,7 +175,7 @@ class RestService {
       }
     });
   }
-  //
+
   getRestOrderHistory(restId) {
     let query = this.knex("delivery")
       .join("order_detail", "delivery.id", "delivery_id")
@@ -212,7 +214,9 @@ class RestService {
         for (let i = 0; i < result.length; i++) {
           let eachOrder = {
             id: result[i][0].id,
-            created_at: new Date(result[i][0].created_at).toLocaleString(),
+            created_at: new Date(
+              Date.parse(result[i][0].created_at)
+            ).toLocaleString(),
             total_amount: result[i][0].total_amount,
             order_status: result[i][0].order_status,
             special_request: result[i][0].special_request,
