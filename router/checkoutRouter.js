@@ -1,7 +1,7 @@
 require("dotenv").config();
 const stripe = require("stripe")(process.env.stripe_secret);
 const express = require("express");
-const endPointSecret = "whsec_G2nJNMFVmpCn275FSbScXynzCytZxtJX";
+const endPointSecret = "whsec_q3th2OAgVY1Uf8RBx4ALNDnfoJWMzaF0";
 class CheckoutRouter {
   constructor(checkoutService) {
     this.checkoutService = checkoutService;

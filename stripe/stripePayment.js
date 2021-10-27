@@ -24,7 +24,7 @@ async function stripePayment (req,res)
         metadata:{user_id:userId,specialRequest:req.body.specialRequest,rest_id:Number(req.body.restaurant)},
         mode: 'payment',
         success_url: `https://shermanw.me/success/${req.body.restaurant}`,
-        cancel_url: `https://shermanw.me/order/${req.body.restaurant}`,
+      cancel_url: `https://shermanw.me/order/${req.body.restaurant}`,
         locale:'en'
       });
       res.redirect(303, session.url);
