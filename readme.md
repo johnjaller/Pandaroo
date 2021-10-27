@@ -21,7 +21,7 @@ db_name=<your database name>
 username=<your username>
 password=<your password>
 
-stripe_secret=<your strip secret>
+stripe_secret=<your stripe secret>
 
 SESSION_SECRET=<your session secret>
 
