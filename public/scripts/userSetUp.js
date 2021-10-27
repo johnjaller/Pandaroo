@@ -1,5 +1,4 @@
 import { checkUserInputs } from "./dataValidation.js";
-require('dotenv').config()
 // User setup POST req
 $("#userSetUpForm").submit((event) => {
   event.preventDefault();
@@ -32,7 +31,7 @@ $("#userSetUpForm").submit((event) => {
       data: userInfo,
       success: function () {
         alert("Successfully updated!");
-        window.location.replace(process.env.domain+'/');
+        window.location.replace('https://shermanw.me/');
       },
     });
   }

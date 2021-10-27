@@ -1,5 +1,4 @@
 import { checkRestInputs } from "./dataValidation.js";
-require('dotenv').config()
 
 // "Auto-check" tag-checkbox
 $(() => {
@@ -70,7 +69,7 @@ $("#restSetUpSubmit").click((event) => {
       data: restInfo,
       success: function () {
         alert("Successfully updated!");
-        window.location.replace(process.env.domain+"/biz/info");
+        window.location.replace("https://shermanw.me/biz/info");
       },
     });
   }
