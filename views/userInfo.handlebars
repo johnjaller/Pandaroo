@@ -176,6 +176,7 @@
 
         {{! User bookmark }}
         {{#each bookmark}}
+        <a href="/order/{{this.rest_id}}">
           <div class="userBookmark rounded" id="{{this.id}}">
             <div class="container">
               <div class="row d-flex justify-content-center align-items-center">
@@ -209,6 +210,7 @@
               </div>
             </div>
           </div>
+          </a>
         {{/each}}
       </div>
     </div>
