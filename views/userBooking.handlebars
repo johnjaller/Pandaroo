@@ -81,13 +81,14 @@
             <input type="text" class="bookingCart d-none" name="bookingCart" />
             <div class="d-flex">
               <div class="mt-3 me-2 text-white">Date<br />
-              <input type="date" id="" name="bookingDate"
+              <input type="date" id="dateOfBooking" name="bookingDate"
                   class="form-control bookingDate" style="width: 190px;" required />
               </div>
 
               <div class="mt-3 text-white">Time<br /><input
                   type="time"
                   name="bookingTime" 
+                  id="timeOfBooking"
                   min={{restaurant.opening_time}}
                   max={{restaurant.closing_time}}
                   class="form-control bookingTime"
