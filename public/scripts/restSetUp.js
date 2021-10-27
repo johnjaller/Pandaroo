@@ -1,4 +1,5 @@
 import { checkRestInputs } from "./dataValidation.js";
+require('dotenv').config()
 
 // "Auto-check" tag-checkbox
 $(() => {

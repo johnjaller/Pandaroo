@@ -1,5 +1,5 @@
 import { checkUserInputs } from "./dataValidation.js";
-
+require('dotenv').config()
 // User setup POST req
 $("#userSetUpForm").submit((event) => {
   event.preventDefault();
