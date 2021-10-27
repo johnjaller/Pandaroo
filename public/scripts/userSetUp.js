@@ -32,7 +32,7 @@ $("#userSetUpForm").submit((event) => {
       data: userInfo,
       success: function () {
         alert("Successfully updated!");
-        window.location.replace("https://localhost:8080/");
+        window.location.replace("https://shermanw.me/");
       },
     });
   }

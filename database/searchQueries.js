@@ -45,8 +45,41 @@ async function searchQuery(req, res) {
   });
 }
 
-async function homepageRecomendation(req, res) {
+
+
+async function homepageRecomendation (req, res) {
   let restTag = await userService.getRestTag();
+  for (let i = 0; i < restTag.length; i++) {
+    switch (restTag[i]["tag_name"]) {
+      case "hongKongStyle":
+        restTag[i]["tag_name"] = "Hong Kong Style";
+        break;
+      case "chinese":
+        restTag[i]["tag_name"] = "Chinese";
+        break;
+      case "taiwanese":
+        restTag[i]["tag_name"] = "Taiwanese";
+        break;
+      case "japanese":
+        restTag[i]["tag_name"] = "Japanese";
+        break;
+      case "korean":
+        restTag[i]["tag_name"] = "Korean";
+        break;
+      case "western":
+        restTag[i]["tag_name"] = "Western";
+        break;
+      case "petFriendly":
+        restTag[i]["tag_name"] = "Pet Friendly";
+        break;
+      case "liveBroadcast":
+        restTag[i]["tag_name"] = "Live Boardcast";
+        break;
+      default:
+        restTag[i]["tag_name"] = "Parking";
+    }
+  }
+  console.log("restTag", restTag);
   let user = await knex("account")
     .select("district", "firstname")
     .where("id", req.user.id);
@@ -92,7 +125,6 @@ async function homepageRecomendation(req, res) {
       } else {
         rating = 0;
       }
-
       locationRecommendation[i]["rating"] = rating;
     }
   } else {
@@ -108,7 +140,7 @@ async function homepageRecomendation(req, res) {
     result: "Featured",
     tag: restTag,
   });
-}
+};
 
 module.exports = {
   searchQuery: searchQuery,
