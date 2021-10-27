@@ -653,3 +653,5 @@ $(document).on("click", ".couponDelete", function (e) {
 
   localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
 });
+//check bookingDate
+$('#dateOfBooking').attr('min', new Date().toISOString().split("T")[0]);
