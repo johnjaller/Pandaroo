@@ -1,4 +1,4 @@
-// Import package and Hello world
+// Import package
 require("dotenv").config();
 const express = require("express");
 const app = express();
@@ -160,100 +160,8 @@ app.post("/review/:restId", (req, res) => {
     .catch((e) => console.log(e));
 });
 
-app.get("/", async (req, res) => {
-  let restTag = await userService.getRestTag();
-  for (let i = 0; i < restTag.length; i++) {
-    switch (restTag[i]["tag_name"]) {
-      case "hongKongStyle":
-        restTag[i]["tag_name"] = "Hong Kong Style";
-        break;
-      case "chinese":
-        restTag[i]["tag_name"] = "Chinese";
-        break;
-      case "taiwanese":
-        restTag[i]["tag_name"] = "Taiwanese";
-        break;
-      case "japanese":
-        restTag[i]["tag_name"] = "Japanese";
-        break;
-      case "korean":
-        restTag[i]["tag_name"] = "Korean";
-        break;
-      case "western":
-        restTag[i]["tag_name"] = "Western";
-        break;
-      case "petFriendly":
-        restTag[i]["tag_name"] = "Pet Friendly";
-        break;
-      case "liveBroadcast":
-        restTag[i]["tag_name"] = "Live Boardcast";
-        break;
-      default:
-        restTag[i]["tag_name"] = "Parking";
-    }
-  }
-  console.log("restTag", restTag);
-  let user = await knex("account")
-    .select("district", "firstname")
-    .where("id", req.user.id);
-  console.log(user[0].district);
-  let featuredRest = await knex("restaurant").select();
-  for (let i = 0; i < featuredRest.length; i++) {
-    let rating;
-    rating = await knex("review")
-      .where("rest_id", featuredRest[i].id)
-      .select("rating");
-    if (rating.length != 0) {
-      rating =
-        Math.round(
-          (rating.map((item) => Number(item.rating)).reduce((a, b) => a + b) /
-            rating.length) *
-            2
-        ) / 2;
-      console.log(rating);
-    } else {
-      rating = 0;
-    }
-
-    featuredRest[i]["rating"] = rating;
-  }
-  let locationRecommendation;
-  if (user[0].district != undefined) {
-    locationRecommendation = await knex("restaurant")
-      .select()
-      .where("district", user[0].district);
-    for (let i = 0; i < locationRecommendation.length; i++) {
-      let rating;
-      rating = await knex("review")
-        .where("rest_id", locationRecommendation[i].id)
-        .select("rating");
-      if (rating.length != 0) {
-        rating =
-          Math.round(
-            (rating.map((item) => Number(item.rating)).reduce((a, b) => a + b) /
-              rating.length) *
-              2
-          ) / 2;
-        console.log(rating);
-      } else {
-        rating = 0;
-      }
-      locationRecommendation[i]["rating"] = rating;
-    }
-  } else {
-    locationRecommendation = [];
-  }
-
-  console.log(locationRecommendation, "loaded info");
-  res.render("userHome", {
-    layout: "user",
-    userInfo: user,
-    recommendation: locationRecommendation,
-    feature: featuredRest,
-    result: "Featured",
-    tag: restTag,
-  });
-});
+const homepageRecomendation=require('./database/searchQueries').homepageRecommendation
+app.get("/",homepageRecomendation)
 
 app.post("/bookmark/:id", (req, res) => {
   return knex("bookmark")
