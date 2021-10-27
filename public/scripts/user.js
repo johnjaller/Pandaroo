@@ -4,6 +4,7 @@ let bookingCart = {};
 
 //shoppingCart setup
 $(document).ready(function () {
+ 
   let ratingArr = $(".rating");
 
   for (let i = 0; i < ratingArr.length; i++) {
@@ -142,6 +143,15 @@ $(document).ready(function () {
       return false;
     }
   } else if (window.location.pathname.includes("/booking/")) {
+    let opening = $(".opening").html().split(":");
+    let closing = $(".closing").html().split(":");
+    let openingTime = new Date().setHours(opening[0], opening[1], opening[2]);
+    console.log(openingTime)
+    console.log(new Date(openingTime).toTimeString().slice(0,5))
+    let closingTime = new Date().setHours(closing[0], closing[1], closing[2]);
+    $('#dateOfBooking').attr('min', new Date().toISOString().split("T")[0]);
+    $('#timeOfBooking').attr('min', new Date(openingTime).toTimeString().slice(0,5));
+    $('#timeOfBooking').attr('max', new Date(closingTime).toTimeString().slice(0,5));
     if (
       !localStorage.hasOwnProperty("bookingCart") ||
       Object.keys(localStorage.bookingCart).length === 0
@@ -505,38 +515,11 @@ $(".addToBookingCart").on("click", (event) => {
 
 //BookingSubmit
 $("#userBookingForm").submit(function (event) {
-  let bookingDate = $(".bookingDate").val().split("-");
-  let bookingTime = $(".bookingTime").val().split(":");
-  console.log(bookingDate);
-  console.log(bookingTime);
-  let opening = $(".opening").html().split(":");
-  let closing = $(".closing").html().split(":");
-  bookingDateTime = new Date(
-    Number(bookingDate[0]),
-    Number(bookingDate[1]) - 1,
-    Number(bookingDate[2]),
-    Number(bookingTime[0]),
-    Number(bookingTime[1])
-  );
-  console.log(bookingDateTime);
-  let currentDate = new Date();
-  console.log(bookingDateTime >= currentDate);
-  let openingTime = new Date().setHours(opening[0], opening[1], opening[2]);
-  console.log(openingTime);
-  let closingTime = new Date().setHours(closing[0], closing[1], closing[2]);
-  console.log(closingTime);
-  bookingTime = new Date().setHours(bookingTime[0], bookingTime[1]);
+
   $(".bookingCart").val(JSON.stringify(bookingCart[requestId]));
-  if (
-    openingTime < bookingTime &&
-    bookingTime < closingTime &&
-    bookingDateTime >= currentDate
-  ) {
+  
     return true;
-  } else {
-    alert("You should input a right date and time");
-    return false;
-  }
+  
 });
 
 //Review
@@ -654,4 +637,3 @@ $(document).on("click", ".couponDelete", function (e) {
   localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
 });
 //check bookingDate
-$('#dateOfBooking').attr('min', new Date().toISOString().split("T")[0]);
