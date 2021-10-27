@@ -17,7 +17,7 @@ class UserRouter {
     return router;
   }
 
-  async getBooking(req, res) {
+  async getBooking(req, res, next) {
     try {
       console.log(req.cookies);
       console.log(req.user.id);
@@ -35,11 +35,12 @@ class UserRouter {
         booking: userBooking,
       });
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
 
-  async getOrder(req, res) {
+  async getOrder(req, res, next) {
     try {
       let userInfo = await this.userService.getUserInfo(req.user.id || 1);
       let userOrder = await this.userService.getUserOrder(req.user.id || 1);
@@ -50,11 +51,12 @@ class UserRouter {
         order: userOrder,
       });
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
 
-  async getBookmark(req, res) {
+  async getBookmark(req, res, next) {
     try {
       let userInfo = await this.userService.getUserInfo(req.user.id);
       let userBookmark = await this.userService.getUserBookmark(req.user.id);
@@ -65,11 +67,12 @@ class UserRouter {
         bookmark: userBookmark,
       });
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
 
-  async putUserInfo(req, res) {
+  async putUserInfo(req, res, next) {
     try {
       await this.userService.putUserInfo(
         req.user.id,
@@ -82,6 +85,7 @@ class UserRouter {
       );
       return res.sendStatus(200);
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
@@ -90,11 +94,12 @@ class UserRouter {
     res.render("userSetUp", { layout: "user" });
   }
 
-  async putUserSetUp(req, res) {
+  async putUserSetUp(req, res, next) {
     try {
       await this.userService.putUserSetUp(req.user.id, req.body);
       return res.sendStatus(200);
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }

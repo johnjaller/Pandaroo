@@ -10,7 +10,7 @@ class OrderRouter {
     router.put("/:orderId", this.putCancelUserOrder.bind(this));
     return router;
   }
-  async getRestOrderDefault(req, res) {
+  async getRestOrderDefault(req, res, next) {
     try {
       let deliverySwitch = await this.orderService.getDeliveryStatus(
         req.params.restId
@@ -67,11 +67,12 @@ class OrderRouter {
         res.redirect(`/booking/${req.params.restId}`);
       }
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
 
-  async getRestOrderCategory(req, res) {
+  async getRestOrderCategory(req, res, next) {
     try {
       let deliverySwitch = await this.orderService.getDeliveryStatus(
         req.params.restId
@@ -128,6 +129,7 @@ class OrderRouter {
         res.redirect(`/booking/${req.params.restId}`);
       }
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }

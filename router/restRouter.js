@@ -34,7 +34,7 @@ class RestRouter {
   }
 
   // Get "/info"
-  async get(req, res) {
+  async get(req, res, next) {
     console.log("Get restaurant info");
     try {
       let restInfo = await this.restService.getRestInfo(req.user.id);
@@ -52,12 +52,13 @@ class RestRouter {
         dishInfo: dishInfo,
       });
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
 
   // Get "/info/:category"
-  async getCategory(req, res) {
+  async getCategory(req, res, next) {
     console.log(req.params.category);
     console.log("Get restaurant menu");
     try {
@@ -79,12 +80,13 @@ class RestRouter {
         dishInfo: dishInfo,
       });
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
 
   // Get "/bookings"
-  async getBooking(req, res) {
+  async getBooking(req, res, next) {
     console.log("Get restaurant current booking");
     try {
       const page = parseInt(req.query.page) || 1;
@@ -116,12 +118,13 @@ class RestRouter {
         lastPage: page - 1,
       });
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
 
   // Get "/orders"
-  async getOrder(req, res) {
+  async getOrder(req, res, next) {
     console.log("Get restaurant current order");
     try {
       const page = parseInt(req.query.page) || 1;
@@ -152,12 +155,13 @@ class RestRouter {
         lastPage: page - 1,
       });
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
 
   // Get "/bookingshistory"
-  async getBookingHistory(req, res) {
+  async getBookingHistory(req, res, next) {
     console.log("Get restaurant booking history");
     try {
       const page = parseInt(req.query.page) || 1;
@@ -192,12 +196,13 @@ class RestRouter {
         lastPage: page - 1,
       });
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
 
   // Get "/ordershistory"
-  async getOrderHistory(req, res) {
+  async getOrderHistory(req, res, next) {
     console.log("Get restaurant order history");
     console.log("Req user", req.user.id);
     try {
@@ -233,12 +238,13 @@ class RestRouter {
         lastPage: page - 1,
       });
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
 
   // Get "/bookings/:bookingID"
-  updateBookingStatus(req, res) {
+  updateBookingStatus(req, res, next) {
     console.log("Update booking status");
     try {
       return this.restService
@@ -247,12 +253,13 @@ class RestRouter {
           res.send("DONE");
         });
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
 
   // Get "/orders/:orderID"
-  updateOrderStatus(req, res) {
+  updateOrderStatus(req, res, next) {
     console.log("Update order status");
     try {
       return this.restService
@@ -261,12 +268,13 @@ class RestRouter {
           res.send("DONE");
         });
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
 
   // Get "/biztag"
-  async getBizTag(req, res) {
+  async getBizTag(req, res, next) {
     console.log("Get tag");
     try {
       let tagInfo = await this.restService.getRestTag(req.user.id);
@@ -278,16 +286,17 @@ class RestRouter {
         console.log("restRouter getBizTag No tagInfo");
       }
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
 
   // Get "/bizsetup"
-  async getRestSetUp(req, res) {
+  async getRestSetUp(req, res, next) {
     try {
       console.log("Get restaurant info");
       let restInfo = await this.restService.getRestSetUpInfo(req.user.id);
-      console.log(restInfo, "<<<<< rest info");
+
       // Convert delivery T/F to Yes/No
       if (restInfo[0]["delivery"]) {
         restInfo[0]["delivery"] = "Yes";
@@ -333,24 +342,26 @@ class RestRouter {
         restInfo: restInfo,
       });
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
 
   // Put "/bizsetup"
-  async putRestInfo(req, res) {
+  async putRestInfo(req, res, next) {
     try {
       await this.restService.updateRestInfo(req.user.id, req.body);
       await this.restService.deleteRestTag(req.user.id);
       await this.restService.insertRestTag(req.user.id, req.body);
       return res.sendStatus(200);
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
 
   // Get "/bizsetupmenu"
-  async getSetUpMenu(req, res) {
+  async getSetUpMenu(req, res, next) {
     try {
       let dishInfo = await this.restService.getMenu(req.user.id, "soup&salad");
       return res.render("restSetUpMenu", {
@@ -358,12 +369,13 @@ class RestRouter {
         dishInfo: dishInfo,
       });
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
 
   // Get "/bizsetupmenu/:category"
-  async getSetUpMenuWithCategory(req, res) {
+  async getSetUpMenuWithCategory(req, res, next) {
     console.log("Get restaurant menu in setup");
     try {
       let dishInfo = await this.restService.getMenu(
@@ -376,12 +388,13 @@ class RestRouter {
         dishInfo: dishInfo,
       });
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
 
   // Put "/bizsetupmenu/:category"
-  async editMenu(req, res) {
+  async editMenu(req, res, next) {
     console.log("Update restaurant menu");
     try {
       return this.restService
@@ -390,18 +403,20 @@ class RestRouter {
           res.send("DONE");
         });
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
 
   // Delete "/bizsetupmenu/:category"
-  async deleteMenu(req, res) {
+  async deleteMenu(req, res, next) {
     console.log("Delete restaurant menu");
     try {
       return this.restService.deleteRestMenu(req.body.dishId).then(() => {
         res.send("DONE");
       });
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
