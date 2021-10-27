@@ -69,7 +69,7 @@ $("#restSetUpSubmit").click((event) => {
       data: restInfo,
       success: function () {
         alert("Successfully updated!");
-        window.location.replace("https://localhost:8080/biz/info");
+        window.location.replace("https://shermanw.me/biz/info");
       },
     });
   }
