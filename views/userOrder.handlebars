@@ -81,6 +81,7 @@
                 <p class="ms-3">Total:</p>
                 <p class="me-3 totalPrice">HKD </p>
               </div>
+                <div class="p-msg"></div>
             </div>
 
             <div class="mt-3 sRequest">Special request<br /><textarea
@@ -205,6 +206,84 @@
           class="border-0 rounded btn-userReview review"
           data-bs-dismiss="modal"
         >Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{!-- price error --}}
+<div class="modal fade" id="price" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Oops...</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        The minimum spending is $4 or more
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="border-0 rounded btn-userReview"
+          data-bs-dismiss="modal"
+        >OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{!-- coupon error --}}
+<div class="modal fade" id="coupon" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Oops...</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        The coupon is not valid
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="border-0 rounded btn-userReview"
+          data-bs-dismiss="modal"
+        >OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="closed" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Oops...</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        The restaurant is closed. Please order within opening hours. However, you still can book a table from restaurant
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="border-0 rounded btn-userReview"
+          data-bs-dismiss="modal"
+        >OK</button>
       </div>
     </div>
   </div>

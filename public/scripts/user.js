@@ -92,21 +92,22 @@ $(document).ready(function () {
     let closingTime = new Date().setHours(closing[0], closing[1], closing[2]);
 
     if (currentTime < openingTime || currentTime > closingTime) {
+      let closedModal = new bootstrap.Modal($('#closed'))
+          closedModal.show()
       $(".checkout").attr("disabled", true);
       $(".couponCheck").attr("disabled", true);
-      $(".discountCode").attr("disabled", true);
-      $(".specialRequest").attr("disabled", true);
+      $("#discountCode").attr("disabled", true);
+      $("#specialRequest").attr("disabled", true);
       $(".addToCart").attr("disabled", true);
       $(".alert").html(
-        "The restaurant is closed. Please order at opening hours. You still can book a table from restaurant"
+        "The restaurant is closed. Please order within opening hours. However, you still can book a table from restaurant"
       );
       $(".alert").show();
     }
     if (
-      !localStorage.hasOwnProperty("shoppingCart") ||
-      Object.keys(localStorage.shoppingCart).length === 0
+      !localStorage.hasOwnProperty("shoppingCart")
     ) {
-      localStorage.setItem("shoppingCart", "");
+      localStorage.setItem("shoppingCart", "{}");
       shoppingCart = {};
     } else {
       shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"));
@@ -153,10 +154,9 @@ $(document).ready(function () {
     $('#timeOfBooking').attr('min', new Date(openingTime).toTimeString().slice(0,5));
     $('#timeOfBooking').attr('max', new Date(closingTime).toTimeString().slice(0,5));
     if (
-      !localStorage.hasOwnProperty("bookingCart") ||
-      Object.keys(localStorage.bookingCart).length === 0
+      !localStorage.hasOwnProperty("bookingCart") 
     ) {
-      localStorage.setItem("bookingCart", "");
+      localStorage.setItem("bookingCart", "{}");
       bookingCart = {};
     } else {
       bookingCart = JSON.parse(localStorage.getItem("bookingCart"));
@@ -274,7 +274,11 @@ $(".addToCart").on("click", (event) => {
   $(".totalPrice").html(`HKD ${price}`);
   localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
 });
-$("#userOrderForm").submit(function () {
+$("#userOrderForm").submit(function (e) {
+  let price=Number($('.totalPrice').html().replace('HKD ',""))
+  console.log(price)
+  if(price>=4)
+  {
   let request = $(".specialRequest").val();
   shoppingCart[requestId]["specialRequest"] = request;
   localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
@@ -309,6 +313,11 @@ $("#userOrderForm").submit(function () {
     $("#discount").val(JSON.stringify({}));
   }
   return true;
+}else{
+  let priceModal = new bootstrap.Modal($('#price'))
+  priceModal.show()
+  return false
+}
 });
 
 //coupon
@@ -324,12 +333,20 @@ $(".couponCheck").on("click", function (event) {
     success: function (response) {
       console.log(response);
       if (response.percent_off === null) {
-        return alert(`There is no such coupon for "${couponCode}"`);
+        let couponModal = new bootstrap.Modal($('#coupon'))
+          couponModal.show()
       } else {
         $("#discountCode").prop("disabled", "disabled");
         $(event.target).addClass("disabled");
         let discount = response.percent_off * 100;
+        if(shoppingCart.hasOwnProperty(requestId))
+        {
         shoppingCart[requestId].discount = response;
+        }
+        else{
+        shoppingCart[requestId] = { item: [], specialRequest: "", discount: {} }
+        shoppingCart[requestId].discount = response;
+        }
         $(".discountList").append(
           `<tr class="dish text-center"><td>Discount: '${couponCode}'</td><td></td><td>-${discount}%</td><td><i class="fas fa-trash-alt couponDelete"></i></td></tr>`
         );
@@ -547,11 +564,9 @@ $(".review").on("click", function (event) {
     data: { rating: Number(ratingVal) },
     dataType: "json",
     success: function (response) {
-      if (response === "success") {
-        alert("Thank you for your review");
-      }
     },
   });
+  location.reload()
 });
 
 //Delete booking item
