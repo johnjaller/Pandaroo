@@ -4,7 +4,7 @@ function readURL(input) {
     let reader = new FileReader();
 
     reader.onload = function (e) {
-      $("#photo").attr("src", e.target.result).width(200).height(200);
+      $("#photo").attr("src", e.target.result).width(290).height(200);
     };
     reader.readAsDataURL(input.files[0]);
   }
