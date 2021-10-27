@@ -325,57 +325,67 @@ app.get("/tag/:tagid", async (req, res) => {
 app.use("/biz", restLogIn, restRouter.router());
 
 // Upload restaurant menu pic
-app.post("/bizaddmenu", upload.single("uploadedPhoto"), async (req, res) => {
-  console.log("Receiving rest set menu req..");
-  try {
-    console.log("restRouter req.file: ", req.file);
-    const file = req.file;
-    let result = await uploadFile(file);
-    console.log(result);
+app.post(
+  "/bizaddmenu",
+  upload.single("uploadedPhoto"),
+  async (req, res, next) => {
+    console.log("Receiving rest set menu req..");
+    try {
+      console.log("restRouter req.file: ", req.file);
+      const file = req.file;
+      let result = await uploadFile(file);
+      console.log(result);
 
-    await knex("menu")
-      .insert({
-        item: req.body.restMenuItem,
-        rest_id: req.user.id,
-        price: req.body.restMenuPrice,
-        category: req.body.restMenuCategory,
-        photo_path: result.Key,
-      })
-      .then(() => {
-        console.log("Inserting path done");
-      });
+      await knex("menu")
+        .insert({
+          item: req.body.restMenuItem,
+          rest_id: req.user.id,
+          price: req.body.restMenuPrice,
+          category: req.body.restMenuCategory,
+          photo_path: result.Key,
+        })
+        .then(() => {
+          console.log("Inserting path done");
+        });
 
-    // Unlink imagefile at /uploads
-    await unlinkFile(file.path);
-    console.log("Update menu done");
-    res.redirect("/biz/bizsetupmenu");
-  } catch (error) {
-    throw new Error(error);
+      // Unlink imagefile at /uploads
+      await unlinkFile(file.path);
+      console.log("Update menu done");
+      res.redirect("/biz/bizsetupmenu");
+    } catch (error) {
+      next(error);
+      throw new Error(error);
+    }
   }
-});
+);
 
 // Upload restaurant profile pic
-app.post("/bizsetuppropic", upload.single("uploadedFile"), async (req, res) => {
-  try {
-    console.log("app.js req.file: ", req.file);
-    const file = req.file;
-    let result = await uploadFile(file);
-    console.log(result);
+app.post(
+  "/bizsetuppropic",
+  upload.single("uploadedFile"),
+  async (req, res, next) => {
+    try {
+      console.log("app.js req.file: ", req.file);
+      const file = req.file;
+      let result = await uploadFile(file);
+      console.log(result);
 
-    await knex("restaurant")
-      .update({
-        profile_path: result.Key,
-      })
-      .where("id", req.user.id)
-      .then(() => {
-        console.log("Inserting path done");
-      });
-    await unlinkFile(file.path);
-    res.redirect("/biz/bizsetup");
-  } catch (error) {
-    throw new Error(error);
+      await knex("restaurant")
+        .update({
+          profile_path: result.Key,
+        })
+        .where("id", req.user.id)
+        .then(() => {
+          console.log("Inserting path done");
+        });
+      await unlinkFile(file.path);
+      res.redirect("/biz/bizsetup");
+    } catch (error) {
+      next(error);
+      throw new Error(error);
+    }
   }
-});
+);
 
 // Route for loading images from S3
 app.get("/image/:key", (req, res) => {

@@ -13,7 +13,7 @@ class BookingRouter {
     return router;
   }
 
-  async getBookingDefault(req, res) {
+  async getBookingDefault(req, res, next) {
     try {
       let restDetail = await this.bookingService.getRestDetail(
         req.params.restId
@@ -64,11 +64,12 @@ class BookingRouter {
         bookmark: bookmarkClass,
       });
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
 
-  async getBookingCategory(req, res) {
+  async getBookingCategory(req, res, next) {
     try {
       let restDetail = await this.bookingService.getRestDetail(
         req.params.restId
@@ -119,6 +120,7 @@ class BookingRouter {
         bookmark: bookmarkClass,
       });
     } catch (error) {
+      next(error);
       throw new Error(error);
     }
   }
