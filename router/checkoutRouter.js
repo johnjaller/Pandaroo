@@ -1,7 +1,7 @@
 require("dotenv").config();
 const stripe = require("stripe")(process.env.stripe_secret);
 const express = require("express");
-const endPointSecret = "whsec_G2nJNMFVmpCn275FSbScXynzCytZxtJX";
+const endPointSecret = "whsec_q3th2OAgVY1Uf8RBx4ALNDnfoJWMzaF0";
 class CheckoutRouter {
   constructor(checkoutService) {
     this.checkoutService = checkoutService;
@@ -38,8 +38,8 @@ class CheckoutRouter {
         rest_id: Number(req.body.restaurant),
       },
       mode: "payment",
-      success_url: `https://localhost:8080/success/${req.body.restaurant}`,
-      cancel_url: `https://localhost:8080/order/${req.body.restaurant}`,
+      success_url: `https://shermanw.me/success/${req.body.restaurant}`,
+      cancel_url: `https://shermanw.me/order/${req.body.restaurant}`,
       locale: "en",
     });
     res.redirect(303, session.url);
