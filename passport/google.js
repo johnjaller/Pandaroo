@@ -3,7 +3,7 @@ const userQueries = require("../database/userQueries.js");
 const googleConfig = {
   clientID: process.env.GOOGLE_ID,
   clientSecret: process.env.GOOGLE_SECRET,
-  callbackURL: "https://shermanw.me/auth/google/callback",
+  callbackURL: process.env.domain+"/auth/google/callback",
 };
 function googleCallback(accessToken, refreshToken, profile, done) {
   console.log(profile);

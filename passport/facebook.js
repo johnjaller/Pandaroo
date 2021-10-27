@@ -4,7 +4,7 @@ const FacebookStrategy = require("passport-facebook").Strategy;
 const facebookConfig = {
   clientID: process.env.FACEBOOK_APP_ID,
   clientSecret: process.env.FACEBOOK_APP_SECRET,
-  callbackURL: "https://shermanw.me/auth/facebook/callback",
+  callbackURL: process.env.domain+"/auth/facebook/callback",
   profileFields: ["id", "email", "name", "displayName"],
 };
 

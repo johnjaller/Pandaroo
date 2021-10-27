@@ -38,8 +38,8 @@ class CheckoutRouter {
         rest_id: Number(req.body.restaurant),
       },
       mode: "payment",
-      success_url: `https://shermanw.me/success/${req.body.restaurant}`,
-      cancel_url: `https://shermanw.me/order/${req.body.restaurant}`,
+      success_url: process.env.domain+`/success/${req.body.restaurant}`,
+      cancel_url: process.env.domain+`/order/${req.body.restaurant}`,
       locale: "en",
     });
     res.redirect(303, session.url);
