@@ -53,6 +53,11 @@
               >{{restaurant.opening_time}}</span>
               -
               <span class="closing">{{restaurant.closing_time}}</span></p>
+            {{#if delivery}}
+            <p class="mx-4">Order delivery: <br />Yes</p>
+            {{else}}
+            <p class="mx-4">Order delivery: <br />No</p>
+            {{/if}}
             <hr class="my-3 mx-auto userBookingForm-hr" />
 
             <h4 class="text-center userBookingForm-restName">Your orders</h4>
