@@ -60,6 +60,7 @@ class BookingRouter {
       return res.render("userBooking", {
         layout: "user",
         restaurant: restDetail[0],
+        delivery: restDetail[0].delivery,
         dish: dishItems,
         bookmark: bookmarkClass,
       });
