@@ -5,6 +5,11 @@ const UserService = require("../service/userService");
 const UserRouter = require("../router/userRouter");
 const userService = new UserService(knex);
 const userRouter = new UserRouter(userService);
+
+function unique(data,key){
+  return [...new Map(data.map(x=>[key(x),x])).values()]
+  }
+
 async function searchQuery(req, res) {
   console.log(req.query.q, "this is a query");
   let query = req.query.q.split(" ").join("|");
@@ -17,6 +22,7 @@ async function searchQuery(req, res) {
         `to_tsvector(concat_ws(' ',name,address,district,description,tag.tag_name)::text) @@ to_tsquery('${query}:*')`
       )
     );
+        queryResult=unique(queryResult,item=>item.rest_id)
   console.log(queryResult);
   for (let i = 0; i < queryResult.length; i++) {
     let rating;
