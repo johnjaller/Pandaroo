@@ -9,7 +9,7 @@ exports.seed = function (knex) {
           username: "happyRestaurant",
           password: "123",
           name: "Happy restaurant",
-          profile_path: "0fd0befd216541464efdceb382d4442d",
+          profile_path: "1e1532ae4fc9ae5a9c9f010f4686cd54",
           address:
             "3/F, Tai Hung Fai (Tsuen Wan) Centre, 55 Chung On Street, Tsuen Wan",
           district: "Tsuen Wan",
@@ -26,7 +26,7 @@ exports.seed = function (knex) {
           username: "middlesushi",
           password: "middle",
           name: "Middle sushi",
-          profile_path: "e911669c1c76f7976eee75a443ad9ed8",
+          profile_path: "test1.png",
           address: "Basement, Kam Fook Court, 5-11 Sai Yu Street, Yuen Long",
           district: "Yuen Long",
           phone_no: 94823396,
@@ -42,7 +42,7 @@ exports.seed = function (knex) {
           username: "problem",
           password: "trouble",
           name: "Problematic steakhouse",
-          profile_path: "ba1528fcdfb72ecec844bfd873cf5b39",
+          profile_path: "test2.png",
           address:
             "Shop 1, 1A, 2-8, G/F, Hing Tai Building, 45 Yan Oi Tong Circuit, Tuen Mun",
           district: "Tuen Mun",
