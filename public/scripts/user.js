@@ -327,7 +327,7 @@ $(".couponCheck").on("click", function (event) {
   console.log(couponCode);
   $.ajax({
     type: "post",
-    url: "/discount/",
+    url: "/discount/"+requestId,
     data: { code: couponCode },
     dataType: "json",
     success: function (response) {

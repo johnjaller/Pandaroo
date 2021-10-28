@@ -315,12 +315,12 @@ app.get("/success", (req, res) => {
   res.render("paymentSuccess", { layout: "user" });
 });
 
-app.post("/discount", (req, res) => {
+app.post("/discount/:restId", (req, res) => {
   console.log(req.body.code);
   let discountCode = req.body.code;
   knex("restaurant")
     .select("discount")
-    .where("code", discountCode)
+    .where({code: discountCode,id:req.params.restId})
     .then((data) => {
       if (data.length === 0) {
         console.log("there is no such coupon");
